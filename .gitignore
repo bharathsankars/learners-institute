@@ -56,3 +56,6 @@ server/.agents/
 server/.claude/
 server/.cursor/
 server/.devin/
+# Prisma-generated AI/tool metadata
+server/.windsurf/
+server/skills-lock.json
