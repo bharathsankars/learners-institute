@@ -23,7 +23,12 @@ async function startServer(): Promise<void> {
 async function shutdown(signal: string): Promise<void> {
   console.log(`\n${signal} received. Shutting down gracefully...`);
 
-  server?.close(async () => {
+  if (!server) {
+    await prisma.$disconnect();
+    process.exit(0);
+  }
+
+  server.close(async () => {
     await prisma.$disconnect();
     console.log("✅ Server shut down successfully");
     process.exit(0);
@@ -39,3 +44,5 @@ process.on("SIGTERM", () => {
 });
 
 void startServer();
+
+export default app;

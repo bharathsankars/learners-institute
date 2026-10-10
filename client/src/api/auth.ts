@@ -17,6 +17,13 @@ type LoginResponse = {
   };
 };
 
+type CurrentUserResponse = {
+  success: true;
+  data: {
+    user: AuthUser;
+  };
+};
+
 type ApiErrorResponse = {
   success: false;
   message: string;
@@ -31,13 +38,10 @@ export async function loginRequest(
 ): Promise<AuthUser> {
   const response = await fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
-
     headers: {
       "Content-Type": "application/json",
     },
-
     credentials: "include",
-
     body: JSON.stringify({
       username,
       password,
@@ -46,10 +50,6 @@ export async function loginRequest(
 
   const result = (await response.json()) as LoginResponse | ApiErrorResponse;
 
-  if (!response.ok) {
-    throw new Error(result.message || "Unable to sign in.");
-  }
-
   if (!result.success) {
     throw new Error(result.message || "Unable to sign in.");
   }
@@ -57,6 +57,30 @@ export async function loginRequest(
   return result.data.user;
 }
 
-export async function logoutRequest() {
-  await fetch(`${API_URL}/api/auth/logout`, { method: "POST", credentials: "include" });
+export async function getCurrentUserRequest(): Promise<AuthUser | null> {
+  const response = await fetch(`${API_URL}/api/auth/me`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    return null;
+  }
+
+  const result = (await response.json()) as
+    | CurrentUserResponse
+    | ApiErrorResponse;
+
+  if (!result.success) {
+    throw new Error(result.message || "Unable to restore session.");
+  }
+
+  return result.data.user;
+}
+
+export async function logoutRequest(): Promise<void> {
+  await fetch(`${API_URL}/api/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
 }
