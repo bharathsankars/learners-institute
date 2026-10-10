@@ -1,3 +1,4 @@
+import { API_URL } from "./config";
 export type Course = {
   id: string;
   title: string;
@@ -51,7 +52,6 @@ type ApiErrorResponse = {
   errors?: Record<string, string[]>;
 };
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 async function parseApiError(response: Response): Promise<Error> {
   try {

@@ -1,4 +1,5 @@
 import type { CreateStudentInput, Student } from "./students";
+import { API_URL } from "./config";
 export type EnquiryStatus = "NEW" | "CONTACTED" | "CLOSED";
 export type Enquiry = {
   id: string; name: string; phone: string; course: string; message: string | null;
@@ -8,7 +9,6 @@ export type Enquiry = {
 export type CreateEnquiryInput = {
   requestId: string; name: string; phone: string; course: string; message: string;
 };
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 async function request(path = "", input?: object, method = "GET") {
   const response = await fetch(`${API_URL}/api/enquiries${path}`, {
     method, credentials: "include",

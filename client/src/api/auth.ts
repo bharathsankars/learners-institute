@@ -1,3 +1,4 @@
+import { API_URL } from "./config";
 export type AdminRole = "SUPER_ADMIN" | "ADMIN" | "STAFF";
 
 export type AuthUser = {
@@ -30,7 +31,6 @@ type ApiErrorResponse = {
   errors?: Record<string, string[]>;
 };
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 export async function loginRequest(
   username: string,

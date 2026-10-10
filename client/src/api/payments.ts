@@ -1,4 +1,5 @@
 import type { FeePlan } from "./fees";
+import { API_URL } from "./config";
 export type PaymentMethod = "CASH" | "UPI" | "BANK_TRANSFER" | "CARD";
 export type Payment = {
   id: string; requestId: string; receiptNumber: number; feePlanId: string;
@@ -9,7 +10,6 @@ export type CreatePaymentInput = {
   requestId: string; feePlanId: string; amountPaise: number; method: PaymentMethod;
   paidAt: string; reference?: string; notes?: string;
 };
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 async function request(path: string, input?: CreatePaymentInput) {
   const response = await fetch(`${API_URL}/api/payments${path}`, {
     method: input ? "POST" : "GET", credentials: "include",
