@@ -47,3 +47,5 @@ app.use("/api/fees", requireSuperAdmin, feeRouter);
 app.use("/api/payments", requireSuperAdmin, paymentRouter);
 
 app.use("/api/enquiries", enquiryRouter);
+
+export default app;
