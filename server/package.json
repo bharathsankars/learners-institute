@@ -15,7 +15,9 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "test:enquiries:live": "npm run build && node tests/enquiries.live.mjs"
   },
   "keywords": [],
   "author": "",

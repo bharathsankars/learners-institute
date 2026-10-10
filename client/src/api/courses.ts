@@ -1,0 +1,169 @@
+export type Course = {
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription: string | null;
+  description: string | null;
+  category: string | null;
+  skills: string[];
+  isActive: boolean;
+  displayOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateCourseInput = {
+  title: string;
+  slug: string;
+  shortDescription?: string;
+  description?: string;
+  category?: string;
+  skills: string[];
+  isActive: boolean;
+  displayOrder: number;
+};
+
+export type UpdateCourseInput = CreateCourseInput;
+
+type CoursesResponse = {
+  success: true;
+  data: {
+    courses: Course[];
+  };
+};
+
+type CourseResponse = {
+  success: true;
+  message?: string;
+  data: {
+    course: Course;
+  };
+};
+
+type DeleteCourseResponse = {
+  success: true;
+  message: string;
+};
+
+type ApiErrorResponse = {
+  success: false;
+  message: string;
+  errors?: Record<string, string[]>;
+};
+
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+
+async function parseApiError(response: Response): Promise<Error> {
+  try {
+    const error = (await response.json()) as ApiErrorResponse;
+
+    return new Error(error.message || "Something went wrong.");
+  } catch {
+    return new Error("Something went wrong.");
+  }
+}
+
+export async function fetchCourses(): Promise<Course[]> {
+  const response = await fetch(`${API_URL}/api/courses`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+
+  const result = (await response.json()) as CoursesResponse;
+
+  return result.data.courses;
+}
+
+export async function fetchPublicCourses(): Promise<Course[]> {
+  const response = await fetch(`${API_URL}/api/courses/public`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+
+  const result = (await response.json()) as CoursesResponse;
+
+  return result.data.courses;
+}
+
+export async function fetchCourseById(courseId: string): Promise<Course> {
+  const response = await fetch(`${API_URL}/api/courses/${courseId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+
+  const result = (await response.json()) as CourseResponse;
+
+  return result.data.course;
+}
+
+export async function createCourse(input: CreateCourseInput): Promise<Course> {
+  const response = await fetch(`${API_URL}/api/courses`, {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    credentials: "include",
+
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+
+  const result = (await response.json()) as CourseResponse;
+
+  return result.data.course;
+}
+
+export async function updateCourse(
+  courseId: string,
+  input: UpdateCourseInput,
+): Promise<Course> {
+  const response = await fetch(`${API_URL}/api/courses/${courseId}`, {
+    method: "PATCH",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    credentials: "include",
+
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+
+  const result = (await response.json()) as CourseResponse;
+
+  return result.data.course;
+}
+
+export async function deleteCourse(courseId: string): Promise<void> {
+  const response = await fetch(`${API_URL}/api/courses/${courseId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+
+  (await response.json()) as DeleteCourseResponse;
+}

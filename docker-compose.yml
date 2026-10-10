@@ -15,15 +15,35 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U learners -d learners_institute"
-        ]
+      test: ["CMD-SHELL", "pg_isready -U learners -d learners_institute"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
       start_period: 5s
+
+  server:
+    build:
+      context: ./server
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://learners:learners_dev_password@postgres:5432/learners_institute?schema=public
+      CLIENT_ORIGIN: http://localhost:5173
+    ports:
+      - "4000:4000"
+
+  client:
+    build:
+      context: ./client
+    depends_on:
+      - server
+    environment:
+      VITE_API_URL: http://localhost:4000
+    ports:
+      - "5173:4173"
 
 volumes:
   postgres_data:

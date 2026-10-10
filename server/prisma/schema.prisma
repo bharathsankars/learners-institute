@@ -13,14 +13,68 @@ enum UserRole {
   STAFF
 }
 
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum FeePlanStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  BANK_TRANSFER
+  CARD
+}
+
+model Session {
+  tokenHash String @id
+  userId String @db.Uuid
+  expiresAt DateTime @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("sessions")
+}
+
+model Payment {
+  id String @id @default(uuid()) @db.Uuid
+  requestId String @unique @db.Uuid
+  receiptNumber Int @unique @default(autoincrement())
+  feePlanId String @db.Uuid
+  amountPaise Int
+  method PaymentMethod
+  paidAt DateTime @db.Date
+  reference String?
+  notes String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  feePlan FeePlan @relation(fields: [feePlanId], references: [id], onDelete: Restrict)
+  @@index([feePlanId])
+  @@map("payments")
+}
+
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  firstName    String
-  lastName     String
-  email        String   @unique
-  passwordHash String
-  role         UserRole @default(STAFF)
-  isActive     Boolean  @default(true)
+  id String @id @default(uuid()) @db.Uuid
+
+  firstName String
+  lastName  String
+
+  username String @unique
+  email    String @unique
+  password String
+
+  sessions Session[]
+
+  role     UserRole @default(STAFF)
+  isActive Boolean  @default(true)
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
@@ -43,4 +97,133 @@ model InstituteSetting {
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@map("institute_settings")
+}
+
+model Student {
+  id              String @id @default(uuid()) @db.Uuid
+  admissionNumber String @unique @default(dbgenerated())
+
+  firstName String
+  lastName  String?
+
+  phone String
+  email String?
+
+  dateOfBirth DateTime? @db.Date
+  gender      String?
+
+  address String?
+
+  status StudentStatus @default(ACTIVE)
+
+  enrollments Enrollment[]
+  enquiries Enquiry[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([status])
+  @@index([firstName, lastName])
+  @@index([phone])
+  @@map("students")
+}
+
+model Course {
+  id String @id @default(uuid()) @db.Uuid
+
+  title String
+  slug  String @unique
+
+  shortDescription String?
+  description      String?
+
+  category String?
+
+  skills String[] @default([])
+
+  isActive     Boolean @default(true)
+  displayOrder Int     @default(0)
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([isActive])
+  @@index([displayOrder])
+  @@map("courses")
+}
+
+model Enrollment {
+  id String @id @default(uuid()) @db.Uuid
+
+  studentId String @db.Uuid
+  courseId  String @db.Uuid
+
+  status EnrollmentStatus @default(ACTIVE)
+
+  enrolledAt  DateTime  @default(now()) @db.Timestamptz(3)
+  completedAt DateTime? @db.Timestamptz(3)
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  feePlan FeePlan?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([studentId])
+  @@index([courseId])
+  @@index([status])
+  @@map("enrollments")
+}
+
+model FeePlan {
+  payments Payment[]
+  id String @id @default(uuid()) @db.Uuid
+
+  enrollmentId String @unique @db.Uuid
+
+  totalFeePaise Int
+  discountPaise Int @default(0)
+
+  dueDate DateTime? @db.Date
+
+  status FeePlanStatus @default(ACTIVE)
+
+  notes String?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([status])
+  @@index([dueDate])
+  @@map("fee_plans")
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+model Enquiry {
+  id String @id @default(uuid()) @db.Uuid
+  requestId String @unique @db.Uuid
+  name String
+  phone String
+  course String
+  message String?
+  status EnquiryStatus @default(NEW)
+  studentId String? @db.Uuid
+  student Student? @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  @@index([status])
+  @@index([createdAt])
+  @@index([studentId])
+  @@map("enquiries")
 }

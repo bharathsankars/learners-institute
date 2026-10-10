@@ -1,0 +1,18 @@
+.course-directory-toolbar { grid-template-columns: minmax(0,1.4fr) minmax(150px,.7fr) minmax(160px,.7fr); }
+.course-category-summary { cursor: default; }
+.course-category-summary:hover { border-color: var(--directory-border); }
+.course-directory-icon { border-radius: 9px; }
+.course-directory-description { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 11px; color: var(--directory-muted); line-height: 1.6; margin-top: 12px; max-width: 360px; overflow-wrap: anywhere; }
+.course-category-label { display: block; font-size: 12px; font-weight: 500; }
+.course-directory-skills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; max-width: 260px; }
+.course-directory-skills span { padding: 4px 6px; border: 1px solid var(--directory-border); border-radius: 4px; background: var(--directory-soft); font-size: 9px; color: var(--directory-muted); overflow-wrap: anywhere; }
+.course-directory-skills small { color: var(--directory-muted); font-size: 10px; }
+.course-order { display: inline-grid; place-items: center; min-width: 25px; padding: 5px; background: var(--directory-soft); color: var(--directory-muted); border-radius: 5px; font-size: 11px; }
+.course-profile__section { margin-block: 22px; }
+.course-profile__section h3 { font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+.course-profile__section > p { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; color: var(--directory-muted); }
+.course-skills { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.course-skills li { padding: 7px 10px; background: var(--directory-soft); border: 1px solid var(--directory-border); border-radius: 5px; color: var(--directory-ink); font-size: 11px; overflow-wrap: anywhere; }
+.course-profile__note { align-self: center; color: var(--directory-muted); font-size: 10px; }
+@media(max-width:1200px) { .course-directory-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); } .course-directory-toolbar .admin-directory-search { grid-column: 1/-1; } }
+@media(max-width:650px) { .course-directory-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); } .course-directory-table td:nth-child(4)::before { content: "Display order "; } .course-directory-description { max-width: none; } .course-profile__note { display: none; } }

@@ -1,0 +1,13 @@
+import { useEffect, useRef } from "react";
+import { Mail, Pencil, Phone, X } from "lucide-react";
+import type { Student } from "../../api/students";
+import { studentDate, studentName, studentStatusLabels } from "../utils/students";
+export function StudentDetailsDialog({ student, onClose, onEdit }: { student: Student; onClose: () => void; onEdit: () => void }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => { const element = dialog.current; element?.showModal(); return () => element?.close(); }, []);
+  return <dialog ref={dialog} className="directory-profile" aria-labelledby="directory-profile-title" onCancel={onClose}>
+    <div className="directory-profile__header"><div className="directory-profile__identity"><span className="admin-directory-avatar" aria-hidden="true">{student.firstName.slice(0, 1).toUpperCase()}</span><div><span className="admin-directory-eyebrow">Student profile</span><h2 id="directory-profile-title">{studentName(student)}</h2><p>{student.admissionNumber}</p></div></div><button className="admin-directory-icon-button" aria-label="Close student profile" onClick={onClose}><X size={20} /></button></div>
+    <div className="directory-profile__body"><div className="directory-profile__facts"><div><span>Learning status</span><span className={`admin-directory-badge admin-directory-badge--${student.status.toLowerCase()}`}>{studentStatusLabels[student.status]}</span></div><div><span>Added on</span><strong>{studentDate(student.createdAt)}</strong></div><div><span>Phone number</span><a href={`tel:${student.phone.replace(/[^+\d]/g, "")}`}>{student.phone}</a></div><div><span>Email address</span>{student.email ? <a href={`mailto:${student.email}`}>{student.email}</a> : <strong>Not provided</strong>}</div><div><span>Date of birth</span><strong>{student.dateOfBirth ? studentDate(student.dateOfBirth, true) : "Not provided"}</strong></div><div><span>Gender</span><strong>{student.gender || "Not provided"}</strong></div></div><section className="directory-profile__address"><h3>Address</h3><p>{student.address || "No address provided."}</p></section><p className="directory-profile__updated">Last updated {studentDate(student.updatedAt)}</p></div>
+    <div className="directory-profile__footer"><div><a className="admin-directory-button" href={`tel:${student.phone.replace(/[^+\d]/g, "")}`}><Phone size={15} aria-hidden="true" />Call</a>{student.email && <a className="admin-directory-button" href={`mailto:${student.email}`}><Mail size={15} aria-hidden="true" />Email</a>}</div><button className="admin-directory-button admin-directory-button--primary" onClick={onEdit}><Pencil size={15} aria-hidden="true" />Edit student</button></div>
+  </dialog>;
+}

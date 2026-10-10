@@ -1,0 +1,9 @@
+/* The dialog uses the same student-modal classes as Add Student. */
+.course-form__count { text-align: right; color: var(--modal-muted); font-size: 10px; }
+.course-form__toggle { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--modal-soft); border: 1px solid var(--modal-border); border-radius: 9px; cursor: pointer; }
+.course-form__toggle input[type="checkbox"] { width: 18px; height: 18px; min-height: 0; margin: 2px 0 0; padding: 0; flex-shrink: 0; accent-color: #285448; }
+.course-form__toggle > span { display: flex; flex-direction: column; gap: 5px; }
+.course-form__toggle strong { color: var(--modal-ink); font-size: 12px; font-weight: 600; }
+.course-form__toggle small { font-weight: 400; }
+.student-modal__field > small.student-modal__field-help { color: var(--modal-muted); }
+@media(prefers-reduced-motion:reduce) { .student-modal__spinner { animation: none; } }

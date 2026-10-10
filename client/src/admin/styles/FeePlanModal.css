@@ -1,0 +1,374 @@
+.fee-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.fee-modal {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 48px);
+
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.18),
+    0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.fee-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.fee-modal__heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fee-modal__heading > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fee-modal__heading span {
+  color: #64748b;
+
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fee-modal__heading h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.fee-modal__icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #2563eb;
+  background: #eff6ff;
+
+  border-radius: 12px;
+}
+
+.fee-modal__close {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  color: #64748b;
+  background: transparent;
+
+  border: 0;
+  border-radius: 10px;
+
+  cursor: pointer;
+}
+
+.fee-modal__close:hover:not(:disabled) {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.fee-modal__close:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.fee-modal__form {
+  max-height: calc(100vh - 145px);
+
+  overflow-y: auto;
+
+  padding: 24px;
+}
+
+.fee-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.fee-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.fee-modal__field--full {
+  grid-column: 1 / -1;
+}
+
+.fee-modal__field label {
+  color: #334155;
+
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.fee-modal__field label span {
+  margin-left: 3px;
+  color: #dc2626;
+}
+
+.fee-modal__field input,
+.fee-modal__field select,
+.fee-modal__field textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  color: #0f172a;
+  background: #ffffff;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+
+  font: inherit;
+  font-size: 0.9rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.fee-modal__field input,
+.fee-modal__field select {
+  min-height: 44px;
+}
+
+.fee-modal__field textarea {
+  resize: vertical;
+
+  line-height: 1.5;
+}
+
+.fee-modal__field input:focus,
+.fee-modal__field select:focus,
+.fee-modal__field textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.fee-modal__field input:disabled,
+.fee-modal__field select:disabled,
+.fee-modal__field textarea:disabled {
+  cursor: not-allowed;
+
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.fee-modal__field small {
+  color: #64748b;
+
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.fee-modal__summary {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  padding: 16px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.fee-modal__summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fee-modal__summary-item span {
+  color: #64748b;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.fee-modal__summary-item strong {
+  color: #0f172a;
+
+  font-size: 1rem;
+}
+
+.fee-modal__summary-item--balance strong {
+  color: #2563eb;
+}
+
+.fee-modal__error {
+  margin-top: 20px;
+
+  padding: 12px 14px;
+
+  color: #b91c1c;
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.fee-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top: 1px solid #e2e8f0;
+}
+
+.fee-modal__cancel,
+.fee-modal__submit {
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 10px;
+
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+.fee-modal__cancel {
+  color: #334155;
+  background: #ffffff;
+
+  border: 1px solid #cbd5e1;
+}
+
+.fee-modal__cancel:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.fee-modal__submit {
+  color: #ffffff;
+  background: #2563eb;
+
+  border: 1px solid #2563eb;
+}
+
+.fee-modal__submit:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.fee-modal__cancel:disabled,
+.fee-modal__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 720px) {
+  .fee-modal__backdrop {
+    align-items: flex-end;
+
+    padding: 0;
+  }
+
+  .fee-modal {
+    width: 100%;
+    max-height: 92vh;
+
+    border-radius: 18px 18px 0 0;
+  }
+
+  .fee-modal__header {
+    padding: 18px;
+  }
+
+  .fee-modal__form {
+    max-height: calc(92vh - 86px);
+
+    padding: 18px;
+  }
+
+  .fee-modal__grid {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+  }
+
+  .fee-modal__field--full {
+    grid-column: auto;
+  }
+
+  .fee-modal__summary {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .fee-modal__actions {
+    flex-direction: column-reverse;
+
+    align-items: stretch;
+  }
+
+  .fee-modal__cancel,
+  .fee-modal__submit {
+    width: 100%;
+  }
+}
