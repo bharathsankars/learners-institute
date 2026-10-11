@@ -369,3 +369,56 @@
     padding-inline: 11px;
   }
 }
+
+/* =========================================
+   ACTIVE SECTION NAVIGATION
+   ========================================= */
+
+.site-header__nav-link--active {
+  color: var(--color-blue-700);
+}
+
+.site-header__nav-link--active::after {
+  width: 100%;
+}
+
+.site-header__mobile-nav-link--active {
+  color: var(--color-blue-700);
+  font-weight: 650;
+}
+
+.site-header__mobile-nav-link--active::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 auto;
+
+  margin-right: 4px;
+
+  border-radius: 50%;
+
+  background: var(--color-blue-600);
+}
+
+html[data-theme="dark"]
+  .site-header__nav-link--active {
+  color: #b4cfbd;
+}
+
+html[data-theme="dark"]
+  .site-header__nav-link--active::after {
+  background: #b4cfbd;
+}
+
+html[data-theme="dark"]
+  .site-header__mobile-nav-link--active {
+  color: #b4cfbd;
+}
+
+html[data-theme="dark"]
+  .site-header__mobile-nav-link--active::before {
+  background: #b4cfbd;
+}
+

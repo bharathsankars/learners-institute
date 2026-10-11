@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { BackToTop } from "../components/BackToTop";
 import { Header } from "../components/Header";
+import { MobileContactBar } from "../components/MobileContactBar";
 import { Footer } from "../components/Footer";
 import "./PublicHomePage.css";
+import { useLandingAnimations } from "../hooks/useLandingAnimations";
 
 import { About } from "../sections/About";
 import { Contact } from "../sections/Contact";
@@ -11,7 +14,24 @@ import { FAQ } from "../sections/FAQ";
 import { Hero } from "../sections/Hero";
 import { WhyLearners } from "../sections/WhyLearners";
 
+type CourseSelectionIntent = {
+  courseId: string;
+  requestId: number;
+};
+
 export function PublicHomePage() {
+  const [courseSelection, setCourseSelection] =
+    useState<CourseSelectionIntent | null>(null);
+
+  const handleCourseEnquiry = (courseId: string) => {
+    setCourseSelection((current) => ({
+      courseId,
+      requestId: (current?.requestId ?? 0) + 1,
+    }));
+  };
+
+  useLandingAnimations();
+
   return (
     <div className="app landing-page">
       <a className="skip-link" href="#main-content">Skip to content</a>
@@ -20,7 +40,7 @@ export function PublicHomePage() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
 
-        <Courses />
+        <Courses onEnquire={handleCourseEnquiry} />
 
         <About />
         <WhyLearners />
@@ -28,10 +48,11 @@ export function PublicHomePage() {
         <FAQ />
         <Contact />
 
-        <Enquiry />
+        <Enquiry courseSelection={courseSelection} />
       </main>
       <Footer />
       <BackToTop />
+      <MobileContactBar />
     </div>
   );
 }

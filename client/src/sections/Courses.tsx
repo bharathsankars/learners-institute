@@ -4,13 +4,26 @@ import "./Courses.css";
 import { ArrowRight, BookOpen, Check } from "lucide-react";
 
 import { usePublicCourses } from "../hooks/usePublicCourses";
+import { PublicCourseDetailsDialog } from "../components/PublicCourseDetailsDialog";
 
-export function Courses() {
+type CoursesProps = {
+  onEnquire?: (courseId: string) => void;
+};
+
+export function Courses({ onEnquire }: CoursesProps) {
   const query = usePublicCourses();
   const courses = query.data ?? [];
   const [expandedCourses, setExpandedCourses] = useState<
     Record<string, boolean>
   >({});
+
+  const [selectedCourseId, setSelectedCourseId] =
+    useState<string | null>(null);
+
+  const selectedCourse =
+    courses.find(
+      (course) => course.id === selectedCourseId,
+    ) ?? null;
 
   const toggleCourse = (courseId: string) => {
     setExpandedCourses((current) => ({
@@ -37,7 +50,62 @@ export function Courses() {
           </p>
         </div>
 
-        {query.isPending && <p role="status">Loading courses…</p>}
+        {query.isPending && (
+          <div
+            className="courses-loading"
+            role="status"
+            aria-live="polite"
+          >
+            <span className="courses-loading__sr-only">
+              Loading courses…
+            </span>
+
+            <div
+              className="courses-section__grid"
+              aria-hidden="true"
+            >
+              {Array.from({ length: 4 }).map((_, index) => (
+                <article
+                  className="course-card course-card--skeleton"
+                  key={index}
+                >
+                  <div className="course-card__top">
+                    <span className="course-skeleton course-skeleton--icon" />
+
+                    <span className="course-skeleton course-skeleton--number" />
+                  </div>
+
+                  <span className="course-skeleton course-skeleton--title" />
+
+                  <div className="course-skeleton__description">
+                    <span className="course-skeleton course-skeleton--line" />
+                    <span className="course-skeleton course-skeleton--line" />
+                    <span className="course-skeleton course-skeleton--line course-skeleton--short" />
+                  </div>
+
+                  <div className="course-skeleton__skills">
+                    <span>
+                      <i className="course-skeleton course-skeleton--dot" />
+                      <i className="course-skeleton course-skeleton--skill" />
+                    </span>
+
+                    <span>
+                      <i className="course-skeleton course-skeleton--dot" />
+                      <i className="course-skeleton course-skeleton--skill course-skeleton--skill-short" />
+                    </span>
+
+                    <span>
+                      <i className="course-skeleton course-skeleton--dot" />
+                      <i className="course-skeleton course-skeleton--skill" />
+                    </span>
+                  </div>
+
+                  <span className="course-skeleton course-skeleton--link" />
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
         {query.isError && (
           <div className="courses-section__feedback" role="alert">
             <p>
@@ -117,14 +185,34 @@ export function Courses() {
                   ))}
                 </ul>
 
-                <a className="course-card__link" href="#enquiry">
-                  Enquire about this course
-                  <ArrowRight size={16} aria-hidden="true" />
-                </a>
+                <button
+                  type="button"
+                  className="course-card__link"
+                  onClick={() =>
+                    setSelectedCourseId(course.id)
+                  }
+                  aria-label={`View details for ${course.title}`}
+                >
+                  View course details
+                  <ArrowRight
+                    size={16}
+                    aria-hidden="true"
+                  />
+                </button>
               </article>
             );
           })}
         </div>
+
+        {selectedCourse && (
+          <PublicCourseDetailsDialog
+            course={selectedCourse}
+            onClose={() =>
+              setSelectedCourseId(null)
+            }
+            onEnquire={onEnquire}
+          />
+        )}
 
         <p className="courses-section__note">
           Contact the institute for current course details, schedules, and

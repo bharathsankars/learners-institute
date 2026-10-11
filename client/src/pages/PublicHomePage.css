@@ -780,14 +780,6 @@ html[data-theme="dark"] .landing-page .enquiry-form__submit {
   .landing-page .about-section__layout {
     gap: 35px;
   }
-  .site-footer__main {
-    grid-template-columns: 1fr 1fr;
-    gap: 30px 15px;
-  }
-  .site-footer__bottom {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 @media (max-width: 520px) {
   .landing-page .site-header__inner {
@@ -833,21 +825,11 @@ html[data-theme="dark"] .landing-page .enquiry-form__submit {
     box-shadow: 7px 7px 0 #e8e7de;
     padding-inline: 24px;
   }
-  .learning-guide__top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
   .learning-guide__bottom {
     margin-inline: -24px;
     padding-inline: 24px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .learning-guide__bottom strong {
-    white-space: normal;
   }
   .hero-foundations {
-    grid-template-columns: 1fr;
     gap: 12px;
   }
   .hero-foundations p {
@@ -857,34 +839,29 @@ html[data-theme="dark"] .landing-page .enquiry-form__submit {
     padding: 16px 20px;
   }
   .site-footer__main {
-    grid-template-columns: 1fr;
-    gap: 22px;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px 15px;
   }
   .site-footer__main > div:first-child {
-    grid-column: auto;
+    grid-column: 1/-1;
   }
   .site-footer__bottom {
-    align-items: flex-start;
+    align-items: start;
     font-size: 10px;
   }
 }
 
-@media (max-width: 380px) {
-  .landing-page .hero-section__actions {
-    flex-direction: column;
-  }
-  .landing-page .hero-section__primary,
-  .landing-page .hero-section__secondary {
-    width: 100%;
-  }
-  .learning-guide__top,
-  .learning-guide__bottom {
-    width: 100%;
-  }
-  .learning-guide__bottom > span {
-    max-width: none;
+@media (max-width: 1050px) {
+  .landing-page .courses-section__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+@media (max-width: 620px) {
+  .landing-page .courses-section__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .back-to-top {
   position: fixed;
   right: max(22px, env(safe-area-inset-right));

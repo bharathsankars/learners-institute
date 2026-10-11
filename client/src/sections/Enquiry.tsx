@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ChevronDown, MapPin, MessageCircle } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -24,17 +24,28 @@ const enquirySchema = z.object({
 
 type EnquiryFormValues = z.infer<typeof enquirySchema>;
 
-export function Enquiry() {
+type EnquiryProps = {
+  courseSelection?: {
+    courseId: string;
+    requestId: number;
+  } | null;
+};
+
+export function Enquiry({
+  courseSelection = null,
+}: EnquiryProps) {
   const courseQuery = usePublicCourses();
   const courses = courseQuery.data ?? [];
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const requestId = useRef(crypto.randomUUID());
   const submitting = useRef(false);
+  const lastAppliedCourseSelection = useRef<number | null>(null);
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<EnquiryFormValues>({
     resolver: zodResolver(enquirySchema),
@@ -45,6 +56,40 @@ export function Enquiry() {
       message: "",
     },
   });
+
+  useEffect(() => {
+    if (!courseSelection) {
+      return;
+    }
+
+    if (
+      lastAppliedCourseSelection.current ===
+      courseSelection.requestId
+    ) {
+      return;
+    }
+
+    const courseExists = courses.some(
+      (course) => course.id === courseSelection.courseId,
+    );
+
+    if (!courseExists) {
+      return;
+    }
+
+    setValue(
+      "course",
+      courseSelection.courseId,
+      {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: true,
+      },
+    );
+
+    lastAppliedCourseSelection.current =
+      courseSelection.requestId;
+  }, [courseSelection, courses, setValue]);
 
   const onSubmit = async (data: EnquiryFormValues) => {
     if (submitting.current) return;
