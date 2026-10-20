@@ -255,3 +255,21 @@
     padding: 0 17px 18px;
   }
 }
+
+/* Tighter transition from Student Voices */
+
+.faq-section {
+  padding-top: 52px;
+}
+
+@media (max-width: 900px) {
+  .faq-section {
+    padding-top: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-section {
+    padding-top: 38px;
+  }
+}

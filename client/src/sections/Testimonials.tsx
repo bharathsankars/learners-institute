@@ -21,11 +21,7 @@ export function Testimonials() {
                 Progress you can <em>hear about.</em>
               </h2>
 
-              {hasSamples && (
-                <p className="voices-section__note">
-                  Sample reviews for preview
-                </p>
-              )}
+              {hasSamples && <br className="voices-section__divider" />}
             </div>
 
             <div className="voices-section__grid">

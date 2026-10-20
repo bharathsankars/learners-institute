@@ -234,3 +234,21 @@ html[data-theme="dark"] .voice-card__avatar {
     padding: 24px 20px;
   }
 }
+
+/* Reduce spacing between Student Voices and FAQ */
+
+.voices-section {
+  padding-bottom: 36px;
+}
+
+@media (max-width: 768px) {
+  .voices-section {
+    padding-bottom: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .voices-section {
+    padding-bottom: 24px;
+  }
+}

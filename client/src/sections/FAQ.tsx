@@ -54,7 +54,7 @@ export function FAQ() {
   };
 
   return (
-    <section id="faq" className="faq-section">
+    <section id="faq">
       <div className="container">
         <div className="faq-section__layout">
           <div className="faq-section__intro">
