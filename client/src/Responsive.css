@@ -1,0 +1,40 @@
+/* Layout-only safeguards for narrow screens, zoom, and short viewports. */
+.admin-layout__main, .admin-layout__content, .admin-dashboard, .enquiries-page, .admin-directory { min-width:0; }
+.admin-directory-identity > div, .enquiries-applicant > div, .dashboard-panel, .dashboard-heading > div, .enquiries-heading > div { min-width:0; }
+.admin-directory-name, .enquiries-name, .admin-directory-email, .dashboard-panel strong, .enquiry-dialog h2, .directory-profile h2 { overflow-wrap:anywhere; }
+.admin-directory-table-scroll, .enquiries-table-scroll, .dashboard-table-scroll { max-width:100%; overscroll-behavior-x:contain; }
+.enquiry-dialog[open] { display:flex; flex-direction:column; overflow:hidden; }
+.enquiry-dialog__header, .enquiry-dialog__footer { flex-shrink:0; }
+.enquiry-dialog__body { min-height:0; overflow-y:auto; overscroll-behavior:contain; }
+.directory-profile__facts > div, .enquiry-dialog__facts > div { min-width:0; }
+.directory-profile__facts a, .enquiry-dialog__facts a { overflow-wrap:anywhere; max-width:100%; }
+.landing-page .contact-section iframe { width:100%; max-width:100%; }
+.landing-page .course-card, .landing-page .contact-card, .landing-page .enquiry-section__form-card { min-width:0; overflow-wrap:anywhere; }
+@media(max-width:820px) {
+ .landing-page .back-to-top { bottom:calc(82px + env(safe-area-inset-bottom)); }
+ .landing-page .site-footer { padding-bottom:calc(94px + env(safe-area-inset-bottom)); }
+}
+@media(max-width:480px) {
+ .admin-layout__content { padding-inline:12px; }
+ .admin-directory-summary, .enquiries-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .admin-directory-heading__actions, .dashboard-heading__controls { flex-wrap:wrap; gap:10px; }
+ .admin-directory-register__heading, .enquiries-inbox__heading { flex-wrap:wrap; gap:12px; }
+ .directory-profile__footer > div { flex-wrap:wrap; }
+ .directory-profile__footer button, .enquiry-dialog__footer button, .enquiry-dialog__footer a { flex:1 1 140px; justify-content:center; }
+ .student-modal__field input, .student-modal__field select, .student-modal__field textarea, .enquiry-form input, .enquiry-form select, .enquiry-form textarea, .admin-login input { font-size:16px; }
+ .landing-page .site-header__brand-text strong { font-size:21px; }
+ .landing-page .site-header__brand-text span { font-size:9px; }
+ .landing-page .site-header__inner { gap:8px; }
+ .dashboard-panel__header { flex-wrap:wrap; gap:12px; }
+}
+@media(max-width:360px) {
+ .admin-directory-summary, .enquiries-summary { grid-template-columns:1fr; }
+ .admin-directory-identity { gap:8px; }
+ .landing-page .hero-section__title { font-size:36px; }
+}
+@media(max-height:550px) {
+ .student-modal, .enquiry-dialog, .directory-profile, .public-course-dialog { max-height:calc(100dvh - 16px); }
+ .student-modal__header, .enquiry-dialog__header { padding-top:16px; padding-bottom:16px; }
+}
+/* Keep branding text-only until the client supplies a logo. */
+.admin-login .admin-login__brand-mark { display:none; }

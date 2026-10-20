@@ -17,6 +17,8 @@ const StudentsPage = lazy(() => import("./admin/pages/StudentsPage").then(module
 
 const CoursesPage = lazy(() => import("./admin/pages/CoursesPage").then(module => ({ default: module.CoursesPage })));
 
+const SettingsPage = lazy(() => import("./admin/pages/SettingsPage").then(module => ({ default: module.SettingsPage })));
+
 function App() {
   return (
     <Routes>
@@ -43,7 +45,14 @@ function App() {
 
           <Route path="payments/*" element={<UpcomingPage title="Payments" />} />
 
-          <Route path="settings" element={<UpcomingPage title="Settings" />} />
+          <Route
+            path="settings"
+            element={
+              <Suspense fallback={<p role="status">Loading settings…</p>}>
+                <SettingsPage />
+              </Suspense>
+            }
+          />
         </Route>
         <Route path="*" element={<NotFoundPage admin />} />
       </Route>

@@ -19,6 +19,8 @@
 
   color: inherit;
 
+  font-family: var(--font-sans);
+
   overflow: visible;
 }
 
@@ -99,25 +101,29 @@
   color: #397363;
 
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 600;
 
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .public-course-dialog__header h2 {
   color: #182e3b;
 
+  font-family: var(--font-display);
+
   font-size:
     clamp(
       24px,
       5vw,
-      34px
+      32px
     );
 
-  line-height: 1.15;
+  font-weight: 700;
 
-  letter-spacing: -0.03em;
+  line-height: 1.2;
+
+  letter-spacing: -0.025em;
 }
 
 .public-course-dialog__close {
@@ -171,8 +177,10 @@
   background: #e7eee9;
   color: #285448;
 
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 0.01em;
 }
 
 .public-course-dialog__body section {
@@ -184,15 +192,19 @@
 .public-course-dialog__body h3 {
   color: #182e3b;
 
-  font-size: 15px;
+  font-family: var(--font-display);
+
+  font-size: 16px;
   font-weight: 700;
+
+  letter-spacing: -0.01em;
 }
 
 .public-course-dialog__body p {
   color: #5f6f70;
 
   font-size: 15px;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 .public-course-dialog__skills {
@@ -267,8 +279,11 @@
 
   border-radius: 7px;
 
-  font-size: 13px;
-  font-weight: 650;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: -0.005em;
 
   cursor: pointer;
 }

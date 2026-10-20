@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AdminAuthProvider } from "./admin/auth/AdminAuthContext";
 import App from "./App";
 import "./index.css";
+import "./Responsive.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

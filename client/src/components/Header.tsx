@@ -1,7 +1,7 @@
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { ThemeToggle } from "./ThemeToggle";
+// import { ThemeToggle } from "./ThemeToggle";
 
 import "./Header.css";
 
@@ -35,13 +35,11 @@ const navItems = [
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const [activeSection, setActiveSection] =
-    useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     const sections = navItems.flatMap((item) =>
       item.sectionIds.map((sectionId) => ({
-        sectionId,
         navKey: item.key,
         element: document.getElementById(sectionId),
       })),
@@ -52,29 +50,41 @@ export function Header() {
     const updateActiveSection = () => {
       frameId = null;
 
-      const headerOffset = 120;
-      const activationPoint =
-        window.innerHeight * 0.32;
-
-      const targetPosition = Math.max(
-        headerOffset,
-        activationPoint,
-      );
+      const activationPoint = Math.max(120, window.innerHeight * 0.32);
 
       let currentKey: string | null = null;
 
       for (const section of sections) {
         if (!section.element) continue;
 
-        const rect =
-          section.element.getBoundingClientRect();
+        const rect = section.element.getBoundingClientRect();
 
-        if (
-          rect.top <= targetPosition &&
-          rect.bottom > targetPosition
-        ) {
+        /*
+         * Keep the latest section whose
+         * beginning has crossed our
+         * activation point.
+         */
+        if (rect.top <= activationPoint) {
           currentKey = section.navKey;
-          break;
+        }
+      }
+
+      /*
+       * At the very bottom of the page,
+       * explicitly keep the last available
+       * navigation section active.
+       */
+      const reachedBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 4;
+
+      if (reachedBottom) {
+        for (let index = sections.length - 1; index >= 0; index -= 1) {
+          if (sections[index].element) {
+            currentKey = sections[index].navKey;
+
+            break;
+          }
         }
       }
 
@@ -84,36 +94,23 @@ export function Header() {
     const handleScroll = () => {
       if (frameId !== null) return;
 
-      frameId =
-        window.requestAnimationFrame(
-          updateActiveSection,
-        );
+      frameId = window.requestAnimationFrame(updateActiveSection);
     };
 
     updateActiveSection();
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true },
-    );
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
-    window.addEventListener(
-      "resize",
-      handleScroll,
-      { passive: true },
-    );
+    window.addEventListener("resize", handleScroll, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll,
-      );
+      window.removeEventListener("scroll", handleScroll);
 
-      window.removeEventListener(
-        "resize",
-        handleScroll,
-      );
+      window.removeEventListener("resize", handleScroll);
 
       if (frameId !== null) {
         window.cancelAnimationFrame(frameId);
@@ -143,28 +140,18 @@ export function Header() {
           </span>
         </a>
 
-        <nav
-          className="site-header__nav"
-          aria-label="Primary navigation"
-        >
+        <nav className="site-header__nav" aria-label="Primary navigation">
           {navItems.map((item) => {
-            const isActive =
-              activeSection === item.key;
+            const isActive = activeSection === item.key;
 
             return (
               <a
                 key={item.href}
                 href={item.href}
                 className={`site-header__nav-link${
-                  isActive
-                    ? " site-header__nav-link--active"
-                    : ""
+                  isActive ? " site-header__nav-link--active" : ""
                 }`}
-                aria-current={
-                  isActive
-                    ? "location"
-                    : undefined
-                }
+                aria-current={isActive ? "location" : undefined}
               >
                 {item.label}
               </a>
@@ -173,18 +160,11 @@ export function Header() {
         </nav>
 
         <div className="site-header__actions">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
 
-          <a
-            className="site-header__cta"
-            href="#enquiry"
-          >
+          <a className="site-header__cta" href="#enquiry">
             Course enquiry
-
-            <ArrowUpRight
-              size={16}
-              aria-hidden="true"
-            />
+            <ArrowUpRight size={16} aria-hidden="true" />
           </a>
 
           <button
@@ -192,25 +172,13 @@ export function Header() {
             type="button"
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
-            aria-label={
-              menuOpen
-                ? "Close navigation"
-                : "Open navigation"
-            }
-            onClick={() =>
-              setMenuOpen(!menuOpen)
-            }
+            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+            onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? (
-              <X
-                size={22}
-                aria-hidden="true"
-              />
+              <X size={22} aria-hidden="true" />
             ) : (
-              <Menu
-                size={22}
-                aria-hidden="true"
-              />
+              <Menu size={22} aria-hidden="true" />
             )}
           </button>
         </div>
@@ -223,33 +191,21 @@ export function Header() {
         hidden={!menuOpen}
       >
         {navItems.map((item) => {
-          const isActive =
-            activeSection === item.key;
+          const isActive = activeSection === item.key;
 
           return (
             <a
               key={item.href}
               href={item.href}
               className={
-                isActive
-                  ? "site-header__mobile-nav-link--active"
-                  : undefined
+                isActive ? "site-header__mobile-nav-link--active" : undefined
               }
-              aria-current={
-                isActive
-                  ? "location"
-                  : undefined
-              }
-              onClick={() =>
-                setMenuOpen(false)
-              }
+              aria-current={isActive ? "location" : undefined}
+              onClick={() => setMenuOpen(false)}
             >
               {item.label}
 
-              <ArrowUpRight
-                size={16}
-                aria-hidden="true"
-              />
+              <ArrowUpRight size={16} aria-hidden="true" />
             </a>
           );
         })}

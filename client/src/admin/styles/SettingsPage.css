@@ -1,0 +1,450 @@
+.settings-admin__name,
+.settings-admin__username {
+  color: var(--directory-ink);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settings-admin__role,
+.settings-admin__protected {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  width: fit-content;
+
+  padding: 5px 9px;
+
+  border-radius: 5px;
+
+  background: #edf3fb;
+  color: #3565a1;
+
+  font-size: 10px;
+  font-weight: 650;
+
+  white-space: nowrap;
+}
+
+.settings-admin__role--super,
+.settings-admin__protected {
+  background: #f1ecfb;
+  color: #6941a5;
+}
+
+.settings-admin__avatar--super {
+  background: #f1ecfb;
+  color: #6941a5;
+}
+
+.settings-admin__status-button {
+  padding: 7px 9px;
+
+  border: 1px solid
+    var(--directory-border);
+
+  border-radius: 6px;
+
+  background:
+    var(--directory-surface);
+
+  color:
+    var(--directory-muted);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.settings-admin__status-button:hover {
+  color:
+    var(--directory-ink);
+
+  border-color: #93afa6;
+}
+
+.settings-admin__editor {
+  border:
+    1px solid
+    var(--directory-border);
+
+  border-radius: 12px;
+
+  background:
+    var(--directory-surface);
+
+  overflow: hidden;
+}
+
+.settings-admin__editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 25px;
+
+  border-bottom:
+    1px solid
+    var(--directory-border);
+}
+
+.settings-admin__editor-header h2 {
+  margin: 0;
+
+  color:
+    var(--directory-ink);
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.settings-admin__editor-header p {
+  max-width: 650px;
+
+  margin-top: 7px;
+
+  color:
+    var(--directory-muted);
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.settings-admin__close {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 7px;
+
+  background:
+    var(--directory-soft);
+
+  color:
+    var(--directory-muted);
+
+  cursor: pointer;
+}
+
+.settings-admin__form {
+  padding: 25px;
+}
+
+.settings-admin__form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+}
+
+.settings-admin__form label {
+  display: grid;
+
+  gap: 8px;
+
+  color:
+    var(--directory-ink);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.settings-admin__form label > span {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.settings-admin__form input {
+  width: 100%;
+
+  min-height: 43px;
+
+  padding: 10px 12px;
+
+  border:
+    1px solid
+    var(--directory-border);
+
+  border-radius: 8px;
+
+  background:
+    var(--directory-soft);
+
+  color:
+    var(--directory-ink);
+
+  outline: none;
+}
+
+.settings-admin__form input:focus {
+  border-color: #6c9489;
+
+  box-shadow:
+    0 0 0 3px
+    rgb(71 127 113 / 0.12);
+}
+
+.settings-admin__password {
+  grid-column: auto;
+}
+
+.settings-admin__password small {
+  color:
+    var(--directory-muted);
+
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.settings-admin__form
+.admin-directory-notice {
+  margin-top: 20px;
+}
+
+.settings-admin__form-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top:
+    1px solid
+    var(--directory-border);
+}
+
+.settings-admin__confirm-backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgb(15 23 42 / 0.56);
+
+  backdrop-filter: blur(3px);
+}
+
+.settings-admin__confirm {
+  width:
+    min(
+      100%,
+      440px
+    );
+
+  padding: 28px;
+
+  border:
+    1px solid
+    var(--directory-border);
+
+  border-radius: 12px;
+
+  background:
+    var(--directory-surface);
+
+  box-shadow:
+    0 24px 70px
+    rgb(15 23 42 / 0.28);
+}
+
+.settings-admin__confirm-icon {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 10px;
+
+  background: #fff1f2;
+  color: #9f1239;
+}
+
+.settings-admin__confirm h2 {
+  margin: 0;
+
+  color:
+    var(--directory-ink);
+
+  font-size: 20px;
+}
+
+.settings-admin__confirm p {
+  margin-top: 10px;
+
+  color:
+    var(--directory-muted);
+
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.settings-admin__confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.settings-admin__delete-button {
+  min-height: 39px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 9px 14px;
+
+  border-radius: 7px;
+
+  background: #9f1239;
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+.settings-admin__delete-button:disabled,
+.settings-admin__status-button:disabled {
+  opacity: 0.5;
+
+  cursor: wait;
+}
+
+html[data-theme="dark"]
+.settings-admin__role--super,
+html[data-theme="dark"]
+.settings-admin__protected,
+html[data-theme="dark"]
+.settings-admin__avatar--super {
+  background: #352b4b;
+  color: #d8c6ff;
+}
+
+html[data-theme="dark"]
+.settings-admin__confirm-icon {
+  background: #3c2330;
+  color: #fecdd3;
+}
+
+@media (max-width: 650px) {
+  .settings-admin__form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-admin__password {
+    grid-column: auto;
+  }
+
+  .settings-admin__form,
+  .settings-admin__editor-header {
+    padding: 20px 17px;
+  }
+
+  .settings-admin__form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-admin__form-actions
+  .admin-directory-button {
+    width: 100%;
+  }
+
+  .settings-admin__confirm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-admin__delete-button,
+  .settings-admin__confirm-actions
+  .admin-directory-button {
+    width: 100%;
+  }
+}
+
+.settings-admin__form select {
+  width: 100%;
+  min-height: 43px;
+
+  padding: 10px 12px;
+
+  border: 1px solid
+    var(--directory-border);
+
+  border-radius: 8px;
+
+  background:
+    var(--directory-soft);
+
+  color:
+    var(--directory-ink);
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+.settings-admin__form select:focus {
+  border-color: #6c9489;
+
+  box-shadow:
+    0 0 0 3px
+    rgb(71 127 113 / 0.12);
+}
+
+.settings-admin__form label small {
+  color:
+    var(--directory-muted);
+
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Administrator form responsive layout */
+
+@media (max-width: 1000px) {
+  .settings-admin__form-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 650px) {
+  .settings-admin__form-grid {
+    grid-template-columns: 1fr;
+  }
+}

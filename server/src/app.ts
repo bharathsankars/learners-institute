@@ -7,9 +7,11 @@ import { paymentRouter } from "./routes/payment.routes.js";
 import { requireSuperAdmin } from "./middleware/session.js";
 import { env } from "./config/env.js";
 import { authRouter } from "./routes/auth.routes.js";
+import { adminUserRouter } from "./routes/admin-user.routes.js";
 import { courseRouter } from "./routes/course.routes.js";
 import { feeRouter } from "./routes/fee.routes.js";
 import { studentRouter } from "./routes/student.routes.js";
+import { settingsRouter } from "./routes/settings.routes.js";
 
 export const app = express();
 
@@ -41,10 +43,12 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/admin-users", adminUserRouter);
 app.use("/api/students", studentRouter);
 app.use("/api/courses", courseRouter);
 app.use("/api/fees", requireSuperAdmin, feeRouter);
 app.use("/api/payments", requireSuperAdmin, paymentRouter);
+app.use("/api/settings", requireSuperAdmin, settingsRouter);
 
 app.use("/api/enquiries", enquiryRouter);
 
