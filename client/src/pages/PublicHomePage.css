@@ -613,7 +613,9 @@
   align-items: center;
   gap: 8px;
   color: #182e3b;
-  transition: color var(--transition-base), transform var(--transition-fast);
+  transition:
+    color var(--transition-base),
+    transform var(--transition-fast);
 }
 .site-footer__main a:not(.site-footer__brand):hover,
 .site-footer__bottom a:hover {
@@ -667,7 +669,10 @@ html[data-theme="dark"] .landing-page .site-footer__bottom {
 html[data-theme="dark"] .landing-page .site-footer__bottom a {
   color: #f3f7fb;
 }
-html[data-theme="dark"] .landing-page .site-footer__main a:not(.site-footer__brand):hover,
+html[data-theme="dark"]
+  .landing-page
+  .site-footer__main
+  a:not(.site-footer__brand):hover,
 html[data-theme="dark"] .landing-page .site-footer__bottom a:hover {
   color: #93c5fd;
 }
@@ -960,7 +965,6 @@ html[data-theme="dark"] .landing-page .enquiry-feedback {
   background: #284735;
 }
 
-
 /* FOOTER INSTITUTE LOGO — START */
 
 .site-footer__brand--logo {
@@ -984,8 +988,7 @@ html[data-theme="dark"] .landing-page .enquiry-feedback {
   object-fit: contain;
 }
 
-html[data-theme="dark"]
-  .site-footer__brand--logo {
+html[data-theme="dark"] .site-footer__brand--logo {
   background: #ffffff;
 }
 

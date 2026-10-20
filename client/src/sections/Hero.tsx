@@ -44,6 +44,16 @@ const tickerItems = [
 export function Hero() {
   return (
     <section id="home" className="hero-section">
+      <div
+        className="hero-brand-watermark"
+        aria-hidden="true"
+      >
+        <img
+          src="/learners-logo-mark.png"
+          alt=""
+        />
+      </div>
+
       <div className="container hero-section__inner">
         <div className="hero-section__content">
           <div className="hero-section__eyebrow">

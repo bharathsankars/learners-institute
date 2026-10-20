@@ -1,11 +1,14 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const quickLinks = [
   { label: "Courses", href: "#courses" },
   { label: "Our approach", href: "#about" },
   { label: "FAQs", href: "#faq" },
+  { label: "Contact", href: "#contact" },
 ];
+
+const mapsUrl = "https://www.google.com/maps?cid=9424450921971281392";
 
 export function Footer() {
   return (
@@ -25,38 +28,66 @@ export function Footer() {
             </a>
 
             <p className="site-footer__tagline">
-              Practical learning. Purposeful preparation.
-            </p>
-
-            <p className="site-footer__location">
-              Thirunakkara, Kottayam, Kerala.
+              Practical learning for stronger skills, confidence and career
+              preparation.
             </p>
           </div>
 
-          <div className="site-footer__links">
+          <div className="site-footer__column">
             <span className="site-footer__label">Explore</span>
 
-            {quickLinks.map((link) => (
-              <a key={link.href} href={link.href}>
-                {link.label}
-              </a>
-            ))}
+            <nav className="site-footer__links" aria-label="Footer navigation">
+              {quickLinks.map((link) => (
+                <a key={link.href} href={link.href}>
+                  {link.label}
+                </a>
+              ))}
+            </nav>
           </div>
 
-          <div className="site-footer__links">
-            <span className="site-footer__label">Let’s talk</span>
+          <div className="site-footer__column">
+            <span className="site-footer__label">Contact</span>
+
+            <div className="site-footer__contact-list">
+              <a href="tel:+919446125964">
+                <Phone size={15} strokeWidth={1.8} aria-hidden="true" />
+
+                <span>+91 94461 25964</span>
+              </a>
+
+              <a
+                href="https://wa.me/919446125964"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle size={15} strokeWidth={1.8} aria-hidden="true" />
+
+                <span>WhatsApp</span>
+              </a>
+
+              <a href="#enquiry">
+                <ArrowUpRight size={15} strokeWidth={1.8} aria-hidden="true" />
+
+                <span>Course enquiry</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="site-footer__column">
+            <span className="site-footer__label">Visit</span>
 
             <a
-              href="tel:+919446125964"
-              aria-label="Call Learners Commercial Institute"
+              className="site-footer__address"
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              +91 94461 25964
-              <ArrowUpRight size={16} aria-hidden="true" />
-            </a>
+              <MapPin size={17} strokeWidth={1.8} aria-hidden="true" />
 
-            <a href="#enquiry">
-              Course enquiries
-              <ArrowUpRight size={16} aria-hidden="true" />
+              <span>
+                Thirunakkara
+                <small className="site-footer__address">Kottayam, Kerala</small>
+              </span>
             </a>
 
             <span className="site-footer__founder">SN Paniker · Founder</span>
@@ -64,7 +95,13 @@ export function Footer() {
         </div>
 
         <div className="site-footer__bottom">
-          <span>© {new Date().getFullYear()} Learners Commercial Institute</span>
+          <span>
+            © {new Date().getFullYear()} Learners Commercial Institute
+          </span>
+
+          <span className="site-footer__bottom-location">
+            Thirunakkara · Kottayam
+          </span>
 
           <Link to="/admin/login">
             Staff login

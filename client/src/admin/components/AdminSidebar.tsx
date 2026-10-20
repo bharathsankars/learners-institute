@@ -11,9 +11,13 @@ import "../styles/AdminSidebar.css";
 
 type AdminSidebarProps = {
   role?: AdminRole;
+  onNavigate?: (path: string) => void;
 };
 
-export function AdminSidebar({ role = "SUPER_ADMIN" }: AdminSidebarProps) {
+export function AdminSidebar({
+  role = "SUPER_ADMIN",
+  onNavigate,
+}: AdminSidebarProps) {
   const navigate = useNavigate();
   const { logout } = useAdminAuth();
 
@@ -42,6 +46,23 @@ export function AdminSidebar({ role = "SUPER_ADMIN" }: AdminSidebarProps) {
           <NavLink
             key={path}
             to={path}
+            onClick={(event) => {
+              if (!onNavigate) {
+                return;
+              }
+
+              if (
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey
+              ) {
+                return;
+              }
+
+              event.preventDefault();
+              onNavigate(path);
+            }}
             className={({ isActive }) =>
               `admin-sidebar__link${
                 isActive ? " admin-sidebar__link--active" : ""
