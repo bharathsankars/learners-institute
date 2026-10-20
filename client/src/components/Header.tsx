@@ -134,6 +134,13 @@ export function Header() {
           aria-label="Learners Commercial Institute home"
           onClick={() => setMenuOpen(false)}
         >
+          <img
+            className="site-header__brand-logo"
+            src="/learners-logo-mark.png"
+            alt=""
+            aria-hidden="true"
+          />
+
           <span className="site-header__brand-text">
             <strong>Learners</strong>
             <span>Commercial Institute</span>

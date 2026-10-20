@@ -558,24 +558,30 @@
   box-shadow: none;
 }
 .site-footer {
-  background: #faf9f5;
-  color: #616e72;
-  padding: 55px 0 22px;
+  background: linear-gradient(180deg, #f7f7f2 0%, #f3f5f1 100%);
+  color: #53656c;
+  padding: 60px 0 24px;
   font-size: 12px;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
 }
 .site-footer__main {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 45px;
-  padding-bottom: 45px;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 42px;
+  padding-bottom: 28px;
 }
 .site-footer__main > div {
   display: flex;
   flex-direction: column;
-  align-items: start;
-  gap: 13px;
+  align-items: flex-start;
+  gap: 12px;
+}
+.site-footer__brand-block {
+  max-width: 380px;
 }
 .site-footer__brand {
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -590,129 +596,80 @@
   margin-top: 7px;
   letter-spacing: 0.05em;
 }
+.site-footer__tagline,
+.site-footer__location,
+.site-footer__founder {
+  color: #5b6970;
+  line-height: 1.7;
+}
+.site-footer__links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
 .site-footer__main a:not(.site-footer__brand) {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   color: #182e3b;
+  transition: color var(--transition-base), transform var(--transition-fast);
 }
-.site-footer__main a:hover,
+.site-footer__main a:not(.site-footer__brand):hover,
 .site-footer__bottom a:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: #0f5b8a;
+  text-decoration: none;
+  transform: translateX(2px);
 }
 .site-footer__label {
+  display: inline-block;
+  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  font-weight: 700;
   font-size: 10px;
-  margin-bottom: 6px;
+  color: #677980;
 }
 .site-footer__bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  border-top: 1px solid #dedfd7;
-  padding-top: 22px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 20px;
   font-size: 11px;
+  color: #667880;
 }
 .site-footer__bottom a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-html[data-theme="dark"] .landing-page {
-  --color-heading: #e6eeeb;
-  --color-text: #c5d0cc;
-  --color-text-muted: #aebcb7;
-  --color-border: #344843;
-  --color-background: #14231f;
-  --color-blue-700: #b4cfbd;
-  --color-blue-600: #b4cfbd;
-}
-html[data-theme="dark"] .landing-page .site-header {
-  background: #14231ff2;
-}
-html[data-theme="dark"] .landing-page .hero-section,
-html[data-theme="dark"] .landing-page .about-section,
-html[data-theme="dark"] .landing-page .faq-section,
-html[data-theme="dark"] .landing-page .site-footer {
-  background: #14231f;
-}
-html[data-theme="dark"] .landing-page .hero-section__title {
-  color: #e6eeeb;
-}
-html[data-theme="dark"] .landing-page .hero-section__title span,
-html[data-theme="dark"] .landing-page .hero-section__eyebrow {
-  color: #b4cfbd;
-}
-html[data-theme="dark"] .landing-page .courses-section,
-html[data-theme="dark"] .landing-page .why-section,
-html[data-theme="dark"] .landing-page .enquiry-section {
-  background: #1c2e28;
-}
-html[data-theme="dark"] .landing-page .course-card,
-html[data-theme="dark"] .landing-page .enquiry-section__form-card,
-html[data-theme="dark"] .landing-page .faq-section__contact {
-  background: #20342c;
-  border-color: #40574a;
-}
-html[data-theme="dark"] .landing-page .about-feature {
-  background: transparent;
-  border-color: #40574a;
-}
-html[data-theme="dark"] .landing-page .course-card h3,
-html[data-theme="dark"] .landing-page .about-feature h3,
-html[data-theme="dark"] .landing-page .why-card h3,
-html[data-theme="dark"] .landing-page .site-footer a {
-  color: #e6eeeb;
-}
-html[data-theme="dark"] .landing-page .course-card__description,
-html[data-theme="dark"] .landing-page .course-card__highlights li,
-html[data-theme="dark"] .landing-page .about-section__lead,
-html[data-theme="dark"] .landing-page .about-section__text,
-html[data-theme="dark"] .landing-page .about-feature p,
-html[data-theme="dark"] .landing-page .why-card p,
-html[data-theme="dark"] .landing-page .courses-section__intro {
-  color: #b9c8bf;
-}
-html[data-theme="dark"] .landing-page .why-card {
-  border-color: #40574a;
-}
-html[data-theme="dark"] .landing-page .faq-item {
-  background: transparent;
-  border-color: #40574a;
-}
-html[data-theme="dark"] .landing-page .contact-section {
-  background: #182e3b;
-}
-html[data-theme="dark"] .landing-page .contact-card {
-  background: #ffffff06;
-  border-color: #ffffff26;
-}
-html[data-theme="dark"] .landing-page .enquiry-form__field input,
-html[data-theme="dark"] .landing-page .enquiry-form__field textarea,
-html[data-theme="dark"] .landing-page .enquiry-form__field select {
-  background: #14231f;
-  color: #e6eeeb;
-  border-color: #40574a;
-}
-html[data-theme="dark"] .landing-page .enquiry-form__field label,
-html[data-theme="dark"] .landing-page .enquiry-section__location strong {
-  color: #e6eeeb;
+  font-weight: 600;
+  color: #1b2f3c;
 }
 html[data-theme="dark"] .landing-page .site-footer {
-  color: #aebcb7;
+  background: linear-gradient(180deg, #0d1b2b 0%, #0b1322 100%);
+  border-top-color: rgba(148, 163, 184, 0.18);
+  color: #aab7c2;
+}
+html[data-theme="dark"] .landing-page .site-footer a,
+html[data-theme="dark"] .landing-page .site-footer .site-footer__tagline,
+html[data-theme="dark"] .landing-page .site-footer .site-footer__location,
+html[data-theme="dark"] .landing-page .site-footer .site-footer__founder {
+  color: #dfeaf4;
+}
+html[data-theme="dark"] .landing-page .site-footer__label {
+  color: #9bb0c0;
 }
 html[data-theme="dark"] .landing-page .site-footer__bottom {
-  border-color: #40574a;
+  border-top-color: rgba(148, 163, 184, 0.18);
 }
-html[data-theme="dark"] .landing-page .hero-section__primary,
-html[data-theme="dark"] .landing-page .site-header__cta,
-html[data-theme="dark"] .landing-page .enquiry-form__submit {
-  background: #d3e1d6;
-  color: #14231f;
-  border-color: #d3e1d6;
+html[data-theme="dark"] .landing-page .site-footer__bottom a {
+  color: #f3f7fb;
+}
+html[data-theme="dark"] .landing-page .site-footer__main a:not(.site-footer__brand):hover,
+html[data-theme="dark"] .landing-page .site-footer__bottom a:hover {
+  color: #93c5fd;
 }
 @media (min-width: 821px) {
   .site-header__mobile-nav {
@@ -1002,3 +959,40 @@ html[data-theme="dark"] .landing-page .enquiry-whatsapp:hover,
 html[data-theme="dark"] .landing-page .enquiry-feedback {
   background: #284735;
 }
+
+
+/* FOOTER INSTITUTE LOGO — START */
+
+.site-footer__brand--logo {
+  width: min(250px, 100%);
+
+  display: inline-flex;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+}
+
+.site-footer__brand--logo img {
+  width: 100%;
+  height: auto;
+
+  display: block;
+
+  object-fit: contain;
+}
+
+html[data-theme="dark"]
+  .site-footer__brand--logo {
+  background: #ffffff;
+}
+
+@media (max-width: 520px) {
+  .site-footer__brand--logo {
+    width: min(220px, 100%);
+  }
+}
+
+/* FOOTER INSTITUTE LOGO — END */

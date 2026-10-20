@@ -105,25 +105,53 @@ export function Contact() {
 
         <div className="contact-map">
           <div className="contact-map__header">
-            <div>
-              <span className="contact-section__eyebrow">Find us</span>
-              <h3>Visit us in Thirunakkara.</h3>
-              <p>Our location is listed as Learners IT on Google Maps.</p>
+            <div className="contact-map__title-row">
+              <div className="contact-map__pin" aria-hidden="true">
+                <MapPin size={22} strokeWidth={1.8} />
+              </div>
+
+              <div>
+                <span className="contact-map__eyebrow">Find us</span>
+
+                <h3>Visit Learners in Kottayam</h3>
+
+                <p>
+                  Learners IT · Thirunakkara, Kottayam, Kerala
+                </p>
+              </div>
             </div>
-            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="contact-card__link">
-              Open in Google Maps
+
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-map__directions"
+            >
+              Get directions
               <ArrowRight size={16} aria-hidden="true" />
             </a>
           </div>
-          <iframe
-            title="Learners IT location in Thirunakkara, Kottayam"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3934.0466022037817!2d76.51678607534971!3d9.591251579933918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b062bbe7ab70efb%3A0x82ca602e3f336df0!2sLearners%20IT!5e0!3m2!1sen!2sde!4v1791655938631!5m2!1sen!2sde"
-            width="600"
-            height="450"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="strict-origin-when-cross-origin"
-          />
+
+          <div className="contact-map__frame">
+            <iframe
+              title="Learners IT location in Thirunakkara, Kottayam"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15736.186653857545!2d76.5003065871582!3d9.591246299999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b062bbe7ab70efb%3A0x82ca602e3f336df0!2sLearners%20IT!5e0!3m2!1sen!2sde!4v1792516570454!5m2!1sen!2sde"
+              width="600"
+              height="450"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+
+            <div className="contact-map__location-chip">
+              <MapPin size={18} strokeWidth={2} aria-hidden="true" />
+
+              <span>
+                <strong>Learners IT</strong>
+                <small>Thirunakkara, Kottayam</small>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

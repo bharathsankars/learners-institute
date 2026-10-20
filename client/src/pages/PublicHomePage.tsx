@@ -17,6 +17,8 @@ import { Hero } from "../sections/Hero";
 import { Testimonials } from "../sections/Testimonials";
 import { WhyLearners } from "../sections/WhyLearners";
 
+import "./BrandTheme.css";
+
 type CourseSelectionIntent = {
   courseId: string;
   requestId: number;

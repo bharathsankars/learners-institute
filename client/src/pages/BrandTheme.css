@@ -1,0 +1,800 @@
+/* =========================================================
+   LEARNERS BRAND THEME
+   Navy + cyan palette based on the institute logo
+   Public website only
+   ========================================================= */
+
+.landing-page {
+  --color-navy-900: #073b66;
+
+  --color-blue-700: #087c9c;
+  --color-blue-600: #0a8eae;
+  --color-blue-500: #1aa3c3;
+
+  --color-blue-100: #ddf3f8;
+  --color-blue-50: #f0fafc;
+
+  --color-heading: #073b66;
+
+  --color-background: #f8fbfc;
+  --color-surface: #ffffff;
+  --color-surface-soft: #eff7f9;
+
+  --color-text: #405965;
+  --color-text-muted: #667d88;
+
+  --color-border: #d7e5ea;
+}
+
+/* Header */
+
+.landing-page .site-header {
+  background: rgb(248 251 252 / 0.94);
+  border-color: #d7e5ea;
+}
+
+.landing-page
+  .site-header__brand-text
+  strong {
+  color: #073b66;
+}
+
+.landing-page
+  .site-header__brand-text
+  span {
+  color: #667d88;
+}
+
+.landing-page
+  .site-header__nav-link--active {
+  color: #087c9c;
+}
+
+.landing-page
+  .site-header__nav-link--active::after {
+  background: #0a8eae;
+}
+
+.landing-page .site-header__cta {
+  background: #073b66;
+}
+
+.landing-page
+  .site-header__cta:hover {
+  background: #0a5f7a;
+}
+
+/* Hero */
+
+.landing-page .hero-section {
+  background:
+    radial-gradient(
+      circle at 88% 12%,
+      rgb(10 142 174 / 0.1),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f4fafc 100%
+    );
+}
+
+.landing-page
+  .hero-section__eyebrow,
+.landing-page
+  .hero-section__title > span {
+  color: #087c9c;
+}
+
+.landing-page
+  .hero-section__title {
+  color: #073b66;
+}
+
+.landing-page
+  .hero-section__primary {
+  background: #073b66;
+  border-color: #073b66;
+}
+
+.landing-page
+  .hero-section__primary:hover {
+  background: #087c9c;
+  border-color: #087c9c;
+}
+
+/* Courses */
+
+.landing-page .courses-section {
+  background: #f4f9fb;
+}
+
+.landing-page
+  .courses-section__eyebrow {
+  color: #087c9c;
+}
+
+.landing-page .course-card {
+  background: #ffffff;
+  border-color: #d9e7ec;
+}
+
+.landing-page
+  .course-card:hover {
+  border-color: #6c9dab;
+
+  box-shadow:
+    0 8px 20px
+    rgb(7 59 102 / 0.055);
+}
+
+.landing-page
+  .course-card__icon {
+  background: #e8f5f8;
+  color: #087c9c;
+}
+
+.landing-page
+  .course-card__link {
+  color: #087c9c;
+}
+
+/* About */
+
+.landing-page .about-section {
+  background: #ffffff;
+}
+
+.landing-page
+  .about-section__eyebrow,
+.landing-page
+  .about-feature__icon {
+  color: #087c9c;
+}
+
+.landing-page
+  .about-feature__icon {
+  background: #e8f5f8;
+}
+
+/* Why Learners */
+
+.landing-page .why-section {
+  background: #eaf5f8;
+}
+
+.landing-page
+  .why-section__eyebrow,
+.landing-page
+  .why-card__icon {
+  color: #087c9c;
+}
+
+.landing-page .why-card {
+  border-color: #c6dde5;
+}
+
+/* Student voices */
+
+.landing-page
+  .voices-section {
+  background: #f8fbfc;
+}
+
+.landing-page
+  .voices-section__eyebrow,
+.landing-page
+  .voices-section__title em {
+  color: #087c9c;
+}
+
+.landing-page .voice-card {
+  background: #ffffff;
+  border-color: #d7e5ea;
+}
+
+.landing-page
+  .voice-card:hover {
+  border-color: #6c9dab;
+}
+
+.landing-page
+  .voice-card__avatar {
+  background: #e8f5f8;
+  color: #087c9c;
+}
+
+/* FAQ */
+
+.landing-page .faq-section {
+  background: #ffffff;
+}
+
+.landing-page
+  .faq-section__eyebrow {
+  color: #087c9c;
+}
+
+.landing-page
+  .faq-item--open {
+  border-color:
+    rgb(10 142 174 / 0.28);
+}
+
+/* Contact */
+
+.landing-page
+  .contact-section__eyebrow {
+  color: #63c2d5;
+}
+
+.landing-page .contact-section {
+  background: #073b66;
+}
+
+/* Enquiry */
+
+.landing-page
+  .enquiry-section__eyebrow {
+  color: #087c9c;
+}
+
+.landing-page
+  .enquiry-form__submit {
+  background: #073b66;
+}
+
+.landing-page
+  .enquiry-form__submit:hover {
+  background: #0a5f7a;
+}
+
+.landing-page .enquiry-whatsapp {
+  border-color: #087c9c;
+  color: #087c9c;
+}
+
+.landing-page
+  .enquiry-whatsapp:hover {
+  background: #e8f5f8;
+}
+
+/* Footer */
+
+.landing-page .site-footer {
+  background: #f3f8fa;
+  color: #667d88;
+}
+
+.landing-page
+  .site-footer__main
+  a:not(.site-footer__brand) {
+  color: #073b66;
+}
+
+.landing-page
+  .site-footer__bottom {
+  border-color: #d7e5ea;
+}
+
+/* Floating controls */
+
+.landing-page .back-to-top {
+  background: #073b66;
+}
+
+.landing-page
+  .back-to-top:hover {
+  background: #0a5f7a;
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"]
+  .landing-page {
+  --color-navy-900: #d9eff4;
+
+  --color-blue-700: #72c5d8;
+  --color-blue-600: #72c5d8;
+
+  --color-heading: #edf7fa;
+  --color-text: #c5d7df;
+  --color-text-muted: #a7bec8;
+
+  --color-border: #2a4d62;
+  --color-background: #071b2c;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .site-header {
+  background:
+    rgb(7 27 44 / 0.95);
+
+  border-color: #244459;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .hero-section,
+html[data-theme="dark"]
+  .landing-page
+  .about-section,
+html[data-theme="dark"]
+  .landing-page
+  .faq-section,
+html[data-theme="dark"]
+  .landing-page
+  .site-footer {
+  background: #071b2c;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .courses-section,
+html[data-theme="dark"]
+  .landing-page
+  .why-section,
+html[data-theme="dark"]
+  .landing-page
+  .enquiry-section {
+  background: #0c263b;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .course-card,
+html[data-theme="dark"]
+  .landing-page
+  .voice-card,
+html[data-theme="dark"]
+  .landing-page
+  .enquiry-section__form-card {
+  background: #102e45;
+
+  border-color: #2a4d62;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .course-card__icon,
+html[data-theme="dark"]
+  .landing-page
+  .about-feature__icon,
+html[data-theme="dark"]
+  .landing-page
+  .voice-card__avatar {
+  background: #123b52;
+  color: #72c5d8;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .site-header__cta,
+html[data-theme="dark"]
+  .landing-page
+  .hero-section__primary,
+html[data-theme="dark"]
+  .landing-page
+  .enquiry-form__submit {
+  background: #d9eff4;
+  color: #071b2c;
+}
+
+html[data-theme="dark"]
+  .landing-page
+  .site-header__cta:hover,
+html[data-theme="dark"]
+  .landing-page
+  .hero-section__primary:hover,
+html[data-theme="dark"]
+  .landing-page
+  .enquiry-form__submit:hover {
+  background: #72c5d8;
+}
+
+
+/* COURSE HOVER BRAND FIX — START */
+
+.landing-page .course-card:hover {
+  border-color: #6f9fb0;
+
+  box-shadow:
+    0 8px 20px
+    rgb(7 59 102 / 0.055);
+}
+
+.landing-page .course-card__link:hover,
+.landing-page .course-card__read-more:hover {
+  color: #0a5f7a;
+}
+
+.landing-page .course-card:hover .course-card__icon {
+  background: #e3f2f6;
+  color: #0a5f7a;
+}
+
+/* COURSE HOVER BRAND FIX — END */
+
+/* =========================================================
+   ABOUT SECTION — BLUE BRAND FIX
+   ========================================================= */
+
+.landing-page .about-section {
+  background: #ffffff;
+}
+
+.landing-page .about-section__eyebrow {
+  color: #087c9c;
+}
+
+.landing-page .about-feature {
+  border-color: #d7e5ea;
+  background: #ffffff;
+}
+
+.landing-page .about-feature:hover {
+  border-color: #6f9fb0;
+
+  box-shadow:
+    0 8px 20px
+    rgb(7 59 102 / 0.055);
+}
+
+.landing-page .about-feature__icon {
+  background: #e8f5f8;
+  color: #087c9c;
+}
+
+.landing-page .about-feature:hover .about-feature__icon {
+  background: #dceff4;
+  color: #0a5f7a;
+}
+
+.landing-page .about-feature h3 {
+  color: #073b66;
+}
+
+.landing-page .about-feature p {
+  color: #667d88;
+}
+
+.landing-page .about-section__cta {
+  background: #073b66;
+}
+
+.landing-page .about-section__cta:hover {
+  background: #0a5f7a;
+}
+
+
+/* =========================================================
+   GOOGLE MAP — LEARNERS BRAND
+   ========================================================= */
+
+.landing-page .contact-map {
+  margin-top: 42px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgb(112 194 214 / 0.28);
+
+  border-radius: 18px;
+
+  background: #073b66;
+
+  box-shadow:
+    0 22px 55px
+    rgb(2 20 34 / 0.2);
+}
+
+
+/* Map header */
+
+.landing-page .contact-map__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 32px;
+
+  padding: 24px 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #073b66 0%,
+      #085371 100%
+    );
+}
+
+
+.landing-page .contact-map__title-row {
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+}
+
+
+.landing-page .contact-map__pin {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border:
+    1px solid
+    rgb(113 201 220 / 0.25);
+
+  border-radius: 13px;
+
+  background:
+    rgb(255 255 255 / 0.08);
+
+  color: #72c5d8;
+}
+
+
+.landing-page .contact-map__eyebrow {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #72c5d8;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  text-transform: uppercase;
+}
+
+
+.landing-page .contact-map__header h3 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 22px;
+  font-weight: 600;
+
+  letter-spacing: -0.02em;
+}
+
+
+.landing-page .contact-map__header p {
+  margin: 5px 0 0;
+
+  color:
+    rgb(255 255 255 / 0.68);
+
+  font-size: 12px;
+}
+
+
+/* Directions button */
+
+.landing-page .contact-map__directions {
+  min-height: 43px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  padding-inline: 17px;
+
+  border:
+    1px solid
+    rgb(255 255 255 / 0.22);
+
+  border-radius: 8px;
+
+  background:
+    rgb(255 255 255 / 0.1);
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  text-decoration: none;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+
+.landing-page
+  .contact-map__directions:hover {
+  background:
+    rgb(255 255 255 / 0.16);
+
+  border-color:
+    rgb(255 255 255 / 0.34);
+
+  transform: translateY(-1px);
+}
+
+
+/* Map itself */
+
+.landing-page .contact-map__frame {
+  position: relative;
+
+  overflow: hidden;
+
+  background: #e8f5f8;
+}
+
+
+.landing-page .contact-map iframe {
+  width: 100%;
+  height: 460px;
+
+  display: block;
+
+  border: 0;
+
+  background: #e8f5f8;
+
+  color-scheme: light;
+}
+
+
+/* Floating location badge */
+
+.landing-page
+  .contact-map__location-chip {
+  position: absolute;
+
+  left: 18px;
+  bottom: 18px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 11px 14px;
+
+  border:
+    1px solid
+    rgb(7 59 102 / 0.12);
+
+  border-radius: 10px;
+
+  background:
+    rgb(255 255 255 / 0.94);
+
+  color: #087c9c;
+
+  box-shadow:
+    0 8px 25px
+    rgb(7 59 102 / 0.16);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  pointer-events: none;
+}
+
+
+.landing-page
+  .contact-map__location-chip span {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+
+.landing-page
+  .contact-map__location-chip strong {
+  color: #073b66;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.landing-page
+  .contact-map__location-chip small {
+  color: #667d88;
+
+  font-size: 10px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 620px) {
+
+  .landing-page .contact-map {
+    margin-top: 30px;
+
+    border-radius: 14px;
+  }
+
+
+  .landing-page
+    .contact-map__header {
+    align-items: stretch;
+    flex-direction: column;
+
+    gap: 18px;
+
+    padding: 20px;
+  }
+
+
+  .landing-page
+    .contact-map__title-row {
+    align-items: flex-start;
+  }
+
+
+  .landing-page
+    .contact-map__pin {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 11px;
+  }
+
+
+  .landing-page
+    .contact-map__header h3 {
+    font-size: 19px;
+  }
+
+
+  .landing-page
+    .contact-map__directions {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+
+  .landing-page
+    .contact-map iframe {
+    height: 380px;
+  }
+
+
+  .landing-page
+    .contact-map__location-chip {
+    left: 12px;
+    bottom: 12px;
+
+    padding: 9px 11px;
+  }
+}
+
+
+/* Dark mode */
+
+html[data-theme="dark"]
+  .landing-page
+  .contact-map {
+  border-color: #2a4d62;
+
+  background: #071b2c;
+}
+
