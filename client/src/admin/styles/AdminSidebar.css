@@ -40,7 +40,7 @@
   font-size: 20px;
   font-weight: 800;
 
-  box-shadow: 0 10px 24px rgb(49 132 230 / 0.2);
+  box-shadow: 0 10px 24px rgb(249 115 22 / 0.2);
 }
 
 .admin-sidebar__brand > div:last-child {
@@ -132,11 +132,11 @@
 }
 
 .admin-sidebar__link:hover svg {
-  color: #9ac8ff;
+  color: #fdba74;
 }
 
 .admin-sidebar__link--active {
-  background: rgb(49 132 230 / 0.16);
+  background: rgb(249 115 22 / 0.16);
 
   color: var(--color-white);
 }
@@ -156,7 +156,7 @@
 }
 
 .admin-sidebar__link--active svg {
-  color: #9ac8ff;
+  color: #fdba74;
 }
 
 .admin-sidebar__footer {

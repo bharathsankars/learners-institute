@@ -73,7 +73,7 @@
 .course-card:hover {
   transform: translateY(-5px);
 
-  border-color: rgb(49 132 230 / 0.3);
+  border-color: rgb(249 115 22 / 0.3);
 
   box-shadow: var(--shadow-md);
 }
@@ -229,6 +229,40 @@
   text-align: center;
 }
 
+.courses-section__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.courses-section__filter {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.courses-section__filter:hover,
+.courses-section__filter:focus-visible {
+  border-color: rgb(249 115 22 / 0.5);
+  color: var(--color-blue-700);
+}
+
+.courses-section__filter.is-active {
+  background: var(--color-blue-700);
+  border-color: var(--color-blue-700);
+  color: #fff;
+  box-shadow: 0 8px 20px rgb(37 99 235 / 0.12);
+}
+
 @media (max-width: 900px) {
   .courses-section__header {
     grid-template-columns: 1fr;
@@ -292,6 +326,23 @@
   .course-card__link {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .courses-section__filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    margin-bottom: 20px;
+    scrollbar-width: none;
+  }
+
+  .courses-section__filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .courses-section__filter {
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
 }
 
@@ -370,13 +421,12 @@
 
   transform: translateX(-110%);
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.72),
-      transparent
-    );
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.72),
+    transparent
+  );
 
   animation: courseSkeletonShimmer 1.6s ease-in-out infinite;
 }
@@ -466,20 +516,17 @@
 
 /* Dark mode */
 
-html[data-theme="dark"]
-  .course-skeleton {
+html[data-theme="dark"] .course-skeleton {
   background: #31463f;
 }
 
-html[data-theme="dark"]
-  .course-skeleton::after {
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.08),
-      transparent
-    );
+html[data-theme="dark"] .course-skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
 }
 
 /* Mobile */

@@ -6,6 +6,13 @@ import "./Testimonials.css";
 
 // Only facts already stated on the site; add years or student counts once the institute confirms them.
 
+const outcomes = [
+  { value: "Practical", label: "Hands-on training" },
+  { value: "Focused", label: "Exam preparation" },
+  { value: "Confident", label: "Office-ready skills" },
+  { value: "Career", label: "Stronger next step" },
+];
+
 export function Testimonials() {
   const hasSamples = reviews.some((review) => review.sample);
 
@@ -23,6 +30,15 @@ export function Testimonials() {
 
               {hasSamples && <br className="voices-section__divider" />}
             </div>
+
+            <ul className="voices-section__stats" aria-label="Student outcomes">
+              {outcomes.map((outcome) => (
+                <li className="voices-stat" key={outcome.label}>
+                  <strong>{outcome.value}</strong>
+                  <span>{outcome.label}</span>
+                </li>
+              ))}
+            </ul>
 
             <div className="voices-section__grid">
               {reviews.map(({ name, course, quote }) => (

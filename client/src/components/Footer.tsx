@@ -86,7 +86,7 @@ export function Footer() {
 
               <span>
                 Thirunakkara
-                <small className="site-footer__address">Kottayam, Kerala</small>
+                <small>Kottayam, Kerala</small>
               </span>
             </a>
 

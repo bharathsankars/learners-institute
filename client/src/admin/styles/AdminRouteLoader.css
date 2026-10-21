@@ -38,7 +38,7 @@
 
   padding: 18px;
 
-  border: 1px solid rgb(7 59 102 / 0.09);
+  border: 1px solid rgb(159 29 32 / 0.09);
   border-radius: 14px;
 
   background: rgb(255 255 255 / 0.96);
@@ -75,7 +75,7 @@
   display: block;
 
   border: 3px solid #dce9ee;
-  border-top-color: #087c9c;
+  border-top-color: #c92a2a;
 
   border-radius: 50%;
 
@@ -122,7 +122,7 @@ html[data-theme="dark"] .admin-route-loader {
 html[data-theme="dark"] .admin-route-loader__card {
   background: rgb(15 35 52 / 0.96);
 
-  border-color: rgb(115 199 218 / 0.14);
+  border-color: rgb(251 146 60 / 0.14);
 
   box-shadow:
     0 14px 36px rgb(0 0 0 / 0.26);
@@ -134,7 +134,7 @@ html[data-theme="dark"] .admin-route-loader__status {
 
 html[data-theme="dark"] .admin-route-loader__spinner {
   border-color: #365366;
-  border-top-color: #73c7da;
+  border-top-color: #ffb067;
 }
 
 

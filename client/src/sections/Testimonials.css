@@ -7,7 +7,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 90px;
   list-style: none;
-  background: #182e3b;
+  background: #9f1d20;
   border-radius: 4px;
   box-shadow: 12px 12px 0 #e8e7de;
 }
@@ -103,7 +103,7 @@
 .voice-card:hover {
   transform: translateY(-4px);
   border-color: #99afa1;
-  box-shadow: 0 10px 25px #182e3b0b;
+  box-shadow: 0 10px 25px #9f1d200b;
 }
 
 .voice-card__mark {

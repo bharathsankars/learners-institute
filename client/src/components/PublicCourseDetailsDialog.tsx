@@ -1,13 +1,5 @@
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  X,
-} from "lucide-react";
-import {
-  useEffect,
-  useRef,
-} from "react";
+import { ArrowRight, BookOpen, Check, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 import type { Course } from "../api/courses";
 
@@ -24,8 +16,7 @@ export function PublicCourseDetailsDialog({
   onClose,
   onEnquire,
 }: PublicCourseDetailsDialogProps) {
-  const dialogRef =
-    useRef<HTMLDialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -49,15 +40,18 @@ export function PublicCourseDetailsDialog({
   };
 
   const description =
-    course.description ||
-    course.shortDescription ||
-    "Contact the institute for more information about this course.";
+    course.description?.trim() ||
+    course.shortDescription?.trim() ||
+    "Contact Learners Commercial Institute for more information about this course.";
+
+  const hasSkills = Array.isArray(course.skills) && course.skills.length > 0;
 
   return (
     <dialog
       ref={dialogRef}
       className="public-course-dialog"
       aria-labelledby="public-course-dialog-title"
+      aria-describedby="public-course-dialog-description"
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -68,27 +62,25 @@ export function PublicCourseDetailsDialog({
         }
       }}
     >
-      <div className="public-course-dialog__panel">
+      <article className="public-course-dialog__panel">
         <header className="public-course-dialog__header">
           <div className="public-course-dialog__heading">
-            <span
-              className="public-course-dialog__icon"
-              aria-hidden="true"
-            >
-              <BookOpen
-                size={24}
-                strokeWidth={1.8}
-              />
-            </span>
+            <div className="public-course-dialog__icon" aria-hidden="true">
+              <BookOpen size={23} strokeWidth={1.7} />
+            </div>
 
-            <div>
+            <div className="public-course-dialog__heading-content">
               <span className="public-course-dialog__eyebrow">
-                Course details
+                Learners Commercial Institute
               </span>
 
-              <h2 id="public-course-dialog-title">
-                {course.title}
-              </h2>
+              <h2 id="public-course-dialog-title">{course.title}</h2>
+
+              {course.category && (
+                <span className="public-course-dialog__category">
+                  {course.category}
+                </span>
+              )}
             </div>
           </div>
 
@@ -98,47 +90,54 @@ export function PublicCourseDetailsDialog({
             onClick={onClose}
             aria-label="Close course details"
           >
-            <X
-              size={20}
-              aria-hidden="true"
-            />
+            <X size={19} strokeWidth={1.8} aria-hidden="true" />
           </button>
         </header>
 
         <div className="public-course-dialog__body">
-          {course.category && (
-            <span className="public-course-dialog__category">
-              {course.category}
+          <section className="public-course-dialog__section">
+            <span className="public-course-dialog__section-label">
+              Course overview
             </span>
-          )}
 
-          <section>
-            <h3>About this course</h3>
-
-            <p>{description}</p>
+            <p
+              id="public-course-dialog-description"
+              className="public-course-dialog__description"
+            >
+              {description}
+            </p>
           </section>
 
-          {course.skills.length > 0 && (
-            <section>
-              <h3>What you can learn</h3>
+          {hasSkills && (
+            <section className="public-course-dialog__section">
+              <div className="public-course-dialog__section-heading">
+                <div>
+                  <span className="public-course-dialog__section-label">
+                    Learning outcomes
+                  </span>
+
+                  <h3>What you can learn</h3>
+                </div>
+
+                <span className="public-course-dialog__skill-count">
+                  {course.skills.length}{" "}
+                  {course.skills.length === 1 ? "topic" : "topics"}
+                </span>
+              </div>
 
               <ul className="public-course-dialog__skills">
-                {course.skills.map(
-                  (skill, index) => (
-                    <li
-                      key={`${course.id}-${index}`}
+                {course.skills.map((skill, index) => (
+                  <li key={`${course.id}-${index}`}>
+                    <span
+                      className="public-course-dialog__check"
+                      aria-hidden="true"
                     >
-                      <span aria-hidden="true">
-                        <Check
-                          size={14}
-                          strokeWidth={2.4}
-                        />
-                      </span>
+                      <Check size={14} strokeWidth={2.4} />
+                    </span>
 
-                      {skill}
-                    </li>
-                  ),
-                )}
+                    <span>{skill}</span>
+                  </li>
+                ))}
               </ul>
             </section>
           )}
@@ -151,11 +150,7 @@ export function PublicCourseDetailsDialog({
             onClick={handleEnquire}
           >
             Enquire about this course
-
-            <ArrowRight
-              size={17}
-              aria-hidden="true"
-            />
+            <ArrowRight size={17} strokeWidth={2} aria-hidden="true" />
           </a>
 
           <button
@@ -166,7 +161,7 @@ export function PublicCourseDetailsDialog({
             Continue browsing
           </button>
         </footer>
-      </div>
+      </article>
     </dialog>
   );
 }

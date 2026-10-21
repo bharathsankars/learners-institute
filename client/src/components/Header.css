@@ -190,7 +190,7 @@
 }
 
 .site-header__staff-login:hover {
-  border-color: rgb(49 132 230 / 0.45);
+  border-color: rgb(249 115 22 / 0.45);
 
   background: var(--color-blue-50);
   color: var(--color-blue-700);

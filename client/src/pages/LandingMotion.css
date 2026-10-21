@@ -333,7 +333,7 @@
 .hero-ticker {
   display: flex;
   overflow: hidden;
-  --ticker-bg: #182e3b;
+  --ticker-bg: #9f1d20;
   background: var(--ticker-bg);
   color: #e5ece7;
 }

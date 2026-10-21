@@ -215,6 +215,7 @@ model Enquiry {
   requestId String @unique @db.Uuid
   name String
   phone String
+  email String?
   course String
   message String?
   status EnquiryStatus @default(NEW)

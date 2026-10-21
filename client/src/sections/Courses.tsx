@@ -10,20 +10,42 @@ type CoursesProps = {
   onEnquire?: (courseId: string) => void;
 };
 
+const quickFilters = [
+  "All",
+  "Typewriting",
+  "Shorthand",
+  "Computer",
+  "Office skills",
+] as const;
+
 export function Courses({ onEnquire }: CoursesProps) {
   const query = usePublicCourses();
   const courses = query.data ?? [];
   const [expandedCourses, setExpandedCourses] = useState<
     Record<string, boolean>
   >({});
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] =
+    useState<(typeof quickFilters)[number]>("All");
 
-  const [selectedCourseId, setSelectedCourseId] =
-    useState<string | null>(null);
+  const filteredCourses =
+    activeFilter === "All"
+      ? courses
+      : courses.filter((course) => {
+          const title = course.title.toLowerCase();
+          const filter = activeFilter.toLowerCase();
+
+          if (filter === "typewriting") return title.includes("typewriting");
+          if (filter === "shorthand") return title.includes("shorthand");
+          if (filter === "computer") return title.includes("computer");
+          if (filter === "office skills")
+            return title.includes("office") || title.includes("commercial");
+
+          return true;
+        });
 
   const selectedCourse =
-    courses.find(
-      (course) => course.id === selectedCourseId,
-    ) ?? null;
+    courses.find((course) => course.id === selectedCourseId) ?? null;
 
   const toggleCourse = (courseId: string) => {
     setExpandedCourses((current) => ({
@@ -50,20 +72,30 @@ export function Courses({ onEnquire }: CoursesProps) {
           </p>
         </div>
 
-        {query.isPending && (
-          <div
-            className="courses-loading"
-            role="status"
-            aria-live="polite"
-          >
-            <span className="courses-loading__sr-only">
-              Loading courses…
-            </span>
-
-            <div
-              className="courses-section__grid"
-              aria-hidden="true"
+        <div
+          className="courses-section__filters"
+          aria-label="Course categories"
+        >
+          {quickFilters.map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              className={`courses-section__filter${
+                activeFilter === filter ? " is-active" : ""
+              }`}
+              onClick={() => setActiveFilter(filter)}
+              aria-pressed={activeFilter === filter}
             >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {query.isPending && (
+          <div className="courses-loading" role="status" aria-live="polite">
+            <span className="courses-loading__sr-only">Loading courses…</span>
+
+            <div className="courses-section__grid" aria-hidden="true">
               {Array.from({ length: 4 }).map((_, index) => (
                 <article
                   className="course-card course-card--skeleton"
@@ -130,7 +162,7 @@ export function Courses({ onEnquire }: CoursesProps) {
           </p>
         )}
         <div className="courses-section__grid">
-          {courses.map((course, index) => {
+          {filteredCourses.map((course, index) => {
             const isExpanded = Boolean(expandedCourses[course.id]);
             const descriptionText =
               course.shortDescription || course.description || "";
@@ -188,16 +220,11 @@ export function Courses({ onEnquire }: CoursesProps) {
                 <button
                   type="button"
                   className="course-card__link"
-                  onClick={() =>
-                    setSelectedCourseId(course.id)
-                  }
+                  onClick={() => setSelectedCourseId(course.id)}
                   aria-label={`View details for ${course.title}`}
                 >
                   View course details
-                  <ArrowRight
-                    size={16}
-                    aria-hidden="true"
-                  />
+                  <ArrowRight size={16} aria-hidden="true" />
                 </button>
               </article>
             );
@@ -207,9 +234,7 @@ export function Courses({ onEnquire }: CoursesProps) {
         {selectedCourse && (
           <PublicCourseDetailsDialog
             course={selectedCourse}
-            onClose={() =>
-              setSelectedCourseId(null)
-            }
+            onClose={() => setSelectedCourseId(null)}
             onEnquire={onEnquire}
           />
         )}
