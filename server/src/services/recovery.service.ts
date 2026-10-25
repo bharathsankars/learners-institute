@@ -43,7 +43,7 @@ export async function createTemporaryRecoveryPassword(
 
   // Generate a cryptographically secure temporary password.
   const temporaryPassword =
-    "LNR-" + randomBytes(18).toString("hex").toUpperCase();
+    "LIT-" + randomBytes(18).toString("hex").toUpperCase();
 
   const codeHash = await bcrypt.hash(
     temporaryPassword,
