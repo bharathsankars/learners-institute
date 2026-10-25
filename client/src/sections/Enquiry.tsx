@@ -8,6 +8,7 @@ import { submitEnquiry, type CreateEnquiryInput } from "../api/enquiries";
 import { usePublicCourses } from "../hooks/usePublicCourses";
 
 import "./Enquiry.css";
+import { contact } from "../data/contact";
 
 const enquirySchema = z.object({
   name: z
@@ -207,7 +208,7 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
           </div>
           <a
             className="enquiry-whatsapp"
-            href="https://wa.me/919446125964"
+            href={contact.whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
           >

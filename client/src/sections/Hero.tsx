@@ -86,6 +86,10 @@ export function Hero() {
               Find your course
               <ArrowDownCircle size={18} aria-hidden="true" />
             </a>
+
+            <a className="hero-section__secondary" href="#enquiry">
+              Course enquiry
+            </a>
           </div>
 
           <div className="hero-section__meta">

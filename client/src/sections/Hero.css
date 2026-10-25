@@ -774,3 +774,67 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   HERO SECONDARY CTA
+   ========================================================= */
+
+.hero-section__actions {
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-section__secondary {
+  min-height: 50px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-inline: 22px;
+
+  border: 1px solid #d8c3ba;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #65372f;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.hero-section__secondary:hover {
+  background: #fff3ed;
+
+  border-color: #d85a3a;
+
+  color: #b84f38;
+
+  transform: translateY(-2px);
+}
+
+.hero-section__secondary:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .hero-section__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-section__secondary {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "../config/database.js";
 
 import type {
+  ChangeOwnPasswordInput,
   CreateAdminUserInput,
   UpdateAdminUserInput,
 } from "../validators/admin-user.validator.js";
@@ -231,6 +232,101 @@ export async function updateAdminUser(
     user,
   };
 }
+
+export async function changeOwnPassword(
+  userId: string,
+  input: ChangeOwnPasswordInput,
+) {
+  const existing =
+    await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+
+      select: {
+        id: true,
+        role: true,
+        password: true,
+      },
+    });
+
+  if (!existing) {
+    return {
+      status:
+        "NOT_FOUND" as const,
+    };
+  }
+
+  if (
+    existing.role !==
+    "SUPER_ADMIN"
+  ) {
+    return {
+      status:
+        "FORBIDDEN" as const,
+    };
+  }
+
+  const isBcryptPassword =
+    /^\$2[aby]\$\d{2}\$/.test(
+      existing.password,
+    );
+
+  const passwordMatches =
+    isBcryptPassword
+      ? await bcrypt.compare(
+          input.currentPassword,
+          existing.password,
+        )
+      : existing.password ===
+        input.currentPassword;
+
+  if (!passwordMatches) {
+    return {
+      status:
+        "INVALID_PASSWORD" as const,
+    };
+  }
+
+  const passwordHash =
+    await bcrypt.hash(
+      input.newPassword,
+      BCRYPT_ROUNDS,
+    );
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+
+      data: {
+        password:
+          passwordHash,
+      },
+    }),
+
+    /*
+     * Password changes are
+     * security-sensitive.
+     *
+     * Sign out every existing
+     * session, including the
+     * current browser session.
+     */
+    prisma.session.deleteMany({
+      where: {
+        userId,
+      },
+    }),
+  ]);
+
+  return {
+    status:
+      "UPDATED" as const,
+  };
+}
+
 
 export async function deleteAdminUser(
   userId: string,

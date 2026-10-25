@@ -123,6 +123,32 @@ export const updateAdminUserSchema =
       },
     );
 
+export const changeOwnPasswordSchema =
+  z
+    .object({
+      currentPassword:
+        passwordSchema,
+
+      newPassword:
+        passwordSchema,
+    })
+    .refine(
+      (value) =>
+        value.currentPassword !==
+        value.newPassword,
+      {
+        message:
+          "New password must be different from the current password.",
+        path: ["newPassword"],
+      },
+    );
+
+export type ChangeOwnPasswordInput =
+  z.infer<
+    typeof changeOwnPasswordSchema
+  >;
+
+
 export type CreateAdminUserInput =
   z.infer<
     typeof createAdminUserSchema

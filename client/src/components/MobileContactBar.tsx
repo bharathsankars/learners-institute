@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 
 import "./MobileContactBar.css";
+import { contact } from "../data/contact";
 
 export function MobileContactBar() {
   const [enquiryVisible, setEnquiryVisible] = useState(false);
@@ -43,7 +44,7 @@ export function MobileContactBar() {
       aria-label="Quick contact"
     >
       <a
-        href="tel:+919446125964"
+        href={contact.phoneHref}
         className="mobile-contact-bar__action"
       >
         <Phone
@@ -56,7 +57,7 @@ export function MobileContactBar() {
       </a>
 
       <a
-        href="https://wa.me/919446125964"
+        href={contact.whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
         className="mobile-contact-bar__action"

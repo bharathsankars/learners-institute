@@ -1,17 +1,42 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import { ArrowUpRight, Check, GraduationCap, Phone, X } from "lucide-react";
 
-import { enquiryStatusLabels, formatEnquiryDate } from "../utils/enquiries";
+import {
+  ArrowUpRight,
+  Check,
+  Clock3,
+  GraduationCap,
+  Mail,
+  MessageSquare,
+  Phone,
+  UserRound,
+  X,
+} from "lucide-react";
 
-import type { Enquiry, EnquiryStatus } from "../../api/enquiries";
+import {
+  useEffect,
+  useRef,
+} from "react";
+
+import {
+  enquiryStatusLabels,
+  formatEnquiryDate,
+} from "../utils/enquiries";
+
+import type {
+  Enquiry,
+  EnquiryStatus,
+} from "../../api/enquiries";
+
+import "../styles/EnquiryDetailsDialog.css";
 
 type EnquiryDetailsDialogProps = {
   enquiry: Enquiry;
   isSaving: boolean;
   error?: string;
   onClose: () => void;
-  onStatusChange: (status: EnquiryStatus) => void;
+  onStatusChange: (
+    status: EnquiryStatus,
+  ) => void;
   onAdmit: () => void;
 };
 
@@ -23,14 +48,14 @@ export function EnquiryDetailsDialog({
   onStatusChange,
   onAdmit,
 }: EnquiryDetailsDialogProps) {
-  const dialog = useRef<HTMLDialogElement>(null);
-
-  /* =========================================================
-     OPEN / CLOSE NATIVE DIALOG
-     ========================================================= */
+  const dialog =
+    useRef<HTMLDialogElement>(
+      null,
+    );
 
   useEffect(() => {
-    const element = dialog.current;
+    const element =
+      dialog.current;
 
     if (!element) {
       return;
@@ -41,23 +66,18 @@ export function EnquiryDetailsDialog({
     }
 
     return () => {
-      if (element.open) {
+      if (
+        element.open
+      ) {
         element.close();
       }
     };
   }, []);
 
-  /* =========================================================
-     ESCAPE KEY
-     ========================================================= */
-
-  const handleCancel = (event: React.SyntheticEvent<HTMLDialogElement>) => {
-    /*
-      Prevent the browser from closing the native dialog itself.
-
-      React owns the selected enquiry state, so we close the
-      dialog by clearing selectedId in EnquiriesPage instead.
-    */
+  const handleCancel = (
+    event:
+      React.SyntheticEvent<HTMLDialogElement>,
+  ) => {
     event.preventDefault();
 
     if (!isSaving) {
@@ -65,185 +85,535 @@ export function EnquiryDetailsDialog({
     }
   };
 
-  /* =========================================================
-     PHONE NUMBER
-     ========================================================= */
-
-  const telephoneNumber = enquiry.phone.replace(/[^+\d]/g, "");
+  const telephoneNumber =
+    enquiry.phone.replace(
+      /[^+\d]/g,
+      "",
+    );
 
   return (
     <dialog
       ref={dialog}
-      className="enquiry-dialog"
+      className="enquiry-profile-dialog"
       aria-labelledby="enquiry-detail-title"
-      onCancel={handleCancel}
+      onCancel={
+        handleCancel
+      }
     >
-      {/* =====================================================
-          HEADER
-          ===================================================== */}
+      <div className="enquiry-profile">
 
-      <div className="enquiry-dialog__header">
-        <div>
-          <span className="enquiries-eyebrow">Website enquiry</span>
+        {/* ===================================================
+            HEADER
+            =================================================== */}
 
-          <h2 id="enquiry-detail-title">{enquiry.name}</h2>
+        <header className="enquiry-profile__header">
 
-          <p>Received {formatEnquiryDate(enquiry.createdAt)}</p>
-        </div>
+          <div className="enquiry-profile__identity">
 
-        <button
-          className="enquiry-icon-button"
-          type="button"
-          onClick={onClose}
-          disabled={isSaving}
-          aria-label="Close enquiry details"
-        >
-          <X size={20} aria-hidden="true" />
-        </button>
-      </div>
-
-      {/* =====================================================
-          BODY
-          ===================================================== */}
-
-      <div className="enquiry-dialog__body">
-        {/* Enquiry facts */}
-
-        <div className="enquiry-dialog__facts">
-          <div>
-            <span>Course interested in</span>
-
-            <strong>{enquiry.course}</strong>
-          </div>
-
-          <div>
-            <span>Phone number</span>
-
-            <a href={`tel:${telephoneNumber}`}>
-              {enquiry.phone}
-
-              <ArrowUpRight size={14} aria-hidden="true" />
-            </a>
-          </div>
-
-          <div>
-            <span>Current status</span>
-
-            <span
-              className={`enquiry-badge enquiry-badge--${enquiry.status.toLowerCase()}`}
+            <div
+              className="enquiry-profile__avatar"
+              aria-hidden="true"
             >
-              {enquiryStatusLabels[enquiry.status]}
-            </span>
+              {enquiry.name
+                .trim()
+                .slice(
+                  0,
+                  1,
+                )
+                .toUpperCase()}
+            </div>
+
+            <div>
+              <span className="enquiry-profile__eyebrow">
+                Website enquiry
+              </span>
+
+              <h2 id="enquiry-detail-title">
+                {enquiry.name}
+              </h2>
+
+              <div className="enquiry-profile__received">
+                <Clock3
+                  size={15}
+                  aria-hidden="true"
+                />
+
+                Received{" "}
+                {formatEnquiryDate(
+                  enquiry.createdAt,
+                )}
+              </div>
+            </div>
           </div>
+
+          <button
+            className="enquiry-profile__close"
+            type="button"
+            onClick={
+              onClose
+            }
+            disabled={
+              isSaving
+            }
+            aria-label="Close enquiry details"
+          >
+            <X
+              size={22}
+              aria-hidden="true"
+            />
+          </button>
+        </header>
+
+
+        {/* ===================================================
+            STATUS
+            =================================================== */}
+
+        <div className="enquiry-profile__status-row">
 
           <div>
-            <span>Last updated</span>
+            <span>
+              Follow-up status
+            </span>
 
-            <strong>{formatEnquiryDate(enquiry.updatedAt)}</strong>
+            <strong>
+              Current enquiry status
+            </strong>
+          </div>
+
+          <span
+            className={`enquiry-profile__status enquiry-profile__status--${enquiry.status.toLowerCase()}`}
+          >
+            {
+              enquiryStatusLabels[
+                enquiry.status
+              ]
+            }
+          </span>
+        </div>
+
+
+        {/* ===================================================
+            BODY
+            =================================================== */}
+
+        <div className="enquiry-profile__body">
+
+          {/* CONTACT */}
+
+          <section className="enquiry-profile__section">
+
+            <div className="enquiry-profile__section-heading">
+
+              <span className="enquiry-profile__section-icon">
+                <UserRound
+                  size={19}
+                  aria-hidden="true"
+                />
+              </span>
+
+              <div>
+                <h3>
+                  Contact details
+                </h3>
+
+                <p>
+                  How to contact this
+                  applicant.
+                </p>
+              </div>
+            </div>
+
+            <div className="enquiry-profile__contact-grid">
+
+              <a
+                className="enquiry-profile__contact-card"
+                href={`tel:${telephoneNumber}`}
+              >
+                <span className="enquiry-profile__contact-icon">
+                  <Phone
+                    size={20}
+                    aria-hidden="true"
+                  />
+                </span>
+
+                <span>
+                  <small>
+                    Phone number
+                  </small>
+
+                  <strong>
+                    {enquiry.phone}
+                  </strong>
+                </span>
+
+                <ArrowUpRight
+                  size={16}
+                  aria-hidden="true"
+                />
+              </a>
+
+              {enquiry.email ? (
+                <a
+                  className="enquiry-profile__contact-card"
+                  href={`mailto:${enquiry.email}`}
+                >
+                  <span className="enquiry-profile__contact-icon">
+                    <Mail
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  </span>
+
+                  <span>
+                    <small>
+                      Email address
+                    </small>
+
+                    <strong>
+                      {enquiry.email}
+                    </strong>
+                  </span>
+
+                  <ArrowUpRight
+                    size={16}
+                    aria-hidden="true"
+                  />
+                </a>
+              ) : (
+                <div className="enquiry-profile__contact-card enquiry-profile__contact-card--empty">
+
+                  <span className="enquiry-profile__contact-icon">
+                    <Mail
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  </span>
+
+                  <span>
+                    <small>
+                      Email address
+                    </small>
+
+                    <strong>
+                      Not provided
+                    </strong>
+                  </span>
+                </div>
+              )}
+            </div>
+          </section>
+
+
+          {/* COURSE */}
+
+          <section className="enquiry-profile__section">
+
+            <div className="enquiry-profile__section-heading">
+
+              <span className="enquiry-profile__section-icon">
+                <GraduationCap
+                  size={20}
+                  aria-hidden="true"
+                />
+              </span>
+
+              <div>
+                <h3>
+                  Course interest
+                </h3>
+
+                <p>
+                  Course selected by
+                  the applicant.
+                </p>
+              </div>
+            </div>
+
+            <div className="enquiry-profile__course">
+              <span>
+                Interested in
+              </span>
+
+              <strong>
+                {enquiry.course}
+              </strong>
+            </div>
+          </section>
+
+
+          {/* MESSAGE */}
+
+          <section className="enquiry-profile__section">
+
+            <div className="enquiry-profile__section-heading">
+
+              <span className="enquiry-profile__section-icon">
+                <MessageSquare
+                  size={19}
+                  aria-hidden="true"
+                />
+              </span>
+
+              <div>
+                <h3>
+                  Enquiry message
+                </h3>
+
+                <p>
+                  Message submitted
+                  through the website.
+                </p>
+              </div>
+            </div>
+
+            <div className="enquiry-profile__message">
+              <p>
+                {enquiry.message ||
+                  "No additional message was provided."}
+              </p>
+            </div>
+          </section>
+
+
+          {/* ADMITTED */}
+
+          {enquiry.student && (
+            <section className="enquiry-profile__admitted">
+
+              <GraduationCap
+                size={21}
+                aria-hidden="true"
+              />
+
+              <div>
+                <strong>
+                  Student admitted
+                </strong>
+
+                <span>
+                  Admission number{" "}
+                  {
+                    enquiry
+                      .student
+                      .admissionNumber
+                  }
+                </span>
+              </div>
+
+              <Link
+                to="/admin/students"
+              >
+                View student
+              </Link>
+            </section>
+          )}
+
+
+          {/* FOLLOW UP */}
+
+          <section className="enquiry-profile__section">
+
+            <div className="enquiry-profile__section-heading">
+
+              <span className="enquiry-profile__section-icon">
+                <Check
+                  size={19}
+                  aria-hidden="true"
+                />
+              </span>
+
+              <div>
+                <h3>
+                  Follow-up
+                </h3>
+
+                <p>
+                  Update the enquiry
+                  after contacting the
+                  applicant.
+                </p>
+              </div>
+            </div>
+
+            <div className="enquiry-profile__followup">
+
+              <label htmlFor="enquiry-detail-status">
+                Enquiry status
+              </label>
+
+              <select
+                id="enquiry-detail-status"
+                value={
+                  enquiry.status
+                }
+                disabled={
+                  isSaving
+                }
+                onChange={(
+                  event,
+                ) =>
+                  onStatusChange(
+                    event.target
+                      .value as EnquiryStatus,
+                  )
+                }
+              >
+                <option value="NEW">
+                  Awaiting contact
+                </option>
+
+                <option value="CONTACTED">
+                  Contacted
+                </option>
+
+                <option value="CLOSED">
+                  Closed
+                </option>
+              </select>
+
+              <p>
+                {isSaving
+                  ? "Saving status…"
+                  : enquiry.status ===
+                      "NEW"
+                    ? "Change to Contacted after speaking with the applicant."
+                    : enquiry.status ===
+                        "CONTACTED"
+                      ? "Close the enquiry once the follow-up is complete."
+                      : "This enquiry has been closed."}
+              </p>
+            </div>
+          </section>
+
+
+          {/* ERROR */}
+
+          {error && (
+            <div
+              className="enquiry-profile__error"
+              role="alert"
+            >
+              {error}
+            </div>
+          )}
+
+          <div className="enquiry-profile__updated">
+            Last updated{" "}
+            <strong>
+              {formatEnquiryDate(
+                enquiry.updatedAt,
+              )}
+            </strong>
           </div>
         </div>
 
-        {/* Already admitted */}
 
-        {enquiry.student && (
-          <p className="enquiries-notice">
-            <GraduationCap size={18} aria-hidden="true" />
+        {/* ===================================================
+            FOOTER
+            =================================================== */}
 
-            <span>Admitted · {enquiry.student.admissionNumber}</span>
+        <footer className="enquiry-profile__footer">
 
-            <Link to="/admin/students">View student register</Link>
-          </p>
-        )}
+          <div className="enquiry-profile__footer-secondary">
 
-        {/* Message */}
+            <a
+              className="enquiry-profile__button"
+              href={`tel:${telephoneNumber}`}
+            >
+              <Phone
+                size={18}
+                aria-hidden="true"
+              />
 
-        <section className="enquiry-dialog__message">
-          <h3>Enquiry message</h3>
+              Call applicant
+            </a>
 
-          <p>{enquiry.message || "No additional message was provided."}</p>
-        </section>
+            {enquiry.email && (
+              <a
+                className="enquiry-profile__button"
+                href={`mailto:${enquiry.email}`}
+              >
+                <Mail
+                  size={18}
+                  aria-hidden="true"
+                />
 
-        {/* Status */}
+                Send email
+              </a>
+            )}
+          </div>
 
-        <div className="enquiry-dialog__followup">
-          <label htmlFor="enquiry-detail-status">Follow-up status</label>
 
-          <select
-            id="enquiry-detail-status"
-            value={enquiry.status}
-            disabled={isSaving}
-            onChange={(event) =>
-              onStatusChange(event.target.value as EnquiryStatus)
-            }
-          >
-            {Object.entries(enquiryStatusLabels).map(([status, label]) => (
-              <option key={status} value={status}>
-                {label}
-              </option>
-            ))}
-          </select>
+          <div className="enquiry-profile__footer-primary">
 
-          <p>
-            {isSaving
-              ? "Saving status…"
-              : "Mark contacted after reaching out. Close the enquiry when follow-up is complete."}
-          </p>
-        </div>
+            {!enquiry.studentId && (
+              <button
+                type="button"
+                className="enquiry-profile__button enquiry-profile__button--admit"
+                disabled={
+                  isSaving
+                }
+                onClick={
+                  onAdmit
+                }
+              >
+                <GraduationCap
+                  size={18}
+                  aria-hidden="true"
+                />
 
-        {/* Error */}
+                Admit student
+              </button>
+            )}
 
-        {error && (
-          <p className="enquiries-notice enquiries-notice--error" role="alert">
-            {error}
-          </p>
-        )}
-      </div>
+            {enquiry.status ===
+              "NEW" && (
+              <button
+                type="button"
+                className="enquiry-profile__button enquiry-profile__button--primary"
+                disabled={
+                  isSaving
+                }
+                onClick={() =>
+                  onStatusChange(
+                    "CONTACTED",
+                  )
+                }
+              >
+                <Check
+                  size={18}
+                  aria-hidden="true"
+                />
 
-      {/* =====================================================
-          FOOTER
-          ===================================================== */}
+                Mark contacted
+              </button>
+            )}
 
-      <div className="enquiry-dialog__footer">
-        {!enquiry.studentId && (
-          <button
-            type="button"
-            className="enquiries-button enquiries-button--primary"
-            disabled={isSaving}
-            onClick={onAdmit}
-          >
-            <GraduationCap size={16} aria-hidden="true" />
-            Admit student
-          </button>
-        )}
+            {enquiry.status ===
+              "CONTACTED" && (
+              <button
+                type="button"
+                className="enquiry-profile__button enquiry-profile__button--primary"
+                disabled={
+                  isSaving
+                }
+                onClick={() =>
+                  onStatusChange(
+                    "CLOSED",
+                  )
+                }
+              >
+                <Check
+                  size={18}
+                  aria-hidden="true"
+                />
 
-        <a className="enquiries-button" href={`tel:${telephoneNumber}`}>
-          <Phone size={16} aria-hidden="true" />
-          Call applicant
-        </a>
-
-        {enquiry.status === "NEW" && (
-          <button
-            type="button"
-            className="enquiries-button enquiries-button--primary"
-            disabled={isSaving}
-            onClick={() => onStatusChange("CONTACTED")}
-          >
-            <Check size={16} aria-hidden="true" />
-            Mark contacted
-          </button>
-        )}
-
-        {enquiry.status === "CONTACTED" && (
-          <button
-            type="button"
-            className="enquiries-button enquiries-button--primary"
-            disabled={isSaving}
-            onClick={() => onStatusChange("CLOSED")}
-          >
-            <Check size={16} aria-hidden="true" />
-            Close enquiry
-          </button>
-        )}
+                Close enquiry
+              </button>
+            )}
+          </div>
+        </footer>
       </div>
     </dialog>
   );

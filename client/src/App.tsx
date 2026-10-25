@@ -9,6 +9,8 @@ import { AdminLoginPage } from "./admin/pages/AdminLoginPage";
 import { UpcomingPage } from "./admin/pages/UpcomingPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PublicHomePage } from "./pages/PublicHomePage";
+import { RecoveryPage } from "./admin/pages/RecoveryPage";
+import { ForgotPasswordPage } from "./admin/pages/ForgotPasswordPage";
 
 const AdminDashboardPage = lazy(() => import("./admin/pages/AdminDashboardPage").then(module => ({ default: module.AdminDashboardPage })));
 const EnquiriesPage = lazy(() => import("./admin/pages/EnquiriesPage").then(module => ({ default: module.EnquiriesPage })));
@@ -25,6 +27,16 @@ function App() {
       <Route path="/" element={<PublicHomePage />} />
 
       <Route path="/admin/login" element={<AdminLoginPage />} />
+
+      <Route
+        path="/admin/forgot-password"
+        element={<ForgotPasswordPage />}
+      />
+
+      <Route
+        path="/admin/recovery"
+        element={<RecoveryPage />}
+      />
 
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />

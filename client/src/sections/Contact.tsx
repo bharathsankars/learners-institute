@@ -7,8 +7,9 @@ import {
 } from "lucide-react";
 
 import "./Contact.css";
+import { contact } from "../data/contact";
 
-const mapsUrl = "https://www.google.com/maps?cid=9424450921971281392";
+const mapsUrl = contact.mapsUrl;
 
 export function Contact() {
   return (
@@ -71,9 +72,9 @@ export function Contact() {
               examination preparation, admissions and current batches.
             </p>
 
-            <a href="tel:+919446125964" className="contact-card__link">
+            <a href={contact.phoneHref} className="contact-card__link">
               <Phone size={15} strokeWidth={2} aria-hidden="true" />
-              94461 25964
+              {contact.phoneShort}
             </a>
           </article>
 

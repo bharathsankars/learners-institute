@@ -9,6 +9,7 @@ datasource db {
 
 enum UserRole {
   SUPER_ADMIN
+  RECOVERY_ADMIN
   ADMIN
   STAFF
 }
@@ -227,4 +228,23 @@ model Enquiry {
   @@index([createdAt])
   @@index([studentId])
   @@map("enquiries")
+}
+
+
+model SuperAdminRecoveryCode {
+  id String @id @default(uuid()) @db.Uuid
+
+  superAdminId String @db.Uuid
+  createdById  String @db.Uuid
+
+  codeHash String
+
+  expiresAt DateTime  @db.Timestamptz(3)
+  usedAt    DateTime? @db.Timestamptz(3)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([superAdminId, expiresAt])
+  @@index([createdById])
+  @@map("super_admin_recovery_codes")
 }

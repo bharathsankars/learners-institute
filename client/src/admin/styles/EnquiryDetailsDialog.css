@@ -1,0 +1,916 @@
+.enquiry-profile-dialog {
+  --profile-ink: #263843;
+  --profile-muted: #687780;
+  --profile-border: #dce3e5;
+  --profile-soft: #f5f8f7;
+  --profile-green: #285448;
+
+  width:
+    min(
+      760px,
+      calc(100% - 32px)
+    );
+
+  max-height:
+    calc(100dvh - 32px);
+
+  padding: 0;
+
+  overflow: auto;
+
+  border:
+    1px solid
+    var(--profile-border);
+
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  color:
+    var(--profile-ink);
+
+  box-shadow:
+    0 24px 70px
+    rgb(15 23 42 / 0.24);
+}
+
+.enquiry-profile-dialog::backdrop {
+  background:
+    rgb(15 23 42 / 0.64);
+
+  backdrop-filter:
+    blur(3px);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.enquiry-profile__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding:
+    27px 28px;
+
+  border-bottom:
+    1px solid
+    var(--profile-border);
+}
+
+.enquiry-profile__identity {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+}
+
+.enquiry-profile__avatar {
+  width: 58px;
+  height: 58px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background:
+    #eaf2ee;
+
+  color:
+    var(--profile-green);
+
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.enquiry-profile__eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color:
+    var(--profile-green);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.enquiry-profile__header h2 {
+  margin: 0;
+
+  color:
+    var(--profile-ink);
+
+  font-size: 27px;
+  font-weight: 750;
+
+  line-height: 1.2;
+
+  letter-spacing:
+    -0.03em;
+
+  overflow-wrap:
+    anywhere;
+}
+
+.enquiry-profile__received {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-top: 8px;
+
+  color:
+    var(--profile-muted);
+
+  font-size: 12px;
+}
+
+.enquiry-profile__close {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  padding: 0;
+
+  border:
+    1px solid
+    var(--profile-border);
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color:
+    var(--profile-muted);
+
+  cursor: pointer;
+}
+
+.enquiry-profile__close:hover:not(:disabled) {
+  background:
+    var(--profile-soft);
+
+  color:
+    var(--profile-ink);
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.enquiry-profile__status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    18px 28px;
+
+  border-bottom:
+    1px solid
+    var(--profile-border);
+
+  background:
+    #fafcfb;
+}
+
+.enquiry-profile__status-row > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.enquiry-profile__status-row > div span {
+  color:
+    var(--profile-muted);
+
+  font-size: 11px;
+}
+
+.enquiry-profile__status-row > div strong {
+  color:
+    var(--profile-ink);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.enquiry-profile__status {
+  min-height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding:
+    0 12px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.enquiry-profile__status--new {
+  background:
+    #fff4de;
+
+  color:
+    #946118;
+}
+
+.enquiry-profile__status--contacted {
+  background:
+    #edf3fb;
+
+  color:
+    #3565a1;
+}
+
+.enquiry-profile__status--closed {
+  background:
+    #eaf5ed;
+
+  color:
+    #287a60;
+}
+
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+.enquiry-profile__body {
+  display: grid;
+
+  gap: 20px;
+
+  padding:
+    26px 28px;
+}
+
+.enquiry-profile__section {
+  padding: 21px;
+
+  border:
+    1px solid
+    var(--profile-border);
+
+  border-radius: 12px;
+
+  background: #ffffff;
+}
+
+.enquiry-profile__section-heading {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+.enquiry-profile__section-icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border-radius: 9px;
+
+  background:
+    #eaf2ee;
+
+  color:
+    var(--profile-green);
+}
+
+.enquiry-profile__section-heading h3 {
+  margin: 0;
+
+  color:
+    var(--profile-ink);
+
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.enquiry-profile__section-heading p {
+  margin:
+    4px 0 0;
+
+  color:
+    var(--profile-muted);
+
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+
+.enquiry-profile__contact-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+}
+
+.enquiry-profile__contact-card {
+  min-width: 0;
+  min-height: 82px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  border:
+    1px solid
+    var(--profile-border);
+
+  border-radius: 10px;
+
+  background:
+    var(--profile-soft);
+
+  color:
+    var(--profile-ink);
+
+  text-decoration: none;
+}
+
+a.enquiry-profile__contact-card:hover {
+  border-color:
+    #9fb8af;
+
+  background:
+    #f0f6f3;
+}
+
+.enquiry-profile__contact-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color:
+    var(--profile-green);
+}
+
+.enquiry-profile__contact-card > span:nth-child(2) {
+  min-width: 0;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.enquiry-profile__contact-card small {
+  color:
+    var(--profile-muted);
+
+  font-size: 11px;
+}
+
+.enquiry-profile__contact-card strong {
+  color:
+    var(--profile-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  overflow-wrap:
+    anywhere;
+}
+
+.enquiry-profile__contact-card > svg {
+  flex: 0 0 auto;
+
+  color:
+    var(--profile-muted);
+}
+
+.enquiry-profile__contact-card--empty {
+  opacity: 0.72;
+}
+
+
+/* =========================================================
+   COURSE
+   ========================================================= */
+
+.enquiry-profile__course {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  padding: 16px;
+
+  border-radius: 9px;
+
+  background:
+    var(--profile-soft);
+}
+
+.enquiry-profile__course span {
+  color:
+    var(--profile-muted);
+
+  font-size: 11px;
+}
+
+.enquiry-profile__course strong {
+  color:
+    var(--profile-ink);
+
+  font-size: 15px;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.enquiry-profile__message {
+  padding: 16px;
+
+  border-radius: 9px;
+
+  background:
+    var(--profile-soft);
+}
+
+.enquiry-profile__message p {
+  margin: 0;
+
+  color:
+    var(--profile-ink);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+
+  white-space:
+    pre-wrap;
+
+  overflow-wrap:
+    anywhere;
+}
+
+
+/* =========================================================
+   ADMITTED
+   ========================================================= */
+
+.enquiry-profile__admitted {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 17px;
+
+  border:
+    1px solid
+    #c9e4d3;
+
+  border-radius: 11px;
+
+  background:
+    #ecf6ef;
+
+  color:
+    #285448;
+}
+
+.enquiry-profile__admitted > svg {
+  flex: 0 0 auto;
+}
+
+.enquiry-profile__admitted > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.enquiry-profile__admitted strong {
+  font-size: 13px;
+}
+
+.enquiry-profile__admitted span {
+  font-size: 11px;
+}
+
+.enquiry-profile__admitted a {
+  color:
+    #285448;
+
+  font-size: 12px;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   FOLLOW UP
+   ========================================================= */
+
+.enquiry-profile__followup {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.enquiry-profile__followup label {
+  color:
+    var(--profile-ink);
+
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.enquiry-profile__followup select {
+  min-height: 50px;
+
+  width: 100%;
+
+  padding:
+    0 13px;
+
+  border:
+    1px solid
+    #c8d3d7;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color:
+    var(--profile-ink);
+
+  font-size: 14px;
+}
+
+.enquiry-profile__followup select:focus {
+  outline:
+    3px solid
+    rgb(40 84 72 / 0.14);
+
+  border-color:
+    #6c9489;
+}
+
+.enquiry-profile__followup p {
+  margin: 0;
+
+  color:
+    var(--profile-muted);
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ERROR / UPDATED
+   ========================================================= */
+
+.enquiry-profile__error {
+  padding:
+    13px 15px;
+
+  border:
+    1px solid
+    #fecdd3;
+
+  border-radius: 9px;
+
+  background:
+    #fff1f2;
+
+  color:
+    #9f1239;
+
+  font-size: 13px;
+}
+
+.enquiry-profile__updated {
+  color:
+    var(--profile-muted);
+
+  font-size: 11px;
+}
+
+.enquiry-profile__updated strong {
+  color:
+    var(--profile-ink);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.enquiry-profile__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  padding:
+    20px 28px;
+
+  border-top:
+    1px solid
+    var(--profile-border);
+
+  background:
+    var(--profile-soft);
+}
+
+.enquiry-profile__footer-secondary,
+.enquiry-profile__footer-primary {
+  display: flex;
+
+  gap: 9px;
+
+  flex-wrap: wrap;
+}
+
+.enquiry-profile__button {
+  min-height: 46px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding:
+    0 15px;
+
+  border:
+    1px solid
+    #cbd6d9;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color:
+    var(--profile-ink);
+
+  font-size: 13px;
+  font-weight: 750;
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.enquiry-profile__button:hover:not(:disabled) {
+  border-color:
+    #9fb5ad;
+
+  background:
+    #f7f9f8;
+}
+
+.enquiry-profile__button--primary {
+  border-color:
+    var(--profile-green);
+
+  background:
+    var(--profile-green);
+
+  color: #ffffff;
+}
+
+.enquiry-profile__button--primary:hover:not(:disabled) {
+  background:
+    #203f36;
+
+  border-color:
+    #203f36;
+}
+
+.enquiry-profile__button--admit {
+  border-color:
+    #bfd1ca;
+
+  color:
+    #285448;
+}
+
+.enquiry-profile__button--admit:hover:not(:disabled) {
+  background:
+    #f0f6f3;
+}
+
+.enquiry-profile__button:disabled,
+.enquiry-profile__close:disabled {
+  opacity: 0.5;
+
+  cursor: wait;
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"]
+.enquiry-profile-dialog {
+  --profile-ink: #e6edf2;
+  --profile-muted: #a7b4bf;
+  --profile-border: #2d3e4b;
+  --profile-soft: #172633;
+
+  background:
+    #111e2b;
+}
+
+html[data-theme="dark"]
+.enquiry-profile__section,
+html[data-theme="dark"]
+.enquiry-profile__close,
+html[data-theme="dark"]
+.enquiry-profile__button,
+html[data-theme="dark"]
+.enquiry-profile__contact-icon,
+html[data-theme="dark"]
+.enquiry-profile__followup select {
+  background:
+    #111e2b;
+}
+
+html[data-theme="dark"]
+.enquiry-profile__status-row {
+  background:
+    #152330;
+}
+
+html[data-theme="dark"]
+.enquiry-profile__avatar,
+html[data-theme="dark"]
+.enquiry-profile__section-icon {
+  background:
+    #203c32;
+
+  color:
+    #a6d5bc;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 650px) {
+  .enquiry-profile-dialog {
+    width:
+      calc(100% - 20px);
+
+    max-height:
+      calc(100dvh - 20px);
+  }
+
+  .enquiry-profile__header {
+    align-items:
+      flex-start;
+
+    padding:
+      21px 19px;
+  }
+
+  .enquiry-profile__avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .enquiry-profile__header h2 {
+    font-size: 22px;
+  }
+
+  .enquiry-profile__status-row {
+    padding:
+      16px 19px;
+  }
+
+  .enquiry-profile__body {
+    gap: 16px;
+
+    padding: 19px;
+  }
+
+  .enquiry-profile__section {
+    padding: 17px;
+  }
+
+  .enquiry-profile__contact-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .enquiry-profile__footer {
+    align-items:
+      stretch;
+
+    flex-direction:
+      column;
+
+    padding:
+      18px 19px;
+  }
+
+  .enquiry-profile__footer-secondary,
+  .enquiry-profile__footer-primary {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .enquiry-profile__button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .enquiry-profile__status-row {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .enquiry-profile__footer-secondary,
+  .enquiry-profile__footer-primary {
+    grid-template-columns:
+      1fr;
+  }
+
+  .enquiry-profile__admitted {
+    align-items:
+      flex-start;
+
+    flex-wrap: wrap;
+  }
+
+  .enquiry-profile__admitted a {
+    width: 100%;
+
+    margin-left: 33px;
+  }
+}

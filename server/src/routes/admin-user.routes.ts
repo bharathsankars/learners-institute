@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+  changeOwnPasswordController,
   createAdminUserController,
   deleteAdminUserController,
   getAdminUsersController,
@@ -28,6 +29,11 @@ adminUserRouter.get(
 adminUserRouter.post(
   "/",
   createAdminUserController,
+);
+
+adminUserRouter.patch(
+  "/me/password",
+  changeOwnPasswordController,
 );
 
 adminUserRouter.patch(

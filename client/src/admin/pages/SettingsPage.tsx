@@ -1,6 +1,8 @@
 import {
   CircleCheck,
   Crown,
+  Eye,
+  EyeOff,
   KeyRound,
   Pencil,
   Plus,
@@ -20,6 +22,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import {
+  changeOwnPassword,
   createAdminUser,
   deleteAdminUser,
   fetchAdminUsers,
@@ -44,12 +47,24 @@ function fullName(user: AdminUser) {
   return [user.firstName, user.lastName].filter(Boolean).join(" ");
 }
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value));
+function roleLabel(role: AdminUser["role"]) {
+  if (role === "SUPER_ADMIN") {
+    return "Super Administrator";
+  }
+
+  if (role === "STAFF") {
+    return "Staff";
+  }
+
+  return "Administrator";
+}
+
+function initials(user: AdminUser) {
+  const first = user.firstName?.[0] ?? "";
+
+  const last = user.lastName?.[0] ?? "";
+
+  return `${first}${last}`.toUpperCase();
 }
 
 export function SettingsPage() {
@@ -57,7 +72,6 @@ export function SettingsPage() {
 
   const query = useQuery({
     queryKey: ["admin-users"],
-
     queryFn: fetchAdminUsers,
   });
 
@@ -70,6 +84,28 @@ export function SettingsPage() {
   const [formError, setFormError] = useState("");
 
   const [deleting, setDeleting] = useState<AdminUser | null>(null);
+
+  const [passwordOpen, setPasswordOpen] = useState(false);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+
+  const [newPassword, setNewPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [passwordError, setPasswordError] = useState("");
+
+  const [showCurrentPassword, setShowCurrentPassword] =
+    useState(false);
+
+  const [showNewPassword, setShowNewPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
+  const [passwordConfirmOpen, setPasswordConfirmOpen] =
+    useState(false);
 
   const { register, handleSubmit, reset } = useForm<AdminFormValues>({
     defaultValues: {
@@ -84,13 +120,7 @@ export function SettingsPage() {
 
   const users = query.data ?? [];
 
-  const admins = users.filter((user) => user.role === "ADMIN");
-
-  const activeAdmins = admins.filter((user) => user.isActive).length;
-
-  const inactiveAdmins = admins.length - activeAdmins;
-
-  const superAdmin = users.find((user) => user.role === "SUPER_ADMIN");
+  const activeUsers = users.filter((user) => user.isActive).length;
 
   useEffect(() => {
     if (!formOpen) {
@@ -139,7 +169,7 @@ export function SettingsPage() {
       setEditing(null);
       setFormError("");
 
-      setNotice(`${fullName(user)} was added as an administrator.`);
+      setNotice(`${fullName(user)} can now access Learners Admin.`);
 
       await refreshUsers();
     },
@@ -188,8 +218,8 @@ export function SettingsPage() {
     onSuccess: async () => {
       setNotice(
         deleting
-          ? `${fullName(deleting)} was deleted.`
-          : "Administrator deleted.",
+          ? `${fullName(deleting)} was removed from Learners Admin.`
+          : "User removed.",
       );
 
       setDeleting(null);
@@ -198,10 +228,23 @@ export function SettingsPage() {
     },
   });
 
+  const passwordMutation = useMutation({
+    mutationFn: changeOwnPassword,
+
+    onSuccess: () => {
+      window.location.href = "/admin/login";
+    },
+
+    onError: (error) => {
+      setPasswordError(error.message);
+    },
+  });
+
   const busy =
     createMutation.isPending ||
     updateMutation.isPending ||
-    deleteMutation.isPending;
+    deleteMutation.isPending ||
+    passwordMutation.isPending;
 
   const openCreate = () => {
     if (busy) return;
@@ -213,7 +256,7 @@ export function SettingsPage() {
   };
 
   const openEdit = (user: AdminUser) => {
-    if (busy || user.role !== "ADMIN") {
+    if (busy || user.role === "SUPER_ADMIN") {
       return;
     }
 
@@ -264,7 +307,7 @@ export function SettingsPage() {
   };
 
   const toggleActive = (user: AdminUser) => {
-    if (busy || user.role !== "ADMIN") {
+    if (busy || user.role === "SUPER_ADMIN") {
       return;
     }
 
@@ -280,511 +323,780 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="admin-directory settings-admin">
-      <header className="admin-directory-heading">
+    <div className="settings-admin">
+      <header className="settings-header">
         <div>
-          <span className="admin-directory-eyebrow">System administration</span>
+          <span className="settings-eyebrow">Administration</span>
 
           <h1>Settings</h1>
 
-          <p>
-            Manage administrator access. Only the Super Admin can create, modify
-            or remove administrator accounts.
-          </p>
+          <p>Manage who can sign in and use Learners Admin.</p>
         </div>
 
-        <div className="admin-directory-heading__actions">
+        <div className="settings-header__actions">
           <button
-            className="admin-directory-button"
+            className="settings-button"
             type="button"
             disabled={query.isFetching}
             onClick={() => void query.refetch()}
           >
-            <RefreshCw size={15} aria-hidden="true" />
+            <RefreshCw size={18} aria-hidden="true" />
             Refresh
           </button>
 
           <button
-            className="admin-directory-button admin-directory-button--primary"
+            className="settings-button settings-button--primary"
             type="button"
             disabled={busy}
             onClick={openCreate}
           >
-            <Plus size={16} aria-hidden="true" />
-            Add administrator
+            <Plus size={19} aria-hidden="true" />
+            Add user
           </button>
         </div>
       </header>
 
-      <section
-        className="admin-directory-summary"
-        aria-label="Administrator overview"
-      >
-        <div className="admin-directory-summary-card">
+      <section className="settings-overview" aria-label="Access summary">
+        <div className="settings-overview__item">
+          <span className="settings-overview__icon">
+            <Users size={24} aria-hidden="true" />
+          </span>
+
           <div>
-            <span>Administrators</span>
+            <strong>{query.data ? users.length : "—"}</strong>
 
-            <span className="admin-directory-summary-icon">
-              <Users size={18} aria-hidden="true" />
-            </span>
+            <span>People with access</span>
           </div>
-
-          <strong>{query.data ? admins.length : "—"}</strong>
-
-          <small>Admin accounts</small>
         </div>
 
-        <div className="admin-directory-summary-card admin-directory-summary-card--green">
+        <div className="settings-overview__divider" />
+
+        <div className="settings-overview__item">
+          <span className="settings-overview__icon settings-overview__icon--green">
+            <UserCheck size={24} aria-hidden="true" />
+          </span>
+
           <div>
-            <span>Active</span>
+            <strong>{query.data ? activeUsers : "—"}</strong>
 
-            <span className="admin-directory-summary-icon">
-              <UserCheck size={18} aria-hidden="true" />
-            </span>
+            <span>Active accounts</span>
           </div>
-
-          <strong>{query.data ? activeAdmins : "—"}</strong>
-
-          <small>Can currently sign in</small>
-        </div>
-
-        <div className="admin-directory-summary-card admin-directory-summary-card--amber">
-          <div>
-            <span>Inactive</span>
-
-            <span className="admin-directory-summary-icon">
-              <UserMinus size={18} aria-hidden="true" />
-            </span>
-          </div>
-
-          <strong>{query.data ? inactiveAdmins : "—"}</strong>
-
-          <small>Access disabled</small>
-        </div>
-
-        <div className="admin-directory-summary-card admin-directory-summary-card--slate">
-          <div>
-            <span>Super Admin</span>
-
-            <span className="admin-directory-summary-icon">
-              <Crown size={18} aria-hidden="true" />
-            </span>
-          </div>
-
-          <strong>{superAdmin ? "1" : "—"}</strong>
-
-          <small>Protected supreme account</small>
         </div>
       </section>
 
       {query.isError && (
-        <div
-          className="admin-directory-notice admin-directory-notice--error"
-          role="alert"
-        >
+        <div className="settings-notice settings-notice--error" role="alert">
           {query.error.message}
         </div>
       )}
 
       {notice && (
-        <div className="admin-directory-notice" role="status">
-          <CircleCheck size={17} aria-hidden="true" />
+        <div className="settings-notice" role="status">
+          <CircleCheck size={19} aria-hidden="true" />
 
           <span>{notice}</span>
 
           <button
             type="button"
-            aria-label="Dismiss confirmation"
+            aria-label="Dismiss message"
             onClick={() => setNotice("")}
           >
-            <X size={16} aria-hidden="true" />
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
       )}
 
       {deleteMutation.isError && (
-        <div
-          className="admin-directory-notice admin-directory-notice--error"
-          role="alert"
-        >
+        <div className="settings-notice settings-notice--error" role="alert">
           {deleteMutation.error.message}
         </div>
       )}
 
       <section
-        className="admin-directory-register"
-        aria-label="Administrator accounts"
+        className="settings-access"
+        aria-labelledby="settings-access-title"
       >
-        <div className="admin-directory-register__heading">
+        <header className="settings-section-heading">
           <div>
-            <h2>Administrator accounts</h2>
+            <h2 id="settings-access-title">People with access</h2>
 
-            <p>
-              Super Admin is protected. Admin accounts can be managed below.
-            </p>
+            <p>These people can sign in to the administration area.</p>
           </div>
-        </div>
+        </header>
 
         {query.isPending ? (
-          <div className="admin-directory-empty" role="status">
-            <ShieldCheck size={28} aria-hidden="true" />
+          <div className="settings-empty" role="status">
+            <RefreshCw className="settings-spin" size={28} aria-hidden="true" />
 
-            <h3>Loading administrators…</h3>
+            <strong>Loading users...</strong>
           </div>
         ) : (
-          <div className="admin-directory-table-scroll">
-            <table className="admin-directory-table settings-admin__table">
-              <thead>
-                <tr>
-                  <th>Administrator</th>
+          <div className="settings-user-list">
+            {users.map((user) => {
+              const protectedAccount = user.role === "SUPER_ADMIN";
 
-                  <th>Account</th>
+              return (
+                <article className="settings-user-card" key={user.id}>
+                  <div className="settings-user-card__main">
+                    <span
+                      className={`settings-user-avatar${
+                        protectedAccount ? " settings-user-avatar--super" : ""
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {protectedAccount ? <Crown size={22} /> : initials(user)}
+                    </span>
 
-                  <th>Role</th>
+                    <div className="settings-user-info">
+                      <div className="settings-user-info__title">
+                        <h3>{fullName(user)}</h3>
 
-                  <th>Status</th>
-
-                  <th>Added</th>
-
-                  <th>
-                    <span className="admin-directory-sr-only">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {users.map((user) => {
-                  const protectedAccount = user.role === "SUPER_ADMIN";
-
-                  return (
-                    <tr key={user.id}>
-                      <td>
-                        <div className="admin-directory-identity">
-                          <span
-                            className={`admin-directory-avatar${
-                              protectedAccount
-                                ? " settings-admin__avatar--super"
-                                : ""
-                            }`}
-                            aria-hidden="true"
-                          >
-                            {protectedAccount ? (
-                              <Crown size={16} />
-                            ) : (
-                              user.firstName.slice(0, 1).toUpperCase()
-                            )}
-                          </span>
-
-                          <div>
-                            <strong className="settings-admin__name">
-                              {fullName(user)}
-                            </strong>
-
-                            <span>{user.email}</span>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <strong className="settings-admin__username">
-                          {user.username}
-                        </strong>
-                      </td>
-
-                      <td>
                         <span
-                          className={`settings-admin__role ${
-                            protectedAccount
-                              ? "settings-admin__role--super"
-                              : ""
-                          }`}
-                        >
-                          {protectedAccount ? "Super Admin" : "Admin"}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span
-                          className={`admin-directory-badge admin-directory-badge--${
-                            user.isActive ? "active" : "inactive"
+                          className={`settings-status ${
+                            user.isActive
+                              ? "settings-status--active"
+                              : "settings-status--inactive"
                           }`}
                         >
                           {user.isActive ? "Active" : "Inactive"}
                         </span>
-                      </td>
+                      </div>
 
-                      <td>
-                        <time dateTime={user.createdAt}>
-                          {formatDate(user.createdAt)}
-                        </time>
-                      </td>
+                      <strong className="settings-user-role">
+                        {roleLabel(user.role)}
+                      </strong>
 
-                      <td>
-                        {protectedAccount ? (
-                          <span className="settings-admin__protected">
-                            <ShieldCheck size={14} aria-hidden="true" />
-                            Protected
-                          </span>
-                        ) : (
-                          <div className="admin-directory-row-actions">
-                            <button
-                              className="admin-directory-icon-button"
-                              type="button"
-                              disabled={busy}
-                              aria-label={`Edit ${fullName(user)}`}
-                              onClick={() => openEdit(user)}
-                            >
-                              <Pencil size={15} />
-                            </button>
+                      <div className="settings-user-details">
+                        <span>{user.email}</span>
 
-                            <button
-                              className="settings-admin__status-button"
-                              type="button"
-                              disabled={busy}
-                              onClick={() => toggleActive(user)}
-                            >
-                              {user.isActive ? "Deactivate" : "Activate"}
-                            </button>
+                        <span>
+                          Username: <strong>{user.username}</strong>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                            <button
-                              className="admin-directory-icon-button admin-directory-icon-button--delete"
-                              type="button"
-                              disabled={busy}
-                              aria-label={`Delete ${fullName(user)}`}
-                              onClick={() => {
-                                setNotice("");
+                  <div className="settings-user-card__actions">
+                    {protectedAccount ? (
+                      <div className="settings-super-actions">
+                        <span className="settings-protected">
+                          <ShieldCheck size={18} aria-hidden="true" />
+                          Protected account
+                        </span>
 
-                                setDeleting(user);
-                              }}
-                            >
-                              <Trash2 size={15} />
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        <button
+                          className="settings-user-action settings-user-action--password"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => {
+                            setPasswordError("");
+                            setCurrentPassword("");
+                            setNewPassword("");
+                            setConfirmPassword("");
+                            setPasswordOpen(true);
+                          }}
+                        >
+                          <KeyRound size={17} aria-hidden="true" />
+                          Change password
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          className="settings-user-action"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => openEdit(user)}
+                        >
+                          <Pencil size={17} aria-hidden="true" />
+                          Edit details
+                        </button>
+
+                        <button
+                          className={`settings-user-action ${
+                            user.isActive
+                              ? "settings-user-action--warning"
+                              : "settings-user-action--success"
+                          }`}
+                          type="button"
+                          disabled={busy}
+                          onClick={() => toggleActive(user)}
+                        >
+                          {user.isActive ? (
+                            <UserMinus size={17} aria-hidden="true" />
+                          ) : (
+                            <UserCheck size={17} aria-hidden="true" />
+                          )}
+
+                          {user.isActive ? "Disable access" : "Enable access"}
+                        </button>
+
+                        <button
+                          className="settings-user-action settings-user-action--danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => {
+                            setNotice("");
+
+                            setDeleting(user);
+                          }}
+                        >
+                          <Trash2 size={17} aria-hidden="true" />
+                          Remove user
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
 
       {formOpen && (
-        <section
-          className="settings-admin__editor"
-          aria-label={editing ? "Edit administrator" : "Add administrator"}
-        >
-          <header className="settings-admin__editor-header">
-            <div>
-              <span className="admin-directory-eyebrow">
-                {editing ? "Edit access" : "New access"}
-              </span>
-
-              <h2>
-                {editing ? `Edit ${fullName(editing)}` : "Add administrator"}
-              </h2>
-
-              <p>
-                {editing
-                  ? "Update administrator details. Leave the password empty to keep the existing password."
-                  : "Create a new Admin account. Super Admin access cannot be created here."}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="settings-admin__close"
-              disabled={busy}
-              aria-label="Close administrator form"
-              onClick={closeForm}
-            >
-              <X size={19} />
-            </button>
-          </header>
-
-          <form
-            className="settings-admin__form"
-            onSubmit={handleSubmit(submitForm)}
+        <div className="settings-editor-backdrop" role="presentation">
+          <section
+            className="settings-editor"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="settings-editor-title"
           >
-            <div className="settings-admin__form-grid">
-              <label>
-                <span>First name</span>
-
-                <input
-                  type="text"
-                  autoComplete="given-name"
-                  {...register("firstName", {
-                    required: true,
-                  })}
-                />
-              </label>
-
-              <label>
-                <span>Last name</span>
-
-                <input
-                  type="text"
-                  autoComplete="family-name"
-                  {...register("lastName", {
-                    required: true,
-                  })}
-                />
-              </label>
-
-              <label>
-                <span>Username</span>
-
-                <input
-                  type="text"
-                  autoComplete="username"
-                  {...register("username", {
-                    required: true,
-
-                    minLength: 3,
-                  })}
-                />
-              </label>
-
-              <label>
-                <span>Email</span>
-
-                <input
-                  type="email"
-                  autoComplete="email"
-                  {...register("email", {
-                    required: true,
-                  })}
-                />
-              </label>
-
-              <label>
-                <span>Account role</span>
-
-                <select
-                  {...register("role", {
-                    required: true,
-                  })}
-                >
-                  <option value="ADMIN">Admin</option>
-
-                  <option value="STAFF">Staff</option>
-                </select>
-              </label>
-
-              <label className="settings-admin__password">
-                <span>
-                  <KeyRound size={14} aria-hidden="true" />
-
-                  {editing ? "New password" : "Password"}
+            <header className="settings-editor__header">
+              <div>
+                <span className="settings-eyebrow">
+                  {editing ? "Edit access" : "New user"}
                 </span>
 
-                <input
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder={
-                    editing
-                      ? "Leave empty to keep current password"
-                      : "Minimum 8 characters"
-                  }
-                  {...register("password", {
-                    required: !editing,
+                <h2 id="settings-editor-title">
+                  {editing ? `Edit ${fullName(editing)}` : "Add a user"}
+                </h2>
 
-                    minLength: editing ? undefined : 8,
-                  })}
-                />
+                <p>
+                  {editing
+                    ? "Change this user's details or access level."
+                    : "Create a login for someone who needs access to Learners Admin."}
+                </p>
+              </div>
 
-                {editing && <small></small>}
+              <button
+                className="settings-editor__close"
+                type="button"
+                disabled={busy}
+                aria-label="Close"
+                onClick={closeForm}
+              >
+                <X size={21} aria-hidden="true" />
+              </button>
+            </header>
+
+            <form className="settings-form" onSubmit={handleSubmit(submitForm)}>
+              <div className="settings-form__section">
+                <h3>Personal information</h3>
+
+                <div className="settings-form__grid">
+                  <label>
+                    <span>First name</span>
+
+                    <input
+                      type="text"
+                      autoComplete="given-name"
+                      {...register("firstName", {
+                        required: true,
+                      })}
+                    />
+                  </label>
+
+                  <label>
+                    <span>Last name</span>
+
+                    <input
+                      type="text"
+                      autoComplete="family-name"
+                      {...register("lastName", {
+                        required: true,
+                      })}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="settings-form__section">
+                <h3>Login information</h3>
+
+                <div className="settings-form__grid">
+                  <label>
+                    <span>Username</span>
+
+                    <input
+                      type="text"
+                      autoComplete="username"
+                      {...register("username", {
+                        required: true,
+                        minLength: 3,
+                      })}
+                    />
+                  </label>
+
+                  <label>
+                    <span>Email address</span>
+
+                    <input
+                      type="email"
+                      autoComplete="email"
+                      {...register("email", {
+                        required: true,
+                      })}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="settings-form__section">
+                <h3>Access</h3>
+
+                <div className="settings-form__grid">
+                  <label>
+                    <span>Access level</span>
+
+                    <select
+                      {...register("role", {
+                        required: true,
+                      })}
+                    >
+                      <option value="ADMIN">Administrator</option>
+
+                      <option value="STAFF">Staff</option>
+                    </select>
+
+                    <small>
+                      Administrators have more management permissions than
+                      Staff.
+                    </small>
+                  </label>
+
+                  <label>
+                    <span>
+                      <KeyRound size={16} aria-hidden="true" />
+
+                      {editing ? "New password" : "Password"}
+                    </span>
+
+                    <input
+                      type="password"
+                      autoComplete="new-password"
+                      placeholder={
+                        editing
+                          ? "Leave blank to keep current password"
+                          : "Minimum 8 characters"
+                      }
+                      {...register("password", {
+                        required: !editing,
+                        minLength: editing ? undefined : 8,
+                      })}
+                    />
+
+                    {editing && (
+                      <small>
+                        Only enter a password if you want to change it.
+                      </small>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              {formError && (
+                <div
+                  className="settings-notice settings-notice--error"
+                  role="alert"
+                >
+                  {formError}
+                </div>
+              )}
+
+              <footer className="settings-form__actions">
+                <button
+                  className="settings-button"
+                  type="button"
+                  disabled={busy}
+                  onClick={closeForm}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="settings-button settings-button--primary"
+                  type="submit"
+                  disabled={busy}
+                >
+                  {editing ? "Save changes" : "Create user"}
+                </button>
+              </footer>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {passwordOpen && (
+        <div className="settings-editor-backdrop" role="presentation">
+          <section
+            className="settings-confirm settings-password-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="change-password-title"
+          >
+            <span className="settings-confirm__icon settings-password-dialog__icon">
+              <KeyRound size={25} aria-hidden="true" />
+            </span>
+
+            <h2 id="change-password-title">Change password</h2>
+
+            <p>
+              Enter your current password, then choose a new password for the
+              Super Admin account.
+            </p>
+
+            <div className="settings-password-form">
+              <label>
+                <span>Current password</span>
+
+                <div className="settings-password-input">
+                  <input
+                    type={
+                      showCurrentPassword
+                        ? "text"
+                        : "password"
+                    }
+                    autoComplete="current-password"
+                    value={currentPassword}
+                    onChange={(event) =>
+                      setCurrentPassword(
+                        event.target.value,
+                      )
+                    }
+                  />
+
+                  <button
+                    className="settings-password-toggle"
+                    type="button"
+                    aria-label={
+                      showCurrentPassword
+                        ? "Hide current password"
+                        : "Show current password"
+                    }
+                    onClick={() =>
+                      setShowCurrentPassword(
+                        (value) => !value,
+                      )
+                    }
+                  >
+                    {showCurrentPassword ? (
+                      <EyeOff
+                        size={19}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Eye
+                        size={19}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                </div>
+              </label>
+
+              <label>
+                <span>New password</span>
+
+                <div className="settings-password-input">
+                  <input
+                    type={
+                      showNewPassword
+                        ? "text"
+                        : "password"
+                    }
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(event) =>
+                      setNewPassword(
+                        event.target.value,
+                      )
+                    }
+                  />
+
+                  <button
+                    className="settings-password-toggle"
+                    type="button"
+                    aria-label={
+                      showNewPassword
+                        ? "Hide new password"
+                        : "Show new password"
+                    }
+                    onClick={() =>
+                      setShowNewPassword(
+                        (value) => !value,
+                      )
+                    }
+                  >
+                    {showNewPassword ? (
+                      <EyeOff
+                        size={19}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Eye
+                        size={19}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                </div>
+
+                <small>Use at least 8 characters.</small>
+              </label>
+
+              <label>
+                <span>Confirm new password</span>
+
+                <div className="settings-password-input">
+                  <input
+                    type={
+                      showConfirmPassword
+                        ? "text"
+                        : "password"
+                    }
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(event) =>
+                      setConfirmPassword(
+                        event.target.value,
+                      )
+                    }
+                  />
+
+                  <button
+                    className="settings-password-toggle"
+                    type="button"
+                    aria-label={
+                      showConfirmPassword
+                        ? "Hide confirmed password"
+                        : "Show confirmed password"
+                    }
+                    onClick={() =>
+                      setShowConfirmPassword(
+                        (value) => !value,
+                      )
+                    }
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff
+                        size={19}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Eye
+                        size={19}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                </div>
               </label>
             </div>
 
-            {formError && (
+            {passwordError && (
               <div
-                className="admin-directory-notice admin-directory-notice--error"
+                className="settings-notice settings-notice--error"
                 role="alert"
               >
-                {formError}
+                {passwordError}
               </div>
             )}
 
-            <footer className="settings-admin__form-actions">
+            <div className="settings-confirm__actions">
               <button
-                className="admin-directory-button"
+                className="settings-button"
                 type="button"
-                disabled={busy}
-                onClick={closeForm}
-              >
-                Cancel
-              </button>
-
-              <button
-                className="admin-directory-button admin-directory-button--primary"
-                type="submit"
-                disabled={busy}
-              >
-                {editing ? "Save changes" : "Create administrator"}
-              </button>
-            </footer>
-          </form>
-        </section>
-      )}
-
-      {deleting && (
-        <div className="settings-admin__confirm-backdrop" role="presentation">
-          <section
-            className="settings-admin__confirm"
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="delete-admin-title"
-          >
-            <span className="settings-admin__confirm-icon">
-              <Trash2 size={22} aria-hidden="true" />
-            </span>
-
-            <h2 id="delete-admin-title">Delete administrator?</h2>
-
-            <p>
-              <strong>{fullName(deleting)}</strong> will permanently lose
-              administrator access. This cannot be undone.
-            </p>
-
-            {deleteMutation.isError && (
-              <div
-                className="admin-directory-notice admin-directory-notice--error"
-                role="alert"
-              >
-                {deleteMutation.error.message}
-              </div>
-            )}
-
-            <div className="settings-admin__confirm-actions">
-              <button
-                className="admin-directory-button"
-                type="button"
-                disabled={deleteMutation.isPending}
+                disabled={passwordMutation.isPending}
                 onClick={() => {
-                  if (!deleteMutation.isPending) {
-                    setDeleting(null);
-
-                    deleteMutation.reset();
-                  }
+                  setPasswordOpen(false);
+                  setPasswordError("");
                 }}
               >
                 Cancel
               </button>
 
               <button
-                className="settings-admin__delete-button"
+                className="settings-button settings-button--primary"
                 type="button"
-                disabled={deleteMutation.isPending}
+                disabled={passwordMutation.isPending}
+                onClick={() => {
+                  setPasswordError("");
+
+                  if (!currentPassword) {
+                    setPasswordError("Please enter your current password.");
+
+                    return;
+                  }
+
+                  if (newPassword.length < 8) {
+                    setPasswordError(
+                      "New password must contain at least 8 characters.",
+                    );
+
+                    return;
+                  }
+
+                  if (newPassword !== confirmPassword) {
+                    setPasswordError("New passwords do not match.");
+
+                    return;
+                  }
+
+                  if (currentPassword === newPassword) {
+                    setPasswordError(
+                      "New password must be different from your current password.",
+                    );
+
+                    return;
+                  }
+
+                  setPasswordConfirmOpen(true);
+                }}
+              >
+                {passwordMutation.isPending ? "Changing..." : "Change password"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {passwordConfirmOpen && (
+        <div
+          className="settings-editor-backdrop"
+          role="presentation"
+        >
+          <section
+            className="settings-confirm settings-password-confirm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-new-password-title"
+          >
+            <span
+              className="settings-confirm__icon settings-password-confirm__icon"
+            >
+              <KeyRound
+                size={25}
+                aria-hidden="true"
+              />
+            </span>
+
+            <h2 id="confirm-new-password-title">
+              This is your new password
+            </h2>
+
+            <p>
+              Please check it carefully before saving.
+            </p>
+
+            <div className="settings-password-preview">
+              <span>
+                New password
+              </span>
+
+              <strong>
+                {newPassword}
+              </strong>
+            </div>
+
+            <div
+              className="settings-password-reminder"
+              role="alert"
+            >
+              <strong>
+                Do not forget this password.
+              </strong>
+
+              <span>
+                You will need this password the next
+                time you sign in to Learners Admin.
+              </span>
+            </div>
+
+            <div className="settings-confirm__actions">
+              <button
+                className="settings-button"
+                type="button"
+                disabled={passwordMutation.isPending}
+                onClick={() =>
+                  setPasswordConfirmOpen(false)
+                }
+              >
+                Go back
+              </button>
+
+              <button
+                className="settings-button settings-button--primary"
+                type="button"
+                disabled={passwordMutation.isPending}
+                onClick={() => {
+                  passwordMutation.mutate({
+                    currentPassword,
+                    newPassword,
+                  });
+                }}
+              >
+                {passwordMutation.isPending
+                  ? "Saving..."
+                  : "Yes, save this password"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+
+      {deleting && (
+        <div className="settings-editor-backdrop" role="presentation">
+          <section
+            className="settings-confirm"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-user-title"
+          >
+            <span className="settings-confirm__icon">
+              <Trash2 size={25} aria-hidden="true" />
+            </span>
+
+            <h2 id="delete-user-title">Remove this user?</h2>
+
+            <p>
+              <strong>{fullName(deleting)}</strong> will no longer be able to
+              access Learners Admin.
+            </p>
+
+            <p className="settings-confirm__warning">
+              This action cannot be undone.
+            </p>
+
+            <div className="settings-confirm__actions">
+              <button
+                className="settings-button"
+                type="button"
+                disabled={busy}
+                onClick={() => setDeleting(null)}
+              >
+                Keep user
+              </button>
+
+              <button
+                className="settings-delete-button"
+                type="button"
+                disabled={busy}
                 onClick={() => deleteMutation.mutate(deleting.id)}
               >
-                <Trash2 size={15} aria-hidden="true" />
-
-                {deleteMutation.isPending
-                  ? "Deleting…"
-                  : "Delete administrator"}
+                <Trash2 size={17} aria-hidden="true" />
+                Remove user
               </button>
             </div>
           </section>

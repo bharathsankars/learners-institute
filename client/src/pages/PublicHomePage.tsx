@@ -23,6 +23,7 @@ import "./LandingMotion.css";
 import "./BrandTheme.css";
 import "./PublicMobile.css";
 import "./BatchSectionFix.css";
+import { contact } from "../data/contact";
 
 type CourseSelectionIntent = {
   courseId: string;
@@ -94,7 +95,7 @@ export function PublicHomePage() {
                   </p>
                 </div>
 
-                <a className="home-batch__action" href="tel:+919446125964">
+                <a className="home-batch__action" href={contact.phoneHref}>
                   <span>Call the institute</span>
 
                   <Phone size={17} strokeWidth={2} aria-hidden="true" />
@@ -137,7 +138,7 @@ export function PublicHomePage() {
                     home-batch__action
                     home-batch__action--whatsapp
                   "
-                  href="https://wa.me/919446125964"
+                  href={contact.whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

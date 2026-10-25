@@ -113,6 +113,23 @@ async function checkSession(
       return;
     }
 
+    /*
+     * Recovery accounts must never
+     * enter normal administration APIs.
+     */
+    if (
+      !superAdminOnly &&
+      user.role === "RECOVERY_ADMIN"
+    ) {
+      res.status(403).json({
+        success: false,
+        message:
+          "Recovery accounts cannot access the administration portal.",
+      });
+
+      return;
+    }
+
     next();
   } catch (error) {
     next(error);
@@ -130,3 +147,37 @@ export const requireAuthenticated = (
   res: Response,
   next: NextFunction,
 ) => checkSession(req, res, next, false);
+
+
+export async function requireRecoveryAdmin(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const user = await getSessionUser(req);
+
+    if (!user) {
+      res.status(401).json({
+        success: false,
+        message: "Please sign in again.",
+      });
+
+      return;
+    }
+
+    if (user.role !== "RECOVERY_ADMIN") {
+      res.status(403).json({
+        success: false,
+        message:
+          "Recovery Administrator access is required.",
+      });
+
+      return;
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+}

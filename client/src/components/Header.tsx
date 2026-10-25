@@ -1,4 +1,4 @@
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // import { ThemeToggle } from "./ThemeToggle";
@@ -169,9 +169,13 @@ export function Header() {
         <div className="site-header__actions">
           {/* <ThemeToggle /> */}
 
-          <a className="site-header__cta" href="#enquiry">
-            Course enquiry
-            <ArrowUpRight size={16} aria-hidden="true" />
+          <a
+            className="site-header__staff-profile"
+            href="/admin/login"
+            aria-label="Staff login"
+            title="Staff login"
+          >
+            <UserRound size={18} strokeWidth={2} aria-hidden="true" />
           </a>
 
           <button

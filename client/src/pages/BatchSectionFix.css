@@ -60,7 +60,6 @@
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
   padding: 24px;
 
@@ -69,9 +68,7 @@
 
   background: #ffffff;
 
-  box-shadow:
-    0 10px 28px
-    rgb(95 53 46 / 0.04);
+  box-shadow: 0 10px 28px rgb(95 53 46 / 0.04);
 
   transition:
     transform 180ms ease,
@@ -84,17 +81,11 @@
 
   transform: translateY(-3px);
 
-  box-shadow:
-    0 16px 34px
-    rgb(95 53 46 / 0.08);
+  box-shadow: 0 16px 34px rgb(95 53 46 / 0.08);
 }
 
 .home-batch__content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
 }
 
 .home-batch__label {
@@ -133,16 +124,13 @@
 }
 
 .home-batch p {
-  width: 100%;
-  margin: 12px 0 0;
+  margin: 10px 0 0;
 
   color: #6d625d;
 
   font-size: 14px;
-  line-height: 1.7;
-  min-height: 54px;
+  line-height: 1.65;
 }
-
 
 /* =========================================================
    CTA BUTTONS
@@ -209,15 +197,12 @@
 
   transform: translateY(-1px);
 
-  box-shadow:
-    0 9px 20px
-    rgb(216 90 58 / 0.2);
+  box-shadow: 0 9px 20px rgb(216 90 58 / 0.2);
 }
 
 .home-batch__action:hover svg {
   transform: translateX(2px);
 }
-
 
 /* WhatsApp */
 
@@ -237,22 +222,19 @@
   color: #a94731 !important;
 }
 
-
 /* =========================================================
    TABLET
    ========================================================= */
 
 @media (max-width: 900px) {
   .home-batches__grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .home-batch:last-child {
     grid-column: 1 / -1;
   }
 }
-
 
 /* =========================================================
    MOBILE
@@ -288,10 +270,6 @@
 
   .home-batch h3 {
     font-size: 19px;
-  }
-
-  .home-batch p {
-    min-height: 0;
   }
 
   .home-batch__action {

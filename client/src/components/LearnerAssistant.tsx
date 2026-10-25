@@ -3,6 +3,7 @@ import { ArrowUpRight, MessageCircle, Send, X } from "lucide-react";
 import { usePublicCourses } from "../hooks/usePublicCourses";
 import { answerLearnerQuestion } from "../utils/learnerAssistant";
 import "./LearnerAssistant.css";
+import { contact } from "../data/contact";
 
 type Message = { id: number; role: "assistant" | "visitor"; text: string };
 const suggestions = ["Courses", "Admissions", "Fees & timings", "Location"];
@@ -34,7 +35,7 @@ export function LearnerAssistant() {
       <header className="learner-assistant__header"><span><strong id="learner-assistant-title">Learners assistant</strong><small>Course & admissions FAQ</small></span><button type="button" onClick={close} aria-label="Close assistant"><X size={19} aria-hidden="true" /></button></header>
       <div ref={transcript} className="learner-assistant__messages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat messages">{messages.map(message => <div key={message.id} className={`learner-assistant__message learner-assistant__message--${message.role}`}><span className="learner-assistant__speaker">{message.role === "visitor" ? "You" : "Learners assistant"}</span><p>{message.text}</p></div>)}</div>
       <div className="learner-assistant__suggestions" aria-label="Suggested questions">{suggestions.map(label => <button key={label} type="button" onClick={() => ask(label)}>{label}</button>)}</div>
-      <nav className="learner-assistant__links" aria-label="Contact the institute"><a href="#enquiry" onClick={close}>Course enquiry<ArrowUpRight size={13} aria-hidden="true" /></a><a href="https://wa.me/919446125964" target="_blank" rel="noopener noreferrer">WhatsApp<ArrowUpRight size={13} aria-hidden="true" /></a><a href="#contact" onClick={close}>Directions</a></nav>
+      <nav className="learner-assistant__links" aria-label="Contact the institute"><a href="#enquiry" onClick={close}>Course enquiry<ArrowUpRight size={13} aria-hidden="true" /></a><a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp<ArrowUpRight size={13} aria-hidden="true" /></a><a href="#contact" onClick={close}>Directions</a></nav>
       <form onSubmit={submit} className="learner-assistant__form"><label htmlFor="learner-assistant-input" className="learner-assistant__sr-only">Ask a question</label><input ref={input} id="learner-assistant-input" value={draft} onChange={event => setDraft(event.target.value)} maxLength={300} placeholder="Ask about courses or admissions…" autoComplete="off" /><button type="submit" disabled={!draft.trim()} aria-label="Send question"><Send size={18} aria-hidden="true" /></button></form>
       <p className="learner-assistant__note">FAQ guidance · Confirm fees and availability with our team.</p>
     </section>}

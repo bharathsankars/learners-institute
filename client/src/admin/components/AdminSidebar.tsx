@@ -1,7 +1,5 @@
-import { LogOut } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-import { useAdminAuth } from "../auth/useAdminAuth.ts";
 import { adminNavigation, type AdminRole } from "../navigation/adminNavigation";
 
 import { House } from "lucide-react";
@@ -18,27 +16,31 @@ export function AdminSidebar({
   role = "SUPER_ADMIN",
   onNavigate,
 }: AdminSidebarProps) {
-  const navigate = useNavigate();
-  const { logout } = useAdminAuth();
-
   const visibleNavigation = adminNavigation.filter((item) =>
     item.roles.includes(role),
   );
 
-  const handleLogout = () => {
-    logout();
-    navigate("/admin/login", {
-      replace: true,
-    });
-  };
+
 
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar__brand">
-        <div>
-          <strong>Learners</strong>
-          <span>Admin Portal</span>
+        <div className="admin-sidebar__brand-logo">
+          <img
+            src="/learners-logo-mark.png"
+            alt=""
+            aria-hidden="true"
+          />
         </div>
+
+        <div className="admin-sidebar__brand-copy">
+          <strong>Learners</strong>
+          <span>Institute Administration</span>
+        </div>
+      </div>
+
+      <div className="admin-sidebar__section-label">
+        <span>Workspace</span>
       </div>
 
       <nav className="admin-sidebar__nav" aria-label="Admin navigation">
@@ -81,14 +83,7 @@ export function AdminSidebar({
 
           <span>Back to Learners</span>
         </Link>
-        <button
-          className="admin-sidebar__logout"
-          type="button"
-          onClick={handleLogout}
-        >
-          <LogOut size={18} strokeWidth={1.9} aria-hidden="true" />
-          <span>Sign out</span>
-        </button>
+
       </div>
     </aside>
   );

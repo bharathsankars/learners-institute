@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import {
   Navigate,
   Outlet,
@@ -24,7 +24,7 @@ export function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user, isAuthenticated } = useAdminAuth();
+  const { user, isAuthenticated, logout } = useAdminAuth();
 
   const handleAdminNavigate = (path: string) => {
     if (
@@ -121,6 +121,28 @@ export function AdminLayout() {
                 .filter(Boolean)
                 .join(" ")}
             </strong>
+          </div>
+
+          <div className="admin-layout__topbar-actions">
+            <button
+              type="button"
+              className="admin-layout__logout"
+              onClick={() => {
+                logout();
+
+                navigate("/admin/login", {
+                  replace: true,
+                });
+              }}
+            >
+              <LogOut
+                size={17}
+                strokeWidth={1.9}
+                aria-hidden="true"
+              />
+
+              <span>Sign out</span>
+            </button>
           </div>
 
           <details

@@ -1,0 +1,1087 @@
+.recovery-page {
+  min-height: 100vh;
+
+  position: relative;
+
+  padding: 48px 24px;
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgb(249 115 22 / 0.2),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 88%,
+      rgb(249 115 22 / 0.12),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      var(--color-navy-900),
+      #102d50
+    );
+
+  color: var(--color-navy-900);
+
+  overflow-x: hidden;
+}
+
+.recovery-page::before {
+  content: "";
+
+  position: fixed;
+
+  width: 460px;
+  height: 460px;
+
+  top: -230px;
+  right: -180px;
+
+  border: 1px solid
+    rgb(255 255 255 / 0.08);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.recovery-page::after {
+  content: "";
+
+  position: fixed;
+
+  width: 520px;
+  height: 520px;
+
+  bottom: -300px;
+  left: -250px;
+
+  border: 1px solid
+    rgb(255 255 255 / 0.06);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.recovery-page--center {
+  display: grid;
+  place-items: center;
+}
+
+
+/* =========================================================
+   MAIN WRAPPER
+   ========================================================= */
+
+.recovery-shell {
+  position: relative;
+  z-index: 1;
+
+  width: min(100%, 920px);
+
+  display: grid;
+  gap: 22px;
+
+  margin-inline: auto;
+}
+
+
+/* =========================================================
+   WHITE PANELS
+   ========================================================= */
+
+.recovery-panel,
+.recovery-account-card {
+  box-sizing: border-box;
+
+  border: 1px solid
+    rgb(255 255 255 / 0.12);
+
+  border-radius: 16px;
+
+  background: var(--color-white);
+
+  box-shadow:
+    0 24px 60px
+    rgb(0 0 0 / 0.18);
+}
+
+.recovery-panel {
+  width: min(100%, 540px);
+
+  padding: 34px;
+}
+
+.recovery-shell > .recovery-panel {
+  width: 100%;
+}
+
+.recovery-login,
+.recovery-forgot {
+  position: relative;
+  z-index: 1;
+
+  margin-inline: auto;
+}
+
+
+/* =========================================================
+   ICON / BRAND MARK
+   ========================================================= */
+
+.recovery-mark,
+.recovery-account-icon {
+  width: 50px;
+  height: 50px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  margin-bottom: 22px;
+
+  border-radius: 15px;
+
+  background:
+    var(--color-blue-50);
+
+  color:
+    var(--color-blue-700);
+}
+
+.recovery-mark--success {
+  background: #ecfdf3;
+  color: #16835d;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
+
+.recovery-eyebrow {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color:
+    var(--color-blue-700);
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.recovery-panel h1,
+.recovery-panel h2,
+.recovery-header h1 {
+  margin: 0;
+
+  color:
+    var(--color-navy-900);
+
+  font-weight: 800;
+
+  letter-spacing: -0.035em;
+}
+
+.recovery-panel h1 {
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.recovery-panel h2 {
+  font-size: 23px;
+}
+
+.recovery-lead,
+.recovery-header p {
+  margin: 11px 0 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 14px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.recovery-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  margin-top: 30px;
+}
+
+.recovery-form label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  color:
+    var(--color-navy-900);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.recovery-form input {
+  width: 100%;
+  min-height: 50px;
+
+  box-sizing: border-box;
+
+  padding: 11px 14px;
+
+  border: 1px solid
+    var(--color-border);
+
+  border-radius: 11px;
+
+  background:
+    var(--color-white);
+
+  color:
+    var(--color-navy-900);
+
+  font: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.recovery-form input::placeholder {
+  color: #9aa6b5;
+}
+
+.recovery-form input:focus {
+  border-color:
+    var(--color-blue-500);
+
+  box-shadow:
+    0 0 0 3px
+    rgb(249 115 22 / 0.1);
+}
+
+.recovery-form small {
+  color:
+    var(--color-text-muted);
+
+  font-size: 12px;
+  font-weight: 500;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   PASSWORD FIELD / EYE BUTTON
+   ========================================================= */
+
+.recovery-password-field {
+  position: relative;
+
+  width: 100%;
+}
+
+.recovery-password-field input {
+  padding-right: 52px;
+}
+
+.recovery-password-field button {
+  position: absolute;
+
+  top: 50%;
+  right: 8px;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  transform:
+    translateY(-50%);
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color:
+    var(--color-text-muted);
+
+  cursor: pointer;
+
+  transition:
+    color var(--transition-base),
+    background-color var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.recovery-password-field button:hover {
+  background:
+    var(--color-blue-50);
+
+  color:
+    var(--color-blue-700);
+}
+
+.recovery-password-field button:active {
+  transform:
+    translateY(-50%)
+    scale(0.94);
+}
+
+.recovery-password-field button:focus-visible {
+  outline:
+    2px solid
+    var(--color-blue-500);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.recovery-primary-button,
+.recovery-secondary-button {
+  min-height: 50px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  box-sizing: border-box;
+
+  padding: 0 18px;
+
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  text-decoration: none;
+
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    transform var(--transition-fast),
+    box-shadow var(--transition-base);
+}
+
+.recovery-primary-button {
+  border:
+    1px solid
+    var(--color-navy-900);
+
+  background:
+    var(--color-navy-900);
+
+  color:
+    var(--color-white);
+
+  box-shadow:
+    0 12px 24px
+    rgb(11 31 58 / 0.16);
+}
+
+.recovery-primary-button:hover:not(:disabled) {
+  border-color:
+    var(--color-blue-700);
+
+  background:
+    var(--color-blue-700);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 16px 28px
+    rgb(21 88 166 / 0.2);
+}
+
+.recovery-secondary-button {
+  border:
+    1px solid
+    var(--color-border);
+
+  background:
+    var(--color-white);
+
+  color:
+    var(--color-navy-900);
+}
+
+.recovery-secondary-button:hover:not(:disabled) {
+  border-color:
+    var(--color-blue-500);
+
+  background:
+    var(--color-blue-50);
+
+  color:
+    var(--color-blue-700);
+}
+
+.recovery-primary-button:disabled,
+.recovery-secondary-button:disabled {
+  opacity: 0.6;
+
+  cursor: wait;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.recovery-error {
+  padding: 11px 13px;
+
+  border: 1px solid #fecaca;
+
+  border-radius: 9px;
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   BACK LINK
+   ========================================================= */
+
+.recovery-back-link {
+  width: fit-content;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 34px;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    color var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.recovery-back-link:hover {
+  color:
+    var(--color-blue-700);
+
+  transform:
+    translateX(-3px);
+}
+
+
+/* =========================================================
+   RECOVERY ADMIN HEADER
+   ========================================================= */
+
+.recovery-header {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 28px 30px;
+
+  border-radius: 16px;
+
+  background:
+    var(--color-white);
+
+  box-shadow:
+    0 20px 48px
+    rgb(0 0 0 / 0.14);
+}
+
+.recovery-header h1 {
+  font-size: 32px;
+}
+
+.recovery-header p {
+  max-width: 600px;
+}
+
+
+/* =========================================================
+   SUPER ADMIN ACCOUNT CARD
+   ========================================================= */
+
+.recovery-account-card {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 22px 25px;
+}
+
+.recovery-account-icon {
+  margin: 0;
+}
+
+.recovery-account-card span {
+  color:
+    var(--color-blue-700);
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.03em;
+}
+
+.recovery-account-card h2 {
+  margin: 5px 0 7px;
+
+  color:
+    var(--color-navy-900);
+
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.recovery-account-card p {
+  margin: 3px 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.recovery-section-heading {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+}
+
+.recovery-section-heading > svg {
+  flex: 0 0 auto;
+
+  margin-top: 2px;
+
+  color:
+    var(--color-blue-700);
+}
+
+.recovery-section-heading h2 {
+  margin: 0;
+}
+
+.recovery-section-heading p {
+  margin: 6px 0 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-size: 14px;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   TEMPORARY PASSWORD DISPLAY
+   ========================================================= */
+
+.recovery-password-result {
+  margin-top: 24px;
+
+  padding: 18px;
+
+  overflow-wrap: anywhere;
+
+  border: 1px solid
+    var(--color-border);
+
+  border-radius: 11px;
+
+  background:
+    var(--color-blue-50);
+
+  color:
+    var(--color-navy-900);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 19px;
+  font-weight: 800;
+
+  letter-spacing: 0.02em;
+}
+
+
+/* =========================================================
+   WARNING
+   ========================================================= */
+
+.recovery-warning {
+  display: grid;
+
+  gap: 5px;
+
+  margin: 17px 0 23px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #fed7aa;
+
+  border-radius: 10px;
+
+  background: #fff7ed;
+
+  color: #9a4b10;
+
+  font-size: 13px;
+
+  line-height: 1.55;
+}
+
+.recovery-warning strong {
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.recovery-success-state {
+  display: grid;
+}
+
+.recovery-link-button {
+  margin-top: 23px;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.recovery-primary-button:focus-visible,
+.recovery-secondary-button:focus-visible,
+.recovery-back-link:focus-visible {
+  outline:
+    2px solid
+    var(--color-blue-500);
+
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .recovery-page {
+    padding: 30px 18px;
+  }
+
+  .recovery-header {
+    flex-direction: column;
+
+    padding: 24px;
+  }
+
+  .recovery-header
+  .recovery-secondary-button {
+    width: 100%;
+  }
+
+  .recovery-panel {
+    padding: 26px;
+  }
+
+  .recovery-panel h1 {
+    font-size: 27px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .recovery-page {
+    padding: 20px 14px;
+  }
+
+  .recovery-panel {
+    padding: 22px 18px;
+
+    border-radius: 14px;
+  }
+
+  .recovery-account-card {
+    align-items: flex-start;
+
+    padding: 19px;
+  }
+
+  .recovery-header {
+    padding: 20px;
+  }
+
+  .recovery-header h1 {
+    font-size: 27px;
+  }
+
+  .recovery-primary-button,
+  .recovery-secondary-button {
+    width: 100%;
+
+    min-height: 48px;
+  }
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD - RECOVERY REQUEST STEP
+   ========================================================= */
+
+.recovery-request-box {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 26px;
+  padding: 17px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+
+  background: var(--color-blue-50);
+}
+
+.recovery-request-box > svg {
+  flex: 0 0 auto;
+
+  color: var(--color-blue-700);
+}
+
+.recovery-request-box > div {
+  display: grid;
+  gap: 4px;
+}
+
+.recovery-request-box strong {
+  color: var(--color-navy-900);
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.recovery-request-box span {
+  color: var(--color-text-muted);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.recovery-request-button {
+  width: 100%;
+
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   CONTACT RECOVERY ADMIN NOTICE
+   ========================================================= */
+
+.recovery-contact-notice {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+
+  margin-top: 24px;
+  padding: 17px;
+
+  border: 1px solid #fed7aa;
+  border-radius: 11px;
+
+  background: #fff7ed;
+}
+
+.recovery-contact-notice__icon {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border-radius: 10px;
+
+  background: #ffedd5;
+  color: #c65d10;
+}
+
+.recovery-contact-notice > div:last-child {
+  min-width: 0;
+}
+
+.recovery-contact-notice strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #8c4313;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.recovery-contact-notice p {
+  margin: 3px 0;
+
+  color: #95561e;
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   TEXT / BACK BUTTON
+   ========================================================= */
+
+.recovery-text-button {
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+
+  background: transparent;
+  color: var(--color-text-muted);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.recovery-text-button:hover {
+  color: var(--color-blue-700);
+
+  text-decoration: underline;
+}
+
+.recovery-text-button:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD PANEL SPACING
+   ========================================================= */
+
+.recovery-forgot {
+  width: min(100%, 540px);
+}
+
+.recovery-forgot .recovery-form {
+  margin-top: 24px;
+}
+
+.recovery-forgot
+.recovery-primary-button {
+  width: 100%;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .recovery-request-box,
+  .recovery-contact-notice {
+    align-items: flex-start;
+
+    padding: 15px;
+  }
+
+  .recovery-contact-notice__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .recovery-request-box strong,
+  .recovery-contact-notice strong {
+    font-size: 13px;
+  }
+
+  .recovery-request-box span,
+  .recovery-contact-notice p {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   RECOVERY LOADING
+   ========================================================= */
+
+.recovery-loading {
+  min-height: 210px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 24px;
+  padding: 28px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background: var(--color-blue-50);
+
+  text-align: center;
+}
+
+.recovery-loading__spinner {
+  width: 40px;
+  height: 40px;
+
+  margin-bottom: 8px;
+
+  border: 4px solid
+    rgb(249 115 22 / 0.18);
+
+  border-top-color:
+    var(--color-blue-700);
+
+  border-radius: 50%;
+
+  animation:
+    recovery-loading-spin
+    0.8s
+    linear
+    infinite;
+}
+
+.recovery-loading strong {
+  color: var(--color-navy-900);
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.recovery-loading span {
+  color: var(--color-text-muted);
+
+  font-size: 13px;
+}
+
+@keyframes recovery-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   TEMPORARY PASSWORD SENT MESSAGE
+   ========================================================= */
+
+.recovery-sent-message {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 20px;
+  padding: 13px 15px;
+
+  border: 1px solid #cfe5d8;
+  border-radius: 10px;
+
+  background: #f0f8f3;
+  color: #285448;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.recovery-sent-message svg {
+  flex: 0 0 auto;
+}
+
+.recovery-sent-message strong {
+  color: var(--color-navy-900);
+
+  font-weight: 800;
+}

@@ -1,5 +1,9 @@
 import { API_URL } from "./config";
-export type AdminRole = "SUPER_ADMIN" | "ADMIN" | "STAFF";
+export type AdminRole =
+  | "SUPER_ADMIN"
+  | "RECOVERY_ADMIN"
+  | "ADMIN"
+  | "STAFF";
 
 export type AuthUser = {
   id: string;

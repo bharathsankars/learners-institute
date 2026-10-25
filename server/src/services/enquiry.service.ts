@@ -7,7 +7,11 @@ export async function createEnquiry(input: CreateEnquiryInput) {
   const enquiry = await prisma.enquiry.upsert({
     where: { requestId: input.requestId },
     update: {},
-    create: { ...input, message: input.message || null },
+    create: {
+      ...input,
+      email: input.email || null,
+      message: input.message || null,
+    },
   });
   if (enquiry.name !== input.name || enquiry.phone !== input.phone || enquiry.course !== input.course || (enquiry.message ?? "") !== (input.message ?? "")) {
     throw new EnquiryConflictError("This submission has changed. Please submit it again.");

@@ -163,3 +163,31 @@ export async function deleteAdminUser(
     throw await apiError(response);
   }
 }
+
+
+export async function changeOwnPassword(
+  input: {
+    currentPassword: string;
+    newPassword: string;
+  },
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/api/admin-users/me/password`,
+    {
+      method: "PATCH",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      credentials: "include",
+
+      body: JSON.stringify(input),
+    },
+  );
+
+  if (!response.ok) {
+    throw await apiError(response);
+  }
+}

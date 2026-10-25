@@ -6,6 +6,7 @@ import type {
 import { ZodError } from "zod";
 
 import {
+  changeOwnPassword,
   createAdminUser,
   deleteAdminUser,
   getAdminUsers,
@@ -14,9 +15,14 @@ import {
 
 import {
   adminUserIdSchema,
+  changeOwnPasswordSchema,
   createAdminUserSchema,
   updateAdminUserSchema,
 } from "../validators/admin-user.validator.js";
+
+import {
+  getSessionUser,
+} from "../middleware/session.js";
 
 function isPrismaError(
   error: unknown,
@@ -242,6 +248,116 @@ export async function updateAdminUserController(
     });
   }
 }
+
+export async function changeOwnPasswordController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const input =
+      changeOwnPasswordSchema.parse(
+        req.body,
+      );
+
+    const sessionUser =
+      await getSessionUser(req);
+
+    if (!sessionUser) {
+      res.status(401).json({
+        success: false,
+        message:
+          "Please sign in again.",
+      });
+
+      return;
+    }
+
+    if (
+      sessionUser.role !==
+      "SUPER_ADMIN"
+    ) {
+      res.status(403).json({
+        success: false,
+        message:
+          "Super Admin access is required.",
+      });
+
+      return;
+    }
+
+    const result =
+      await changeOwnPassword(
+        sessionUser.id,
+        input,
+      );
+
+    if (
+      result.status ===
+      "INVALID_PASSWORD"
+    ) {
+      res.status(400).json({
+        success: false,
+        message:
+          "The current password is incorrect.",
+      });
+
+      return;
+    }
+
+    if (
+      result.status ===
+      "NOT_FOUND"
+    ) {
+      res.status(404).json({
+        success: false,
+        message:
+          "Super Admin account not found.",
+      });
+
+      return;
+    }
+
+    if (
+      result.status ===
+      "FORBIDDEN"
+    ) {
+      res.status(403).json({
+        success: false,
+        message:
+          "Super Admin access is required.",
+      });
+
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Password changed successfully. Please sign in again.",
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationError(
+        error,
+        res,
+      );
+
+      return;
+    }
+
+    console.error(
+      "Failed to change Super Admin password:",
+      error,
+    );
+
+    res.status(500).json({
+      success: false,
+      message:
+        "Unable to change password.",
+    });
+  }
+}
+
 
 export async function deleteAdminUserController(
   req: Request,

@@ -30,7 +30,9 @@ export function AdminLoginPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (user) {
+  const [showLoginAnimation, setShowLoginAnimation] = useState(false);
+
+  if (user && !isSubmitting && !showLoginAnimation) {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
@@ -58,6 +60,12 @@ export function AdminLoginPage() {
         return;
       }
 
+      setShowLoginAnimation(true);
+
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 7000);
+      });
+
       navigate("/admin/dashboard", {
         replace: true,
       });
@@ -70,6 +78,78 @@ export function AdminLoginPage() {
 
   return (
     <main className="admin-login">
+      {showLoginAnimation && (
+        <div
+          className="learners-login-transition"
+          role="status"
+          aria-live="polite"
+          aria-label="Signing in to Learners Admin"
+        >
+          <div className="learners-login-transition__scene">
+            <div className="learners-login-transition__logo">
+              <img src="/learners-logo-mark.png" alt="" aria-hidden="true" />
+            </div>
+
+            <div className="learners-login-transition__paper">
+              <div className="learners-login-transition__paper-top">
+                <span />
+                <span />
+                <span />
+              </div>
+
+              <div className="learners-login-transition__typing">
+                <span className="learners-login-transition__typed-primary">
+                  LEARNERS
+                </span>
+
+                <span
+                  className="learners-login-transition__cursor"
+                  aria-hidden="true"
+                />
+              </div>
+
+              <div className="learners-login-transition__typed-secondary">
+                COMMERCIAL INSTITUTE
+              </div>
+
+              <div className="learners-login-transition__location">
+                THIRUNAKKARA · KOTTAYAM
+              </div>
+            </div>
+
+            <div
+              className="learners-login-transition__typewriter"
+              aria-hidden="true"
+            >
+              <div className="learners-login-transition__rail" />
+
+              <div className="learners-login-transition__keys">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+
+            <div className="learners-login-transition__status">
+              <strong>Opening Learners Admin</strong>
+              <span>Preparing your workspace…</span>
+            </div>
+
+            <div
+              className="learners-login-transition__progress"
+              aria-hidden="true"
+            >
+              <span />
+            </div>
+          </div>
+        </div>
+      )}
       {/* =====================================================
           LEFT VISUAL
           ===================================================== */}
@@ -93,9 +173,9 @@ export function AdminLoginPage() {
               <ShieldCheck size={26} strokeWidth={1.8} aria-hidden="true" />
             </div>
 
-            <span>Administration Portal</span>
+            <span>Secure Admin Access</span>
 
-            <h1>Manage Learners from one place.</h1>
+            <h2>Learners Admin Portal</h2>
 
             <p>
               Secure access for authorised institute staff to manage students,
@@ -227,7 +307,8 @@ export function AdminLoginPage() {
             <ShieldCheck size={15} strokeWidth={1.8} aria-hidden="true" />
 
             <span>
-              This portal is restricted to authorised institute staff.
+              Authorised staff access only. Unauthorised access is not
+              permitted.
             </span>
           </div>
         </div>

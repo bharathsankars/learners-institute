@@ -1,235 +1,569 @@
-.settings-admin__name,
-.settings-admin__username {
-  color: var(--directory-ink);
+.settings-admin {
+  --settings-ink: #263843;
+  --settings-muted: #687780;
+  --settings-border: #dce3e5;
+  --settings-soft: #f6f8f7;
+  --settings-green: #285448;
+
+  width: 100%;
+  max-width: 1250px;
+  display: grid;
+  gap: 34px;
+  margin-inline: auto;
+  color: var(--settings-ink);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.settings-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+
+  color: var(--settings-green);
 
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
-.settings-admin__role,
-.settings-admin__protected {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  width: fit-content;
-
-  padding: 5px 9px;
-
-  border-radius: 5px;
-
-  background: #edf3fb;
-  color: #3565a1;
-
-  font-size: 10px;
-  font-weight: 650;
-
-  white-space: nowrap;
-}
-
-.settings-admin__role--super,
-.settings-admin__protected {
-  background: #f1ecfb;
-  color: #6941a5;
-}
-
-.settings-admin__avatar--super {
-  background: #f1ecfb;
-  color: #6941a5;
-}
-
-.settings-admin__status-button {
-  padding: 7px 9px;
-
-  border: 1px solid
-    var(--directory-border);
-
-  border-radius: 6px;
-
-  background:
-    var(--directory-surface);
-
-  color:
-    var(--directory-muted);
-
-  font-size: 10px;
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-.settings-admin__status-button:hover {
-  color:
-    var(--directory-ink);
-
-  border-color: #93afa6;
-}
-
-.settings-admin__editor {
-  border:
-    1px solid
-    var(--directory-border);
-
-  border-radius: 12px;
-
-  background:
-    var(--directory-surface);
-
-  overflow: hidden;
-}
-
-.settings-admin__editor-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  padding: 25px;
-
-  border-bottom:
-    1px solid
-    var(--directory-border);
-}
-
-.settings-admin__editor-header h2 {
+.settings-header h1 {
   margin: 0;
 
-  color:
-    var(--directory-ink);
+  color: var(--settings-ink);
 
-  font-size: 20px;
-  font-weight: 600;
+  font-size: clamp(32px, 3vw, 41px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
-.settings-admin__editor-header p {
-  max-width: 650px;
+.settings-header p {
+  margin: 9px 0 0;
 
-  margin-top: 7px;
+  color: var(--settings-muted);
 
-  color:
-    var(--directory-muted);
-
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.55;
 }
 
-.settings-admin__close {
-  width: 34px;
-  height: 34px;
+.settings-header__actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.settings-button {
+  min-height: 46px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 0 17px;
+
+  border: 1px solid #ccd5d8;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: var(--settings-ink);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.settings-button:hover {
+  background: #f7f9f8;
+  border-color: #a4b8b1;
+}
+
+.settings-button--primary {
+  border-color: var(--settings-green);
+
+  background: var(--settings-green);
+  color: #ffffff;
+}
+
+.settings-button--primary:hover {
+  background: #203f36;
+  border-color: #203f36;
+}
+
+.settings-button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+
+/* =========================================================
+   OVERVIEW
+   ========================================================= */
+
+.settings-overview {
+  display: flex;
+  align-items: center;
+
+  gap: 30px;
+
+  padding: 22px 25px;
+
+  border: 1px solid var(--settings-border);
+  border-radius: 13px;
+
+  background: #ffffff;
+}
+
+.settings-overview__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.settings-overview__icon {
+  width: 48px;
+  height: 48px;
 
   display: grid;
   place-items: center;
 
-  border-radius: 7px;
+  flex: 0 0 auto;
 
-  background:
-    var(--directory-soft);
+  border-radius: 11px;
 
-  color:
-    var(--directory-muted);
+  background: #edf3fb;
+  color: #3565a1;
+}
+
+.settings-overview__icon--green {
+  background: #eaf5ed;
+  color: #287a60;
+}
+
+.settings-overview__item strong {
+  display: block;
+
+  color: var(--settings-ink);
+
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.settings-overview__item div > span {
+  display: block;
+  margin-top: 5px;
+
+  color: var(--settings-muted);
+
+  font-size: 13px;
+}
+
+.settings-overview__divider {
+  width: 1px;
+  height: 45px;
+
+  background: var(--settings-border);
+}
+
+
+/* =========================================================
+   NOTICES
+   ========================================================= */
+
+.settings-notice {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 15px 17px;
+
+  border: 1px solid #c9e4d3;
+  border-radius: 9px;
+
+  background: #ecf6ef;
+  color: #285448;
+
+  font-size: 14px;
+}
+
+.settings-notice > button {
+  margin-left: auto;
+
+  display: grid;
+  place-items: center;
+
+  padding: 5px;
+
+  border: 0;
+
+  background: transparent;
+  color: inherit;
 
   cursor: pointer;
 }
 
-.settings-admin__form {
-  padding: 25px;
+.settings-notice--error {
+  border-color: #fecdd3;
+
+  background: #fff1f2;
+  color: #9f1239;
 }
 
-.settings-admin__form-grid {
+
+/* =========================================================
+   PEOPLE WITH ACCESS
+   ========================================================= */
+
+.settings-access {
+  padding: 26px;
+
+  border: 1px solid var(--settings-border);
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.settings-section-heading {
+  margin-bottom: 22px;
+}
+
+.settings-section-heading h2 {
+  margin: 0;
+
+  color: var(--settings-ink);
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.settings-section-heading p {
+  margin: 6px 0 0;
+
+  color: var(--settings-muted);
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   USER CARDS
+   ========================================================= */
+
+.settings-user-list {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
-
-  gap: 18px;
+  gap: 14px;
 }
 
-.settings-admin__form label {
-  display: grid;
+.settings-user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  gap: 8px;
+  gap: 24px;
 
-  color:
-    var(--directory-ink);
+  padding: 20px;
 
-  font-size: 11px;
-  font-weight: 600;
+  border: 1px solid var(--settings-border);
+  border-radius: 12px;
+
+  background: #fafbfa;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
-.settings-admin__form label > span {
+.settings-user-card:hover {
+  border-color: #c6d2ce;
+
+  box-shadow:
+    0 5px 16px
+    rgb(36 52 63 / 0.045);
+}
+
+.settings-user-card__main {
+  min-width: 0;
+
   display: flex;
   align-items: center;
 
-  gap: 6px;
+  gap: 16px;
 }
 
-.settings-admin__form input {
-  width: 100%;
+.settings-user-avatar {
+  width: 52px;
+  height: 52px;
 
-  min-height: 43px;
+  display: grid;
+  place-items: center;
 
-  padding: 10px 12px;
+  flex: 0 0 auto;
 
-  border:
-    1px solid
-    var(--directory-border);
+  border-radius: 50%;
 
+  background: #eaf2ee;
+  color: #315f50;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.settings-user-avatar--super {
+  background: #f1ecfb;
+  color: #6941a5;
+}
+
+.settings-user-info {
+  min-width: 0;
+}
+
+.settings-user-info__title {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
+.settings-user-info h3 {
+  margin: 0;
+
+  color: var(--settings-ink);
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.settings-user-role {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #52626d;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settings-user-details {
+  display: flex;
+
+  gap: 14px;
+
+  margin-top: 7px;
+
+  flex-wrap: wrap;
+
+  color: var(--settings-muted);
+
+  font-size: 12px;
+}
+
+.settings-user-details strong {
+  color: var(--settings-ink);
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.settings-status {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.settings-status--active {
+  background: #e7f5ed;
+  color: #24684f;
+}
+
+.settings-status--inactive {
+  background: #fff1d6;
+  color: #8c5c11;
+}
+
+
+/* =========================================================
+   USER ACTIONS
+   ========================================================= */
+
+.settings-user-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+}
+
+.settings-user-action {
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d3dcdf;
   border-radius: 8px;
 
-  background:
-    var(--directory-soft);
+  background: #ffffff;
+  color: #334953;
 
-  color:
-    var(--directory-ink);
+  font-size: 12px;
+  font-weight: 700;
 
-  outline: none;
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
 }
 
-.settings-admin__form input:focus {
-  border-color: #6c9489;
+.settings-user-action:hover {
+  border-color: #a5b7b1;
 
-  box-shadow:
-    0 0 0 3px
-    rgb(71 127 113 / 0.12);
+  background: #f5f8f7;
+
+  transform: translateY(-1px);
 }
 
-.settings-admin__password {
-  grid-column: auto;
+.settings-user-action--warning {
+  border-color: #ead8b8;
+  color: #875815;
 }
 
-.settings-admin__password small {
-  color:
-    var(--directory-muted);
-
-  font-size: 10px;
-  font-weight: 400;
+.settings-user-action--success {
+  border-color: #c9e3d4;
+  color: #27664e;
 }
 
-.settings-admin__form
-.admin-directory-notice {
-  margin-top: 20px;
+.settings-user-action--danger {
+  border-color: #f0d0d4;
+  color: #9f1239;
 }
 
-.settings-admin__form-actions {
+.settings-user-action--danger:hover {
+  background: #fff1f2;
+}
+
+.settings-user-action:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+
+/* =========================================================
+   SUPER ADMIN
+   ========================================================= */
+
+.settings-super-actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
 
   gap: 10px;
 
-  margin-top: 24px;
-  padding-top: 20px;
-
-  border-top:
-    1px solid
-    var(--directory-border);
+  flex-wrap: wrap;
 }
 
-.settings-admin__confirm-backdrop {
+.settings-protected {
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 13px;
+
+  border-radius: 8px;
+
+  background: #f1ecfb;
+  color: #6941a5;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.settings-user-action--password {
+  border-color: #d8cbed;
+
+  background: #ffffff;
+  color: #6941a5;
+}
+
+.settings-user-action--password:hover {
+  border-color: #bca7df;
+
+  background: #f7f3fc;
+  color: #59358f;
+}
+
+
+/* =========================================================
+   EMPTY / LOADING
+   ========================================================= */
+
+.settings-empty {
+  min-height: 180px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  color: var(--settings-muted);
+}
+
+
+/* =========================================================
+   MODAL BACKDROP
+   ========================================================= */
+
+.settings-editor-backdrop {
   position: fixed;
 
   inset: 0;
@@ -239,7 +573,9 @@
   display: grid;
   place-items: center;
 
-  padding: 20px;
+  padding: 24px;
+
+  overflow-y: auto;
 
   background:
     rgb(15 23 42 / 0.56);
@@ -247,74 +583,252 @@
   backdrop-filter: blur(3px);
 }
 
-.settings-admin__confirm {
-  width:
-    min(
-      100%,
-      440px
-    );
 
-  padding: 28px;
+/* =========================================================
+   ADD / EDIT USER DIALOG
+   ========================================================= */
 
-  border:
-    1px solid
-    var(--directory-border);
+.settings-editor {
+  width: min(100%, 720px);
 
-  border-radius: 12px;
+  max-height:
+    calc(100dvh - 48px);
 
-  background:
-    var(--directory-surface);
+  overflow-y: auto;
+
+  border: 1px solid var(--settings-border);
+  border-radius: 14px;
+
+  background: #ffffff;
 
   box-shadow:
     0 24px 70px
     rgb(15 23 42 / 0.28);
 }
 
-.settings-admin__confirm-icon {
-  width: 44px;
-  height: 44px;
+.settings-editor__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 26px;
+
+  border-bottom:
+    1px solid
+    var(--settings-border);
+}
+
+.settings-editor__header h2 {
+  margin: 0;
+
+  color: var(--settings-ink);
+
+  font-size: 24px;
+}
+
+.settings-editor__header p {
+  max-width: 550px;
+
+  margin: 7px 0 0;
+
+  color: var(--settings-muted);
+
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.settings-editor__close {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: var(--settings-soft);
+  color: var(--settings-muted);
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   USER FORM
+   ========================================================= */
+
+.settings-form {
+  padding: 26px;
+}
+
+.settings-form__section + .settings-form__section {
+  margin-top: 28px;
+
+  padding-top: 24px;
+
+  border-top:
+    1px solid
+    var(--settings-border);
+}
+
+.settings-form__section h3 {
+  margin: 0 0 16px;
+
+  color: var(--settings-ink);
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.settings-form__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.settings-form label {
+  display: grid;
+  gap: 8px;
+
+  color: var(--settings-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.settings-form label > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.settings-form input,
+.settings-form select {
+  width: 100%;
+  min-height: 48px;
+
+  box-sizing: border-box;
+
+  padding: 10px 13px;
+
+  border: 1px solid #ccd6da;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: var(--settings-ink);
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.settings-form input:focus,
+.settings-form select:focus {
+  border-color: #6c9489;
+
+  box-shadow:
+    0 0 0 3px
+    rgb(71 127 113 / 0.15);
+}
+
+.settings-form label small {
+  color: var(--settings-muted);
+
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.settings-form__actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 28px;
+  padding-top: 22px;
+
+  border-top:
+    1px solid
+    var(--settings-border);
+}
+
+
+/* =========================================================
+   CONFIRM / PASSWORD DIALOG
+   ========================================================= */
+
+.settings-confirm {
+  width: min(100%, 450px);
+
+  padding: 29px;
+
+  border: 1px solid var(--settings-border);
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 24px 70px
+    rgb(15 23 42 / 0.28);
+}
+
+.settings-confirm__icon {
+  width: 48px;
+  height: 48px;
 
   display: grid;
   place-items: center;
 
   margin-bottom: 18px;
 
-  border-radius: 10px;
+  border-radius: 11px;
 
   background: #fff1f2;
   color: #9f1239;
 }
 
-.settings-admin__confirm h2 {
+.settings-confirm h2 {
   margin: 0;
 
-  color:
-    var(--directory-ink);
+  color: var(--settings-ink);
 
-  font-size: 20px;
+  font-size: 22px;
 }
 
-.settings-admin__confirm p {
-  margin-top: 10px;
+.settings-confirm p {
+  margin: 10px 0 0;
 
-  color:
-    var(--directory-muted);
+  color: var(--settings-muted);
 
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-.settings-admin__confirm-actions {
+.settings-confirm__warning {
+  color: #9f1239 !important;
+  font-weight: 700;
+}
+
+.settings-confirm__actions {
   display: flex;
   justify-content: flex-end;
 
   gap: 10px;
 
-  margin-top: 24px;
+  margin-top: 25px;
 }
 
-.settings-admin__delete-button {
-  min-height: 39px;
+.settings-delete-button {
+  min-height: 46px;
 
   display: inline-flex;
   align-items: center;
@@ -322,129 +836,466 @@
 
   gap: 8px;
 
-  padding: 9px 14px;
+  padding: 0 16px;
 
-  border-radius: 7px;
-
-  background: #9f1239;
-  color: #fff;
-
-  font-size: 11px;
-  font-weight: 650;
-
-  cursor: pointer;
-}
-
-.settings-admin__delete-button:disabled,
-.settings-admin__status-button:disabled {
-  opacity: 0.5;
-
-  cursor: wait;
-}
-
-html[data-theme="dark"]
-.settings-admin__role--super,
-html[data-theme="dark"]
-.settings-admin__protected,
-html[data-theme="dark"]
-.settings-admin__avatar--super {
-  background: #352b4b;
-  color: #d8c6ff;
-}
-
-html[data-theme="dark"]
-.settings-admin__confirm-icon {
-  background: #3c2330;
-  color: #fecdd3;
-}
-
-@media (max-width: 650px) {
-  .settings-admin__form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .settings-admin__password {
-    grid-column: auto;
-  }
-
-  .settings-admin__form,
-  .settings-admin__editor-header {
-    padding: 20px 17px;
-  }
-
-  .settings-admin__form-actions {
-    flex-direction: column-reverse;
-  }
-
-  .settings-admin__form-actions
-  .admin-directory-button {
-    width: 100%;
-  }
-
-  .settings-admin__confirm-actions {
-    flex-direction: column-reverse;
-  }
-
-  .settings-admin__delete-button,
-  .settings-admin__confirm-actions
-  .admin-directory-button {
-    width: 100%;
-  }
-}
-
-.settings-admin__form select {
-  width: 100%;
-  min-height: 43px;
-
-  padding: 10px 12px;
-
-  border: 1px solid
-    var(--directory-border);
-
+  border: 0;
   border-radius: 8px;
 
-  background:
-    var(--directory-soft);
+  background: #9f1239;
+  color: #ffffff;
 
-  color:
-    var(--directory-ink);
-
-  outline: none;
+  font-size: 13px;
+  font-weight: 700;
 
   cursor: pointer;
 }
 
-.settings-admin__form select:focus {
+
+/* =========================================================
+   CHANGE PASSWORD DIALOG
+   ========================================================= */
+
+.settings-password-dialog {
+  width: min(100%, 500px);
+}
+
+.settings-password-dialog__icon {
+  background: #eef3f7;
+  color: #315f91;
+}
+
+.settings-password-dialog h2 {
+  font-size: 23px;
+}
+
+.settings-password-form {
+  display: grid;
+
+  gap: 18px;
+
+  margin-top: 24px;
+}
+
+.settings-password-form label {
+  display: grid;
+  gap: 8px;
+
+  color: var(--settings-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.settings-password-form input {
+  width: 100%;
+  min-height: 49px;
+
+  box-sizing: border-box;
+
+  padding: 10px 13px;
+
+  border: 1px solid #cbd5da;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: var(--settings-ink);
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.settings-password-form input:hover {
+  border-color: #aebdc3;
+}
+
+.settings-password-form input:focus {
   border-color: #6c9489;
 
   box-shadow:
     0 0 0 3px
-    rgb(71 127 113 / 0.12);
+    rgb(71 127 113 / 0.15);
 }
 
-.settings-admin__form label small {
-  color:
-    var(--directory-muted);
+.settings-password-form small {
+  color: var(--settings-muted);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 1.5;
 }
 
-/* Administrator form responsive layout */
+.settings-password-dialog
+.settings-notice {
+  margin-top: 20px;
+}
 
-@media (max-width: 1000px) {
-  .settings-admin__form-grid {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.settings-button:focus-visible,
+.settings-user-action:focus-visible,
+.settings-editor__close:focus-visible,
+.settings-delete-button:focus-visible,
+.settings-password-form input:focus-visible {
+  outline: 3px solid
+    rgb(40 84 72 / 0.25);
+
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   SPINNER
+   ========================================================= */
+
+.settings-spin {
+  animation:
+    settings-spin
+    1.2s
+    linear
+    infinite;
+}
+
+@keyframes settings-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-@media (max-width: 650px) {
-  .settings-admin__form-grid {
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"]
+.settings-admin {
+  --settings-ink: #e6edf2;
+  --settings-muted: #a7b4bf;
+  --settings-border: #2d3e4b;
+  --settings-soft: #172633;
+}
+
+html[data-theme="dark"]
+.settings-overview,
+html[data-theme="dark"]
+.settings-access,
+html[data-theme="dark"]
+.settings-user-card,
+html[data-theme="dark"]
+.settings-editor,
+html[data-theme="dark"]
+.settings-confirm {
+  background: #111e2b;
+}
+
+html[data-theme="dark"]
+.settings-user-card {
+  background: #152330;
+}
+
+html[data-theme="dark"]
+.settings-button,
+html[data-theme="dark"]
+.settings-user-action,
+html[data-theme="dark"]
+.settings-form input,
+html[data-theme="dark"]
+.settings-form select,
+html[data-theme="dark"]
+.settings-password-form input {
+  background: #152330;
+  color: #e6edf2;
+}
+
+html[data-theme="dark"]
+.settings-user-action--password {
+  border-color: #4a3d64;
+
+  color: #d8c6ff;
+}
+
+html[data-theme="dark"]
+.settings-user-action--password:hover {
+  background: #282238;
+  color: #eadfff;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .settings-user-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .settings-user-card__actions,
+  .settings-super-actions {
+    width: 100%;
+
+    justify-content: flex-start;
+
+    padding-top: 15px;
+
+    border-top:
+      1px solid
+      var(--settings-border);
+  }
+}
+
+
+@media (max-width: 700px) {
+  .settings-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .settings-header__actions {
+    width: 100%;
+  }
+
+  .settings-header__actions
+  .settings-button {
+    flex: 1;
+  }
+
+  .settings-overview {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 18px;
+  }
+
+  .settings-overview__divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .settings-access {
+    padding: 20px;
+  }
+
+  .settings-form__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 520px) {
+  .settings-user-card {
+    padding: 17px;
+  }
+
+  .settings-user-card__main {
+    align-items: flex-start;
+  }
+
+  .settings-user-card__actions,
+  .settings-super-actions {
+    display: grid;
+
+    grid-template-columns: 1fr;
+  }
+
+  .settings-user-action,
+  .settings-protected {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    justify-content: center;
+  }
+
+  .settings-editor-backdrop {
+    padding: 10px;
+  }
+
+  .settings-editor {
+    max-height:
+      calc(100dvh - 20px);
+  }
+
+  .settings-editor__header,
+  .settings-form {
+    padding: 20px;
+  }
+
+  .settings-form__actions,
+  .settings-confirm__actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-form__actions
+  .settings-button,
+  .settings-confirm__actions
+  .settings-button,
+  .settings-delete-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   PASSWORD VISIBILITY TOGGLE
+   ========================================================= */
+
+.settings-password-input {
+  position: relative;
+
+  width: 100%;
+}
+
+.settings-password-input input {
+  padding-right: 52px;
+}
+
+.settings-password-toggle {
+  position: absolute;
+
+  top: 50%;
+  right: 8px;
+
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  transform: translateY(-50%);
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #687780;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.settings-password-toggle:hover {
+  background: #eef3f1;
+  color: #285448;
+}
+
+.settings-password-toggle:focus-visible {
+  outline: 3px solid rgb(40 84 72 / 0.22);
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"]
+.settings-password-toggle {
+  color: #a7b4bf;
+}
+
+html[data-theme="dark"]
+.settings-password-toggle:hover {
+  background: #223441;
+  color: #e6edf2;
+}
+
+
+/* =========================================================
+   NEW PASSWORD CONFIRMATION
+   ========================================================= */
+
+.settings-password-confirm {
+  width: min(100%, 520px);
+}
+
+.settings-password-confirm__icon {
+  background: #eef3f7;
+  color: #315f91;
+}
+
+.settings-password-preview {
+  display: grid;
+
+  gap: 8px;
+
+  margin-top: 22px;
+  padding: 17px 18px;
+
+  border: 1px solid #ccd8dc;
+  border-radius: 10px;
+
+  background: #f7f9f8;
+}
+
+.settings-password-preview > span {
+  color: var(--settings-muted);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.settings-password-preview > strong {
+  overflow-wrap: anywhere;
+
+  color: var(--settings-ink);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.settings-password-reminder {
+  display: grid;
+
+  gap: 4px;
+
+  margin-top: 16px;
+  padding: 14px 16px;
+
+  border: 1px solid #ead8b8;
+  border-radius: 9px;
+
+  background: #fff8e8;
+  color: #78541c;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.settings-password-reminder strong {
+  font-size: 14px;
+}
+
+html[data-theme="dark"]
+.settings-password-preview {
+  border-color: #344654;
+
+  background: #152330;
+}
+
+html[data-theme="dark"]
+.settings-password-reminder {
+  border-color: #5b4b2e;
+
+  background: #2a2417;
+  color: #f0d79a;
+}
+
+@media (max-width: 520px) {
+  .settings-password-preview > strong {
+    font-size: 16px;
   }
 }

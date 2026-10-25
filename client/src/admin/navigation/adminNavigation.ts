@@ -15,7 +15,11 @@ import {
   WalletCards,
 } from "lucide-react";
 
-export type AdminRole = "SUPER_ADMIN" | "ADMIN" | "STAFF";
+export type AdminRole =
+  | "SUPER_ADMIN"
+  | "RECOVERY_ADMIN"
+  | "ADMIN"
+  | "STAFF";
 
 type AdminNavigationItem = {
   label: string;

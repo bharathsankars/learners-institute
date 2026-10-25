@@ -23,6 +23,16 @@ export async function loginController(
       return;
     }
 
+    if (user.role === "RECOVERY_ADMIN") {
+      res.status(403).json({
+        success: false,
+        message:
+          "Recovery accounts must use the recovery portal.",
+      });
+
+      return;
+    }
+
     await startSession(user.id, res);
 
     res.status(200).json({

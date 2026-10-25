@@ -1,5 +1,6 @@
 import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import { contact } from "../data/contact";
 
 const quickLinks = [
   { label: "Courses", href: "#courses" },
@@ -8,7 +9,7 @@ const quickLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-const mapsUrl = "https://www.google.com/maps?cid=9424450921971281392";
+const mapsUrl = contact.mapsUrl;
 
 export function Footer() {
   return (
@@ -49,14 +50,14 @@ export function Footer() {
             <span className="site-footer__label">Contact</span>
 
             <div className="site-footer__contact-list">
-              <a href="tel:+919446125964">
+              <a href={contact.phoneHref}>
                 <Phone size={15} strokeWidth={1.8} aria-hidden="true" />
 
-                <span>+91 94461 25964</span>
+                <span>{contact.phoneDisplay}</span>
               </a>
 
               <a
-                href="https://wa.me/919446125964"
+                href={contact.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >
