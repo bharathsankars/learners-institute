@@ -1,7 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import helmet from "helmet";
+import * as helmetModule from "helmet";
 
 import { enquiryRouter } from "./routes/enquiry.routes.js";
 import { paymentRouter } from "./routes/payment.routes.js";
@@ -18,7 +18,7 @@ import { recoveryRouter } from "./routes/recovery.routes.js";
 export const app = express();
 
 // Standard HTTP security headers.
-app.use(helmet());
+app.use(helmetModule.default());
 
 
 app.disable("x-powered-by");
