@@ -96,47 +96,38 @@ Promise<RecoverySuperAdmin> {
   return result.data.user;
 }
 
-export async function createTemporaryRecoveryPassword(
-  temporaryPassword: string,
-): Promise<Date> {
-  const response =
-    await fetch(
-      `${API_URL}/api/recovery/temporary-password`,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-
-        credentials:
-          "include",
-
-        body:
-          JSON.stringify({
-            temporaryPassword,
-          }),
+export async function createTemporaryRecoveryPassword(): Promise<{
+  temporaryPassword: string;
+  expiresAt: Date;
+}> {
+  const response = await fetch(
+    `${API_URL}/api/recovery/temporary-password`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify({}),
+    },
+  );
 
   if (!response.ok) {
-    throw await apiError(
-      response,
-    );
+    throw await apiError(response);
   }
 
-  const result =
-    (await response.json()) as {
-      success: true;
-      data: {
-        expiresAt: string;
-      };
+  const result = (await response.json()) as {
+    success: true;
+    data: {
+      temporaryPassword: string;
+      expiresAt: string;
     };
+  };
 
-  return new Date(
-    result.data.expiresAt,
-  );
+  return {
+    temporaryPassword: result.data.temporaryPassword,
+    expiresAt: new Date(result.data.expiresAt),
+  };
 }
 
 export async function verifyTemporaryRecoveryPassword(

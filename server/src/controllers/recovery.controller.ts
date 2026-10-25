@@ -29,7 +29,6 @@ import {
 
 import {
   completeSuperAdminPasswordResetSchema,
-  createTemporaryRecoveryPasswordSchema,
   verifyTemporaryRecoveryPasswordSchema,
 } from "../validators/recovery.validator.js";
 
@@ -179,15 +178,9 @@ export async function createTemporaryRecoveryPasswordController(
       return;
     }
 
-    const input =
-      createTemporaryRecoveryPasswordSchema.parse(
-        req.body,
-      );
-
     const result =
       await createTemporaryRecoveryPassword(
         recoveryAdmin.id,
-        input,
       );
 
     if (
@@ -211,8 +204,8 @@ export async function createTemporaryRecoveryPasswordController(
         "Temporary recovery password created.",
 
       data: {
-        expiresAt:
-          result.recoveryCode.expiresAt,
+        expiresAt: result.recoveryCode.expiresAt,
+        temporaryPassword: result.temporaryPassword,
       },
     });
   } catch (error) {

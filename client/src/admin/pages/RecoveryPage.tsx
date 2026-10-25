@@ -1,4 +1,4 @@
-import { Eye, EyeOff, KeyRound, LogOut, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, KeyRound, LogOut, ShieldCheck, Copy, Check, Clock3, RefreshCw } from "lucide-react";
 
 import { type FormEvent, useEffect, useState } from "react";
 
@@ -27,15 +27,6 @@ export function RecoveryPage() {
 
   const [loggingIn, setLoggingIn] = useState(false);
 
-  const [temporaryPassword, setTemporaryPassword] = useState("");
-
-  const [confirmTemporaryPassword, setConfirmTemporaryPassword] = useState("");
-
-  const [showTemporaryPassword, setShowTemporaryPassword] = useState(false);
-
-  const [showConfirmTemporaryPassword, setShowConfirmTemporaryPassword] =
-    useState(false);
-
   const [createError, setCreateError] = useState("");
 
   const [creating, setCreating] = useState(false);
@@ -43,6 +34,9 @@ export function RecoveryPage() {
   const [createdPassword, setCreatedPassword] = useState("");
 
   const [expiresAt, setExpiresAt] = useState<Date | null>(null);
+
+  const [copied, setCopied] = useState(false);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -104,40 +98,36 @@ export function RecoveryPage() {
   async function createTemporaryPassword() {
     setCreateError("");
 
-    if (temporaryPassword.length < 8) {
-      setCreateError("Temporary password must contain at least 8 characters.");
-
-      return;
-    }
-
-    if (temporaryPassword !== confirmTemporaryPassword) {
-      setCreateError("Temporary passwords do not match.");
-
-      return;
-    }
-
     try {
       setCreating(true);
 
-      const expiry = await createTemporaryRecoveryPassword(temporaryPassword);
+      const result = await createTemporaryRecoveryPassword();
 
-      setCreatedPassword(temporaryPassword);
-
-      setExpiresAt(expiry);
-
-      setTemporaryPassword("");
-      setConfirmTemporaryPassword("");
-
-      setShowTemporaryPassword(false);
-      setShowConfirmTemporaryPassword(false);
+      setCreatedPassword(result.temporaryPassword);
+      setExpiresAt(result.expiresAt);
     } catch (error) {
       setCreateError(
         error instanceof Error
           ? error.message
-          : "Unable to create temporary recovery password.",
+          : "Unable to generate temporary recovery password.",
       );
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function copyRecoveryPassword() {
+    if (!createdPassword) return;
+
+    try {
+      await navigator.clipboard.writeText(createdPassword);
+      setCopied(true);
+      setCreateError("");
+    } catch {
+      setCopied(false);
+      setCreateError(
+        "Unable to copy automatically. Please select and copy the code manually.",
+      );
     }
   }
 
@@ -234,7 +224,11 @@ export function RecoveryPage() {
   return (
     <main className="recovery-page">
       <div className="recovery-shell">
-        <header className="recovery-header">
+
+
+        {createdPassword ? (
+          <section className="recovery-panel recovery-single-card">
+        <div className="recovery-header">
           <div>
             <span className="recovery-eyebrow">Developer recovery</span>
 
@@ -254,9 +248,110 @@ export function RecoveryPage() {
             <LogOut size={18} />
             Sign out
           </button>
-        </header>
+        </div>
+            <div className="recovery-single-card__heading">
+              <ShieldCheck size={26} aria-hidden="true" />
 
-        <section className="recovery-account-card">
+              <div>
+                <span className="recovery-eyebrow">
+                  Super Admin Recovery
+                </span>
+                <h2>Temporary password generated</h2>
+                <p>
+                  Share this password securely with the
+                  Super Administrator.
+                </p>
+              </div>
+            </div>
+
+            <div className="recovery-single-card__content">
+              <span className="recovery-single-card__label">
+                Temporary recovery password
+              </span>
+
+              <div className="recovery-single-card__password">
+                <code>{createdPassword}</code>
+              </div>
+
+              <button
+                type="button"
+                className="recovery-single-card__copy"
+                onClick={copyRecoveryPassword}
+              >
+                {copied ? (
+                  <Check size={17} aria-hidden="true" />
+                ) : (
+                  <Copy size={17} aria-hidden="true" />
+                )}
+                {copied ? "Copied!" : "Copy password"}
+              </button>
+            </div>
+
+            <div className="recovery-single-card__info">
+              <Clock3 size={17} aria-hidden="true" />
+              <span>
+                Valid for 30 minutes · One-time use
+                {expiresAt && (
+                  <>
+                    {" · Expires at "}
+                    {expiresAt.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </>
+                )}
+              </span>
+            </div>
+
+            <p className="recovery-single-card__notice">
+              Generating another password invalidates the
+              previously generated password.
+            </p>
+
+            {createError && (
+              <div className="recovery-error" role="alert">
+                {createError}
+              </div>
+            )}
+
+            <button
+              className="recovery-secondary-button recovery-single-card__regenerate"
+              type="button"
+              onClick={() => {
+                setCreatedPassword("");
+                setExpiresAt(null);
+                setCopied(false);
+                setCreateError("");
+              }}
+            >
+              <RefreshCw size={17} aria-hidden="true" />
+              Generate another password
+            </button>
+          </section>
+        ) : (
+          <section className="recovery-panel">
+        <div className="recovery-header">
+          <div>
+            <span className="recovery-eyebrow">Developer recovery</span>
+
+            <h1>Super Admin recovery</h1>
+
+            <p>
+              Create a temporary recovery password only when the Super
+              Administrator has forgotten their normal password.
+            </p>
+          </div>
+
+          <button
+            className="recovery-secondary-button"
+            type="button"
+            onClick={handleLogout}
+          >
+            <LogOut size={18} />
+            Sign out
+          </button>
+        </div>
+            <div className="recovery-account-card">
           <div className="recovery-account-icon">
             <ShieldCheck size={26} aria-hidden="true" />
           </div>
@@ -272,54 +367,8 @@ export function RecoveryPage() {
               Username: <strong>{user.username}</strong>
             </p>
           </div>
-        </section>
+        </div>
 
-        {createdPassword ? (
-          <section className="recovery-panel">
-            <div className="recovery-mark recovery-mark--success">
-              <KeyRound size={27} />
-            </div>
-
-            <span className="recovery-eyebrow">Temporary password ready</span>
-
-            <h2>Give this password to the Super Administrator</h2>
-
-            <div className="recovery-password-result">{createdPassword}</div>
-
-            <div className="recovery-warning">
-              <strong>Valid for 30 minutes and one use only.</strong>
-
-              <span>
-                The Super Administrator should click “Forgot password?” on the
-                login page and enter this temporary password.
-              </span>
-
-              {expiresAt && (
-                <span>
-                  Expires at{" "}
-                  <strong>
-                    {expiresAt.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </strong>
-                </span>
-              )}
-            </div>
-
-            <button
-              className="recovery-secondary-button"
-              type="button"
-              onClick={() => {
-                setCreatedPassword("");
-                setExpiresAt(null);
-              }}
-            >
-              Create another temporary password
-            </button>
-          </section>
-        ) : (
-          <section className="recovery-panel">
             <div className="recovery-section-heading">
               <KeyRound size={23} />
 
@@ -334,70 +383,6 @@ export function RecoveryPage() {
             </div>
 
             <div className="recovery-form">
-              <label>
-                <span>Temporary recovery password</span>
-
-                <div className="recovery-password-field">
-                  <input
-                    type={showTemporaryPassword ? "text" : "password"}
-                    value={temporaryPassword}
-                    onChange={(event) =>
-                      setTemporaryPassword(event.target.value)
-                    }
-                    autoComplete="new-password"
-                  />
-
-                  <button
-                    type="button"
-                    aria-label={
-                      showTemporaryPassword ? "Hide password" : "Show password"
-                    }
-                    onClick={() => setShowTemporaryPassword((value) => !value)}
-                  >
-                    {showTemporaryPassword ? (
-                      <EyeOff size={19} />
-                    ) : (
-                      <Eye size={19} />
-                    )}
-                  </button>
-                </div>
-
-                <small>Minimum 8 characters.</small>
-              </label>
-
-              <label>
-                <span>Confirm temporary password</span>
-
-                <div className="recovery-password-field">
-                  <input
-                    type={showConfirmTemporaryPassword ? "text" : "password"}
-                    value={confirmTemporaryPassword}
-                    onChange={(event) =>
-                      setConfirmTemporaryPassword(event.target.value)
-                    }
-                    autoComplete="new-password"
-                  />
-
-                  <button
-                    type="button"
-                    aria-label={
-                      showConfirmTemporaryPassword
-                        ? "Hide password"
-                        : "Show password"
-                    }
-                    onClick={() =>
-                      setShowConfirmTemporaryPassword((value) => !value)
-                    }
-                  >
-                    {showConfirmTemporaryPassword ? (
-                      <EyeOff size={19} />
-                    ) : (
-                      <Eye size={19} />
-                    )}
-                  </button>
-                </div>
-              </label>
-
               {createError && (
                 <div className="recovery-error" role="alert">
                   {createError}
@@ -410,7 +395,7 @@ export function RecoveryPage() {
                 disabled={creating}
                 onClick={createTemporaryPassword}
               >
-                {creating ? "Creating…" : "Create temporary password"}
+                {creating ? "Creating…" : "Generate temporary recovery password"}
               </button>
             </div>
           </section>

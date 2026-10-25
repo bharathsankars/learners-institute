@@ -15,7 +15,7 @@ export function RequireRole({ allowedRoles }: RequireRoleProps) {
   }
 
   if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
   return <Outlet />;

@@ -173,8 +173,8 @@ export function ForgotPasswordPage() {
                   <ShieldCheck size={20} aria-hidden="true" />
 
                   <span>
-                    Your temporary password has been sent to
-                    <strong> re*****.com</strong>
+                    Your temporary recovery password is available from
+                    <strong> your Recovery Administrator.</strong>
                   </span>
                 </div>
 

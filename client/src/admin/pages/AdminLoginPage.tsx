@@ -173,9 +173,9 @@ export function AdminLoginPage() {
               <ShieldCheck size={26} strokeWidth={1.8} aria-hidden="true" />
             </div>
 
-            <span>Secure Admin Access</span>
+            <span>Administration Portal</span>
 
-            <h2>Learners Admin Portal</h2>
+            <h2>Learners Administration</h2>
 
             <p>
               Secure access for authorised institute staff to manage students,
@@ -284,7 +284,14 @@ export function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Error */}
+            {/* Forgot password */}
+          <div className="admin-login__forgot-password">
+            <Link to="/admin/forgot-password">
+              Forgot password?
+            </Link>
+          </div>
+
+          {/* Error */}
 
             {error && (
               <div className="admin-login__error" role="alert">

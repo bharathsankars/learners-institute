@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
+import { randomBytes } from "node:crypto";
 
 import { prisma } from "../config/database.js";
 
 import type {
   CompleteSuperAdminPasswordResetInput,
-  CreateTemporaryRecoveryPasswordInput,
   VerifyTemporaryRecoveryPasswordInput,
 } from "../validators/recovery.validator.js";
 
@@ -31,91 +31,62 @@ export async function getRecoverySuperAdmin() {
 
 export async function createTemporaryRecoveryPassword(
   recoveryAdminId: string,
-  input:
-    CreateTemporaryRecoveryPasswordInput,
 ) {
-  const superAdmin =
-    await prisma.user.findFirst({
-      where: {
-        role: "SUPER_ADMIN",
-      },
-
-      select: {
-        id: true,
-      },
-    });
+  const superAdmin = await prisma.user.findFirst({
+    where: { role: "SUPER_ADMIN" },
+    select: { id: true },
+  });
 
   if (!superAdmin) {
-    return {
-      status:
-        "NOT_FOUND" as const,
-    };
+    return { status: "NOT_FOUND" as const };
   }
 
-  const codeHash =
-    await bcrypt.hash(
-      input.temporaryPassword,
-      BCRYPT_ROUNDS,
-    );
+  // Generate a cryptographically secure temporary password.
+  const temporaryPassword =
+    "LNR-" + randomBytes(18).toString("hex").toUpperCase();
 
-  const now =
-    new Date();
+  const codeHash = await bcrypt.hash(
+    temporaryPassword,
+    BCRYPT_ROUNDS,
+  );
 
-  const expiresAt =
-    new Date(
-      now.getTime() +
-        RECOVERY_MINUTES *
-          60 *
-          1000,
-    );
+  const now = new Date();
 
-  const [, recoveryCode] =
-    await prisma.$transaction([
-      /*
-       * Creating a new recovery password
-       * immediately invalidates all
-       * previously issued passwords.
-       */
-      prisma.superAdminRecoveryCode.updateMany({
+  const expiresAt = new Date(
+    now.getTime() + RECOVERY_MINUTES * 60 * 1000,
+  );
+
+  const recoveryCode = await prisma.$transaction(
+    async (tx) => {
+      // Invalidate previously issued recovery codes.
+      await tx.superAdminRecoveryCode.updateMany({
         where: {
-          superAdminId:
-            superAdmin.id,
-
-          usedAt:
-            null,
+          superAdminId: superAdmin.id,
+          usedAt: null,
         },
+        data: { usedAt: now },
+      });
 
+      return tx.superAdminRecoveryCode.create({
         data: {
-          usedAt:
-            now,
-        },
-      }),
-
-      prisma.superAdminRecoveryCode.create({
-        data: {
-          superAdminId:
-            superAdmin.id,
-
-          createdById:
-            recoveryAdminId,
-
+          superAdminId: superAdmin.id,
+          createdById: recoveryAdminId,
           codeHash,
-
           expiresAt,
         },
-
         select: {
           id: true,
           expiresAt: true,
         },
-      }),
-    ]);
+      });
+    },
+    { isolationLevel: "Serializable" },
+  );
 
   return {
-    status:
-      "CREATED" as const,
-
+    status: "CREATED" as const,
     recoveryCode,
+    temporaryPassword,
   };
 }
 
@@ -205,80 +176,74 @@ export async function verifyTemporaryRecoveryPassword(
 }
 
 export async function completeSuperAdminPasswordReset(
-  input:
-    CompleteSuperAdminPasswordResetInput,
+  input: CompleteSuperAdminPasswordResetInput,
 ) {
-  const match =
-    await findMatchingRecoveryCode(
-      input.temporaryPassword,
-    );
+  const match = await findMatchingRecoveryCode(input.temporaryPassword);
 
   if (!match) {
-    return {
-      status:
-        "INVALID" as const,
-    };
+    return { status: "INVALID" as const };
   }
 
-  const passwordHash =
-    await bcrypt.hash(
-      input.newPassword,
-      BCRYPT_ROUNDS,
-    );
+  const passwordHash = await bcrypt.hash(input.newPassword, BCRYPT_ROUNDS);
+  const now = new Date();
 
-  const now =
-    new Date();
+  try {
+    await prisma.$transaction(async (tx) => {
+      const claim = await tx.superAdminRecoveryCode.updateMany({
+        where: {
+          id: match.recoveryCode.id,
+          superAdminId: match.superAdmin.id,
+          usedAt: null,
+          expiresAt: { gt: now },
+        },
+        data: { usedAt: now },
+      });
 
-  await prisma.$transaction([
-    prisma.user.update({
-      where: {
-        id:
-          match.superAdmin.id,
-      },
+      if (claim.count !== 1) {
+        throw new Error("RECOVERY_CODE_ALREADY_USED");
+      }
 
-      data: {
-        password:
-          passwordHash,
+      await tx.user.update({
+        where: { id: match.superAdmin.id },
+        data: {
+          password: passwordHash,
+          isActive: true,
+        },
+      });
 
-        isActive:
-          true,
-      },
-    }),
+      await tx.session.deleteMany({
+        where: { userId: match.superAdmin.id },
+      });
 
-    /*
-     * Sign out all existing
-     * Super Admin sessions.
-     */
-    prisma.session.deleteMany({
-      where: {
-        userId:
-          match.superAdmin.id,
-      },
-    }),
+      await tx.superAdminRecoveryCode.updateMany({
+        where: {
+          superAdminId: match.superAdmin.id,
+          usedAt: null,
+        },
+        data: { usedAt: now },
+      });
+    }, {
+      isolationLevel: "Serializable",
+    });
 
-    /*
-     * The recovery password is
-     * one-time use. Invalidate all
-     * outstanding recovery codes.
-     */
-    prisma.superAdminRecoveryCode.updateMany({
-      where: {
-        superAdminId:
-          match.superAdmin.id,
+    return { status: "UPDATED" as const };
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "RECOVERY_CODE_ALREADY_USED"
+    ) {
+      return { status: "INVALID" as const };
+    }
 
-        usedAt:
-          null,
-      },
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "P2034"
+    ) {
+      return { status: "INVALID" as const };
+    }
 
-      data: {
-        usedAt:
-          now,
-      },
-    }),
-  ]);
-
-  return {
-    status:
-      "UPDATED" as const,
-  };
+    throw error;
+  }
 }

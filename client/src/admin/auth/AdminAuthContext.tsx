@@ -36,7 +36,11 @@ export function AdminAuthProvider({
           await getCurrentUserRequest();
 
         if (!cancelled) {
-          setUser(currentUser);
+          setUser(
+          currentUser?.role === "RECOVERY_ADMIN"
+            ? null
+            : currentUser
+        );
         }
       } catch {
         if (!cancelled) {
@@ -65,6 +69,11 @@ export function AdminAuthProvider({
         username,
         password,
       );
+
+      if (loggedInUser.role === "RECOVERY_ADMIN") {
+        setUser(null);
+        return false;
+      }
 
       setUser(loggedInUser);
 

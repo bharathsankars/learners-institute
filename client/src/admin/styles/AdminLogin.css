@@ -158,10 +158,10 @@
 
   color: #8fc4ff;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -172,22 +172,23 @@
 
   color: var(--color-white);
 
-  font-size: clamp(26px, 2.2vw, 36px);
-  line-height: 1.2;
-  letter-spacing: -0.04em;
-  font-weight: 700;
+  font-size: clamp(36px, 4vw, 54px);
+
+  line-height: 1.04;
+
+  letter-spacing: -0.045em;
 }
 
 .admin-login__intro p {
   max-width: 470px;
 
-  margin: 18px 0 0;
+  margin: 22px 0 0;
 
-  color: rgb(255 255 255 / 0.7);
+  color: rgb(255 255 255 / 0.67);
 
   font-size: 15px;
 
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
 .admin-login__visual-footer {
@@ -1845,3 +1846,31 @@ html[data-theme="dark"] .admin-login__password-toggle:hover:not(:disabled) {
   }
 }
 
+
+
+/* Forgot password */
+
+.admin-login__forgot-password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -4px;
+}
+
+.admin-login__forgot-password a {
+  color: #754d46;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.admin-login__forgot-password a:hover {
+  color: #b84f38;
+  text-decoration: underline;
+}
+
+.admin-login__forgot-password a:focus-visible {
+  outline: 2px solid #b84f38;
+  outline-offset: 3px;
+  border-radius: 3px;
+}

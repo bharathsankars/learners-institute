@@ -23,6 +23,16 @@ authRouter.get("/me", async (req, res, next) => {
       return;
     }
 
+    // Recovery Admin must never be treated as a normal admin.
+    if (user.role === "RECOVERY_ADMIN") {
+      res.status(403).json({
+        success: false,
+        message: "Recovery accounts cannot access the administration portal.",
+      });
+
+      return;
+    }
+
     res.status(200).json({
       success: true,
       data: {

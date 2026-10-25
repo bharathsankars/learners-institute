@@ -43,7 +43,7 @@ const tickerItems = [
 
 const trustStats = [
   {
-    value: "56+",
+    value: "57",
     label: "Years of guidance",
   },
   {

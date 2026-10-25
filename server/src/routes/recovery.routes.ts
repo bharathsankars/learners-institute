@@ -1,3 +1,4 @@
+import { recoveryRateLimit } from "../middleware/recoveryRateLimit.js";
 import {
   Router,
 } from "express";
@@ -33,11 +34,13 @@ recoveryRouter.post(
  */
 recoveryRouter.post(
   "/verify-temporary-password",
+  recoveryRateLimit,
   verifyTemporaryRecoveryPasswordController,
 );
 
 recoveryRouter.patch(
   "/complete-password-reset",
+  recoveryRateLimit,
   completeSuperAdminPasswordResetController,
 );
 

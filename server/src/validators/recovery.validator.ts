@@ -24,12 +24,6 @@ const newPasswordSchema =
       "New password is too long.",
     );
 
-export const createTemporaryRecoveryPasswordSchema =
-  z.object({
-    temporaryPassword:
-      temporaryPasswordSchema,
-  });
-
 export const verifyTemporaryRecoveryPasswordSchema =
   z.object({
     temporaryPassword:
@@ -55,11 +49,6 @@ export const completeSuperAdminPasswordResetSchema =
         path: ["newPassword"],
       },
     );
-
-export type CreateTemporaryRecoveryPasswordInput =
-  z.infer<
-    typeof createTemporaryRecoveryPasswordSchema
-  >;
 
 export type VerifyTemporaryRecoveryPasswordInput =
   z.infer<
