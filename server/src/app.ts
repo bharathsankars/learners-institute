@@ -18,7 +18,10 @@ import { recoveryRouter } from "./routes/recovery.routes.js";
 export const app = express();
 
 // Standard HTTP security headers.
-app.use(helmetModule.default());
+app.use(
+  (helmetModule.default as unknown as
+    () => import("express").RequestHandler)()
+);
 
 
 app.disable("x-powered-by");
