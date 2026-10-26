@@ -573,3 +573,285 @@
   }
 }
 
+
+
+/* INLINE ENQUIRY SUCCESS CONFIRMATION */
+
+.enquiry-success-inline {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  margin-bottom: 22px;
+  padding: 18px;
+  border: 1px solid #b8dfc8;
+  border-radius: 12px;
+  background: #f0faf3;
+  color: #22523a;
+}
+
+.enquiry-success-inline__icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #287d4c;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.enquiry-success-inline__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.enquiry-success-inline__content strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.enquiry-success-inline__content p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.enquiry-success-inline__close {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.enquiry-success-inline__close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+  .enquiry-success-inline {
+    padding: 14px;
+    gap: 10px;
+  }
+}
+
+
+/* MULTI COURSE ENQUIRY SELECTION */
+
+.enquiry-course-label {
+  color: var(--color-navy-900);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.enquiry-course-help,
+.enquiry-course-count {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.enquiry-course-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  max-height: 270px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.enquiry-course-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-white);
+  cursor: pointer;
+}
+
+.enquiry-course-option:has(input:checked) {
+  border-color: var(--color-blue-500);
+  background: var(--color-surface-soft);
+}
+
+.enquiry-course-option:focus-within {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+.enquiry-course-option input {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  accent-color: var(--color-blue-600);
+}
+
+.enquiry-course-option span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .enquiry-course-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* COURSE CHECKBOX — REMOVE SELECTED OUTER BOX */
+
+.enquiry-course-option:has(input:checked) {
+  border-color: transparent;
+  background: transparent;
+}
+
+.enquiry-course-option {
+  border-color: transparent;
+  background: transparent;
+}
+
+.enquiry-course-option:hover {
+  background: transparent;
+}
+
+.enquiry-course-option:focus-within {
+  outline: none;
+}
+
+.enquiry-course-option input:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 3px;
+}
+
+
+/* Restore course option boxes */
+.enquiry-course-option,
+.enquiry-course-option:hover {
+  border-color: var(--color-border);
+  background: var(--color-white);
+}
+
+.enquiry-course-option:has(input:checked) {
+  border-color: var(--color-blue-500);
+  background: var(--color-surface-soft);
+}
+
+/* No rectangular focus outline around the entire option */
+.enquiry-course-option:focus-within {
+  outline: none;
+}
+
+/* Remove checkbox focus outline for mouse clicks */
+.enquiry-course-option input:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Preserve visible focus for keyboard users */
+.enquiry-course-option input:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 3px;
+}
+
+
+/* COURSE SELECTION TOOLBAR */
+
+.enquiry-course-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.enquiry-course-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.enquiry-course-actions button {
+  padding: 5px 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-blue-600);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.enquiry-course-actions button:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.enquiry-course-actions button:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.enquiry-course-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ENQUIRY COURSE SEARCH */
+
+.enquiry-course-search-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 7px;
+}
+
+.enquiry-course-search-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 13px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 9px;
+  background: var(--color-white);
+  color: var(--color-heading);
+  font: inherit;
+  font-size: 14px;
+}
+
+.enquiry-course-search-input:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+.enquiry-course-empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+
+/* REQUIRED FIELD INDICATORS */
+
+.enquiry-form__field .enquiry-required {
+  color: #dc2626;
+  font-size: 15px;
+  font-weight: 800;
+  margin-left: 2px;
+}
+

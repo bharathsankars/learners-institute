@@ -10,39 +10,36 @@ type CoursesProps = {
   onEnquire?: (courseId: string) => void;
 };
 
+
+
 const quickFilters = [
-  "All",
+  "All Courses",
   "Typewriting",
   "Shorthand",
-  "Computer",
-  "Office skills",
+  "Computer Courses",
+  "Exam Preparation",
 ] as const;
 
 export function Courses({ onEnquire }: CoursesProps) {
   const query = usePublicCourses();
   const courses = query.data ?? [];
+
   const [expandedCourses, setExpandedCourses] = useState<
     Record<string, boolean>
   >({});
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+
   const [activeFilter, setActiveFilter] =
-    useState<(typeof quickFilters)[number]>("All");
+    useState<(typeof quickFilters)[number]>("All Courses");
 
   const filteredCourses =
-    activeFilter === "All"
+    activeFilter === "All Courses"
       ? courses
-      : courses.filter((course) => {
-          const title = course.title.toLowerCase();
-          const filter = activeFilter.toLowerCase();
-
-          if (filter === "typewriting") return title.includes("typewriting");
-          if (filter === "shorthand") return title.includes("shorthand");
-          if (filter === "computer") return title.includes("computer");
-          if (filter === "office skills")
-            return title.includes("office") || title.includes("commercial");
-
-          return true;
-        });
+      : courses.filter(
+          (course) =>
+            course.category?.trim().toLowerCase() ===
+            activeFilter.toLowerCase(),
+        );
 
   const selectedCourse =
     courses.find((course) => course.id === selectedCourseId) ?? null;

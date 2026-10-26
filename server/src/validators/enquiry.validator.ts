@@ -29,7 +29,7 @@ export const createEnquirySchema = z.object({
       "Please enter a valid phone number.",
     ),
   email: optionalEmail,
-  course: z.string().trim().min(1, "Please select a course.").max(200),
+  course: z.string().trim().min(1, "Please select a course.").max(1000),
   message: z.string().trim().max(500).optional(),
 });
 export const updateEnquirySchema = z.object({

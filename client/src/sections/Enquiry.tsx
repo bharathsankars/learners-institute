@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, ChevronDown, MapPin, MessageCircle } from "lucide-react";
+import { ArrowRight, MapPin, MessageCircle, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,7 +33,6 @@ const enquirySchema = z.object({
     ])
     .optional()
     .transform((value) => (value === "" ? undefined : value)),
-  course: z.string().min(1, "Please select a course."),
   message: z.string().trim().max(500, "Message must be under 500 characters."),
 });
 
@@ -50,6 +49,14 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
   const courseQuery = usePublicCourses();
   const courses = useMemo(() => courseQuery.data ?? [], [courseQuery.data]);
   const [submitError, setSubmitError] = useState("");
+  const [courseError, setCourseError] = useState("");
+  const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
+  const [courseSearchOpen, setCourseSearchOpen] = useState(false);
+  const [courseSearch, setCourseSearch] = useState("");
+
+  const visibleCourses = courses.filter((course) =>
+    course.title.toLowerCase().includes(courseSearch.trim().toLowerCase())
+  );
   const [showSuccess, setShowSuccess] = useState(false);
   const requestId = useRef(crypto.randomUUID());
   const submitting = useRef(false);
@@ -58,7 +65,6 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<EnquiryFormValues>({
     resolver: zodResolver(enquirySchema),
@@ -66,7 +72,6 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
       name: "",
       phone: "",
       email: "",
-      course: "",
       message: "",
     },
   });
@@ -88,18 +93,26 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
       return;
     }
 
-    setValue("course", courseSelection.courseId, {
-      shouldDirty: false,
-      shouldTouch: false,
-      shouldValidate: true,
-    });
+    setSelectedCourseIds((current) =>
+      current.includes(courseSelection.courseId)
+        ? current
+        : [...current, courseSelection.courseId],
+    );
+    setCourseError("");
 
     lastAppliedCourseSelection.current = courseSelection.requestId;
-  }, [courseSelection, courses, setValue]);
+  }, [courseSelection, courses]);
 
   const onSubmit = async (data: EnquiryFormValues) => {
     if (submitting.current) return;
+
+    if (selectedCourseIds.length === 0) {
+      setCourseError("Please select at least one course.");
+      return;
+    }
+
     submitting.current = true;
+    setCourseError("");
     setSubmitError("");
     setShowSuccess(false);
     try {
@@ -109,41 +122,40 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
         throw new Error(
           "Unable to verify course availability. Please try again.",
         );
-      const selectedCourse = latest.data?.find(
-        (course) => course.id === data.course,
+      const selectedCourses = selectedCourseIds.map((id) =>
+        latest.data?.find((course) => course.id === id),
       );
-      if (!selectedCourse)
+
+      if (selectedCourses.some((course) => !course)) {
         throw new Error(
-          "This course is no longer available. Please select another course.",
+          "One or more selected courses are no longer available. Please review your selection.",
         );
+      }
+
+      const courseNames = selectedCourses
+        .map((course) => course!.title)
+        .join(", ");
+
+      if (courseNames.length > 1000) {
+        throw new Error("Please select fewer courses.");
+      }
 
       const payload: CreateEnquiryInput = {
         name: data.name,
         phone: data.phone,
         email: data.email?.trim() || undefined,
-        course: selectedCourse.title,
+        course: courseNames,
         message: data.message.trim() || undefined,
         requestId: requestId.current,
       };
 
       await submitEnquiry(payload);
       reset();
+      setSelectedCourseIds([]);
+      setCourseError("");
       requestId.current = crypto.randomUUID();
 
       setShowSuccess(true);
-
-      window.history.replaceState(null, "", "#home");
-
-      window.requestAnimationFrame(() => {
-        document.getElementById("home")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      });
-
-      window.setTimeout(() => {
-        setShowSuccess(false);
-      }, 4500);
     } catch (error) {
       setSubmitError(
         error instanceof Error
@@ -157,31 +169,6 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
 
   return (
     <section id="enquiry" className="enquiry-section section">
-      {showSuccess && (
-        <div
-          className="enquiry-success-snackbar"
-          role="status"
-          aria-live="polite"
-        >
-          <span className="enquiry-success-snackbar__icon" aria-hidden="true">
-            ✓
-          </span>
-
-          <div className="enquiry-success-snackbar__content">
-            <strong>Enquiry sent successfully</strong>
-            <span>Thank you. Our team will contact you shortly.</span>
-          </div>
-
-          <button
-            type="button"
-            className="enquiry-success-snackbar__close"
-            aria-label="Close success message"
-            onClick={() => setShowSuccess(false)}
-          >
-            ×
-          </button>
-        </div>
-      )}
       <div className="container enquiry-section__layout">
         <div className="enquiry-section__content">
           <span className="enquiry-section__eyebrow">
@@ -219,6 +206,34 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
         </div>
 
         <div className="enquiry-section__form-card">
+          {showSuccess && (
+            <div
+              className="enquiry-success-inline"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="enquiry-success-inline__icon" aria-hidden="true">
+                ✓
+              </span>
+
+              <div className="enquiry-success-inline__content">
+                <strong>Enquiry submitted successfully!</strong>
+                <p>
+                  Thank you for contacting Learners Commercial Institute.
+                  Our team will get in touch with you shortly.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="enquiry-success-inline__close"
+                aria-label="Dismiss confirmation"
+                onClick={() => setShowSuccess(false)}
+              >
+                ×
+              </button>
+            </div>
+          )}
           <form
             className="enquiry-form"
             onSubmit={(event) => {
@@ -233,7 +248,7 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
           >
             <fieldset className="enquiry-form__fields" disabled={isSubmitting}>
               <div className="enquiry-form__field">
-                <label htmlFor="enquiry-name">Your name</label>
+                <label htmlFor="enquiry-name">Your name <span className="enquiry-required" aria-hidden="true">*</span></label>
 
                 <input
                   id="enquiry-name"
@@ -252,7 +267,7 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
               </div>
 
               <div className="enquiry-form__field">
-                <label htmlFor="enquiry-phone">Phone number</label>
+                <label htmlFor="enquiry-phone">Phone number <span className="enquiry-required" aria-hidden="true">*</span></label>
 
                 <input
                   id="enquiry-phone"
@@ -292,42 +307,112 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
               </div>
 
               <div className="enquiry-form__field">
-                <label htmlFor="enquiry-course">Course interested in</label>
+                <span className="enquiry-course-label" id="enquiry-course-label">
+                  Courses interested in <span className="enquiry-required" aria-hidden="true">*</span>
+                </span>
 
-                <div className="enquiry-form__select-wrapper">
-                  <select
-                    id="enquiry-course"
-                    className="enquiry-form__select"
-                    disabled={courseQuery.isPending || courses.length === 0}
-                    aria-invalid={Boolean(errors.course)}
-                    {...register("course")}
-                  >
-                    <option value="" disabled>
-                      {courseQuery.isPending
-                        ? "Loading courses…"
-                        : courses.length
-                          ? "Select a course"
-                          : "No courses available"}
-                    </option>
+                <div className="enquiry-course-toolbar">
+                  <p className="enquiry-course-help">
+                    Select one or more courses.
+                  </p>
 
-                    {courses.map((course) => (
-                      <option key={course.id} value={course.id}>
-                        {course.title}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="enquiry-course-actions">
+                    <button
+                      type="button"
+                      className="enquiry-course-search-toggle"
+                      aria-label={courseSearchOpen ? "Close course search" : "Search courses"}
+                      aria-expanded={courseSearchOpen}
+                      onClick={() => {
+                        setCourseSearchOpen((current) => !current);
+                        setCourseSearch("");
+                      }}
+                    >
+                      {courseSearchOpen
+                        ? <X size={17} aria-hidden="true" />
+                        : <Search size={17} aria-hidden="true" />}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSubmitting || courses.length === 0 ||
+                        courses.every((course) =>
+                          selectedCourseIds.includes(course.id)
+                        )}
+                      onClick={() => {
+                        setSelectedCourseIds(courses.map((course) => course.id));
+                        setCourseError("");
+                      }}
+                    >
+                      Select all
+                    </button>
 
-                  <ChevronDown
-                    className="enquiry-form__select-icon"
-                    size={18}
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
+                    <button
+                      type="button"
+                      disabled={isSubmitting || selectedCourseIds.length === 0}
+                      onClick={() => {
+                        setSelectedCourseIds([]);
+                        setCourseError("");
+                      }}
+                    >
+                      Clear all
+                    </button>
+                  </div>
                 </div>
+
+                {courseSearchOpen && (
+                  <input
+                    type="search"
+                    className="enquiry-course-search-input"
+                    placeholder="Search courses..."
+                    aria-label="Search courses"
+                    value={courseSearch}
+                    onChange={(event) => setCourseSearch(event.target.value)}
+                  />
+                )}
+
+                {visibleCourses.length === 0 && courses.length > 0 && (
+                  <p className="enquiry-course-empty">
+                    No matching courses found.
+                  </p>
+                )}
+
+                <div
+                  className="enquiry-course-options"
+                  role="group"
+                  aria-labelledby="enquiry-course-label"
+                  aria-describedby={
+                    courseError ? "enquiry-course-error" : undefined
+                  }
+                >
+                  {visibleCourses.map((course) => (
+                    <label
+                      key={course.id}
+                      className="enquiry-course-option"
+                    >
+                      <input
+                        type="checkbox"
+                        value={course.id}
+                        checked={selectedCourseIds.includes(course.id)}
+                        onChange={(event) => {
+                          setSelectedCourseIds((current) =>
+                            event.target.checked
+                              ? [...current.filter((id) => id !== course.id), course.id]
+                              : current.filter((id) => id !== course.id),
+                          );
+                          setCourseError("");
+                        }}
+                      />
+                      <span>{course.title}</span>
+                    </label>
+                  ))}
+                </div>
+
+                <small className="enquiry-course-count" aria-live="polite">
+                  {selectedCourseIds.length} selected
+                </small>
 
                 {courseQuery.isError && (
                   <span className="enquiry-form__error" role="alert">
-                    Unable to refresh course options.{" "}
+                    Unable to refresh courses.{" "}
                     <button
                       type="button"
                       onClick={() => void courseQuery.refetch()}
@@ -337,15 +422,20 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                     </button>
                   </span>
                 )}
+
                 {courseQuery.isSuccess && courses.length === 0 && (
                   <small>
-                    No courses are currently available. Please contact us on
-                    WhatsApp.
+                    No courses available. Please contact us on WhatsApp.
                   </small>
                 )}
-                {errors.course && (
-                  <span className="enquiry-form__error">
-                    {errors.course.message}
+
+                {courseError && (
+                  <span
+                    id="enquiry-course-error"
+                    className="enquiry-form__error"
+                    role="alert"
+                  >
+                    {courseError}
                   </span>
                 )}
               </div>
