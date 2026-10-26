@@ -32,3 +32,41 @@ test("pagination clamps the page after filters or status changes reduce results"
   assert.equal(paginateEnquiries([1], 3).currentPage, 1);
   assert.deepEqual(paginateEnquiries([], 3), { records: [], currentPage: 1, pageCount: 1, start: 0, end: 0 });
 });
+
+
+test("filters multi-course enquiries by each individual course", () => {
+  const multiCourse = {
+    name: "FDE Test Student",
+    phone: "9876543210",
+    course: "English Typewriting - Lower, Computer Basics",
+    message: "Testing multi-course enquiry filtering",
+    status: "NEW" as const,
+    createdAt: "2026-10-26T12:00:00Z",
+  };
+
+  const data = [...records, multiCourse];
+
+  for (const course of [
+    "English Typewriting - Lower",
+    "Computer Basics",
+  ]) {
+    const result = filterEnquiries(data, {
+      ...criteria,
+      course,
+    });
+
+    assert.ok(
+      result.some(record => record.name === "FDE Test Student"),
+      `Expected enquiry to match ${course}`,
+    );
+  }
+
+  const unrelated = filterEnquiries(data, {
+    ...criteria,
+    course: "Microsoft 365",
+  });
+
+  assert.ok(
+    !unrelated.some(record => record.name === "FDE Test Student"),
+  );
+});

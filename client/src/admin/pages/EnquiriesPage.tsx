@@ -44,6 +44,7 @@ import {
 
 import {
   enquiryStatusLabels,
+  enquiryCourseNames,
   formatEnquiryDate,
   enquiryCounts,
   filterEnquiries,
@@ -306,22 +307,11 @@ export function EnquiriesPage() {
 
   const courses = [
     ...new Set(
-      enquiries.map(
-        (
-          enquiry,
-        ) =>
-          enquiry.course,
+      enquiries.flatMap((enquiry) =>
+        enquiryCourseNames(enquiry.course),
       ),
     ),
-  ].sort(
-    (
-      a,
-      b,
-    ) =>
-      a.localeCompare(
-        b,
-      ),
-  );
+  ].sort((a, b) => a.localeCompare(b));
 
   const selected =
     enquiries.find(

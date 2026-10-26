@@ -5,13 +5,17 @@ type EnquiryRecord = { name: string; phone: string; course: string; message: str
 export function enquiryCounts(records: EnquiryRecord[]) {
   return records.reduce((counts, record) => { counts.ALL++; counts[record.status]++; return counts; }, { ALL: 0, NEW: 0, CONTACTED: 0, CLOSED: 0 });
 }
+export function enquiryCourseNames(value: string): string[] {
+  return value.split(",").map(name => name.trim()).filter(Boolean);
+}
+
 export function filterEnquiries<T extends EnquiryRecord>(records: T[], criteria: { search: string; status: EnquiryFilter; course: string; sort: EnquirySort }): T[] {
   const search = criteria.search.trim().toLowerCase();
   const phoneSearch = /^[+\d\s().-]+$/.test(search) ? search.replace(/\D/g, "") : "";
   return records.filter(record => {
     const text = `${record.name} ${record.phone} ${record.course} ${record.message ?? ""}`.toLowerCase();
     return (criteria.status === "ALL" || record.status === criteria.status)
-      && (!criteria.course || record.course === criteria.course)
+      && (!criteria.course || enquiryCourseNames(record.course).includes(criteria.course))
       && (!search || text.includes(search) || (phoneSearch.length >= 4 && record.phone.replace(/\D/g, "").includes(phoneSearch)));
   }).sort((a, b) => {
     if (criteria.sort === "NEW_FIRST" && a.status !== b.status) {
