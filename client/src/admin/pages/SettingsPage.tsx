@@ -79,6 +79,8 @@ export function SettingsPage() {
 
   const [formOpen, setFormOpen] = useState(false);
 
+  const [showUserPassword, setShowUserPassword] = useState(false);
+
   const [notice, setNotice] = useState("");
 
   const [formError, setFormError] = useState("");
@@ -252,6 +254,7 @@ export function SettingsPage() {
     setEditing(null);
     setFormError("");
     setNotice("");
+    setShowUserPassword(false);
     setFormOpen(true);
   };
 
@@ -263,6 +266,7 @@ export function SettingsPage() {
     setEditing(user);
     setFormError("");
     setNotice("");
+    setShowUserPassword(false);
     setFormOpen(true);
   };
 
@@ -682,19 +686,36 @@ export function SettingsPage() {
                       {editing ? "New password" : "Password"}
                     </span>
 
-                    <input
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder={
-                        editing
-                          ? "Leave blank to keep current password"
-                          : "Minimum 8 characters"
-                      }
-                      {...register("password", {
-                        required: !editing,
-                        minLength: editing ? undefined : 8,
-                      })}
-                    />
+                    <div className="settings-form__password-field">
+                      <input
+                        type={showUserPassword ? "text" : "password"}
+                        autoComplete="new-password"
+                        placeholder={
+                          editing
+                            ? "Leave blank to keep current password"
+                            : "Minimum 8 characters"
+                        }
+                        {...register("password", {
+                          required: !editing,
+                          minLength: editing ? undefined : 8,
+                        })}
+                      />
+
+                      <button
+                        type="button"
+                        className="settings-form__password-eye"
+                        aria-label={showUserPassword ? "Hide password" : "Show password"}
+                        aria-pressed={showUserPassword}
+                        onClick={() => setShowUserPassword(value => !value)}
+                        disabled={busy}
+                      >
+                        {showUserPassword ? (
+                          <EyeOff size={19} aria-hidden="true" />
+                        ) : (
+                          <Eye size={19} aria-hidden="true" />
+                        )}
+                      </button>
+                    </div>
 
                     {editing && (
                       <small>

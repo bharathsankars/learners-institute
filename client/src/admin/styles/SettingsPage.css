@@ -1299,3 +1299,70 @@ html[data-theme="dark"]
     font-size: 16px;
   }
 }
+
+
+/* USER MODAL ALIGNMENT FIX */
+
+.settings-editor-backdrop {
+  align-items: safe center;
+}
+
+.settings-editor {
+  box-sizing: border-box;
+  margin-inline: auto;
+}
+
+.settings-editor__header {
+  flex-shrink: 0;
+}
+
+.settings-form__grid {
+  align-items: start;
+}
+
+.settings-form__grid > label {
+  min-width: 0;
+  align-content: start;
+}
+
+.settings-form__password-field {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.settings-form__password-field input {
+  width: 100%;
+  min-width: 0;
+  padding-right: 54px;
+}
+
+.settings-form__password-eye {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--settings-muted);
+  cursor: pointer;
+}
+
+.settings-form__password-eye:hover {
+  color: var(--settings-ink);
+}
+
+.settings-form__password-eye:focus-visible {
+  outline: 2px solid var(--settings-ink);
+  outline-offset: 1px;
+}
+
+.settings-form__password-eye:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
