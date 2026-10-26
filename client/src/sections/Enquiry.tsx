@@ -53,6 +53,7 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
   const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
   const [courseSearchOpen, setCourseSearchOpen] = useState(false);
   const [courseSearch, setCourseSearch] = useState("");
+  const [showAllCourses, setShowAllCourses] = useState(false);
 
   const visibleCourses = courses.filter((course) =>
     course.title.toLowerCase().includes(courseSearch.trim().toLowerCase())
@@ -206,34 +207,6 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
         </div>
 
         <div className="enquiry-section__form-card">
-          {showSuccess && (
-            <div
-              className="enquiry-success-inline"
-              role="status"
-              aria-live="polite"
-            >
-              <span className="enquiry-success-inline__icon" aria-hidden="true">
-                ✓
-              </span>
-
-              <div className="enquiry-success-inline__content">
-                <strong>Enquiry submitted successfully!</strong>
-                <p>
-                  Thank you for contacting Learners Commercial Institute.
-                  Our team will get in touch with you shortly.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                className="enquiry-success-inline__close"
-                aria-label="Dismiss confirmation"
-                onClick={() => setShowSuccess(false)}
-              >
-                ×
-              </button>
-            </div>
-          )}
           <form
             className="enquiry-form"
             onSubmit={(event) => {
@@ -376,7 +349,11 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                 )}
 
                 <div
-                  className="enquiry-course-options"
+                  className={`enquiry-course-options${
+                    showAllCourses || courseSearch.trim()
+                      ? " enquiry-course-options--expanded"
+                      : ""
+                  }`}
                   role="group"
                   aria-labelledby="enquiry-course-label"
                   aria-describedby={
@@ -405,6 +382,22 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                     </label>
                   ))}
                 </div>
+
+                {courses.length > 4 && !courseSearch.trim() && (
+                  <button
+                    type="button"
+                    className="enquiry-course-view-more"
+                    aria-expanded={showAllCourses}
+                    onClick={() => setShowAllCourses((current) => !current)}
+                  >
+                    {showAllCourses
+                      ? "Show fewer courses"
+                      : `View all ${courses.length} courses`}
+                    <span aria-hidden="true">
+                      {showAllCourses ? "↑" : "↓"}
+                    </span>
+                  </button>
+                )}
 
                 <small className="enquiry-course-count" aria-live="polite">
                   {selectedCourseIds.length} selected
@@ -471,6 +464,34 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                 {!isSubmitting && <ArrowRight size={17} aria-hidden="true" />}
               </button>
             </fieldset>
+          {showSuccess && (
+            <div
+              className="enquiry-success-inline"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="enquiry-success-inline__icon" aria-hidden="true">
+                ✓
+              </span>
+
+              <div className="enquiry-success-inline__content">
+                <strong>Enquiry submitted successfully!</strong>
+                <p>
+                  Thank you for contacting Learners Commercial Institute.
+                  Our team will get in touch with you shortly.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="enquiry-success-inline__close"
+                aria-label="Dismiss confirmation"
+                onClick={() => setShowSuccess(false)}
+              >
+                ×
+              </button>
+            </div>
+          )}
             {submitError && (
               <p className="enquiry-form__error" role="alert">
                 {submitError}

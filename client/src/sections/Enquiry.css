@@ -855,3 +855,44 @@
   margin-left: 2px;
 }
 
+
+
+/* EXPLICIT VIEW-MORE CONTROL FOR COURSE SELECTION */
+
+.enquiry-course-options--expanded {
+  max-height: none;
+  overflow: visible;
+}
+
+.enquiry-course-view-more {
+  width: 100%;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  background: var(--color-surface-soft);
+  color: var(--color-blue-700);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.enquiry-course-view-more:hover {
+  border-color: var(--color-blue-500);
+}
+
+.enquiry-course-view-more:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 3px;
+}
+
+/* Success confirmation below the submit button */
+.enquiry-form > .enquiry-success-inline {
+  margin-top: -6px;
+  margin-bottom: 0;
+}
+
