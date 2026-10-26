@@ -423,3 +423,132 @@ html[data-theme="dark"]
     scrollbar-gutter: stable;
   }
 }
+
+/* =========================================================
+   COMPACT MOBILE ADMIN HEADER CONTROLS
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .admin-layout__topbar {
+    gap: 10px;
+  }
+
+  .admin-layout__welcome {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-right: auto;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-layout__topbar-actions {
+    flex: 0 0 auto;
+    margin-left: 0;
+  }
+
+  .admin-layout__mobile-menu {
+    flex: 0 0 auto;
+    margin-left: 0;
+  }
+
+  .admin-layout__logout,
+  .admin-layout__mobile-menu > summary {
+    box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e1e5e7;
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--color-navy-900);
+    cursor: pointer;
+  }
+
+  .admin-layout__mobile-menu-label {
+    display: none;
+  }
+
+  .admin-layout__mobile-menu > summary:hover {
+    background: #f6f8f7;
+    border-color: #a9bab5;
+  }
+
+  .admin-layout__mobile-menu[open] > summary {
+    border-color: var(--color-blue-500);
+    background: var(--color-surface-soft);
+  }
+
+  .admin-layout__logout:focus-visible,
+  .admin-layout__mobile-menu > summary:focus-visible {
+    outline: 2px solid var(--color-blue-500);
+    outline-offset: 3px;
+  }
+
+  .admin-layout__mobile-panel {
+    box-sizing: border-box;
+    right: 12px;
+    top: calc(100% + 8px);
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-layout__topbar {
+    padding-inline: 16px;
+  }
+
+  .admin-layout__welcome {
+    font-size: 12px;
+  }
+}
+
+/* Match dark-mode controls */
+@media (max-width: 900px) {
+  html[data-theme="dark"] .admin-layout__logout,
+  html[data-theme="dark"] .admin-layout__mobile-menu > summary {
+    background: #172638;
+    border-color: #34465a;
+    color: #f8fafc;
+  }
+}
+
+
+/* MOBILE HEADER — NAV LEFT, LOGOUT RIGHT */
+
+@media (max-width: 900px) {
+  .admin-layout__topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* Navigation on the left */
+  .admin-layout__mobile-menu {
+    order: 1;
+    flex: 0 0 44px;
+    margin: 0;
+  }
+
+  /* Welcome message in the middle */
+  .admin-layout__welcome {
+    order: 2;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Logout on the right */
+  .admin-layout__topbar-actions {
+    order: 3;
+    flex: 0 0 44px;
+    margin: 0;
+    justify-content: flex-end;
+  }
+}
+

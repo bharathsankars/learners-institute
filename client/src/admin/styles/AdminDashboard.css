@@ -1008,3 +1008,37 @@ html[data-theme="dark"]
     font-size: 19px;
   }
 }
+
+/* COMPACT MOBILE DASHBOARD REFRESH BUTTON */
+
+@media (max-width: 480px) {
+  .dashboard-header__right {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .dashboard-date {
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .dashboard-header .dashboard-refresh-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    flex: 0 0 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .dashboard-refresh-button__text {
+    display: none;
+  }
+}
+

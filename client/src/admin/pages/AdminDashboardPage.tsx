@@ -237,6 +237,9 @@ export function AdminDashboardPage() {
 
           <button
             type="button"
+            className="dashboard-refresh-button"
+            aria-label={refreshing ? "Refreshing dashboard" : "Refresh dashboard"}
+            title={refreshing ? "Refreshing dashboard" : "Refresh dashboard"}
             onClick={() => {
               void Promise.allSettled(queries.map((query) => query.refetch()));
             }}
@@ -248,7 +251,9 @@ export function AdminDashboardPage() {
               aria-hidden="true"
             />
 
-            {refreshing ? "Refreshing..." : "Refresh"}
+            <span className="dashboard-refresh-button__text">
+              {refreshing ? "Refreshing..." : "Refresh"}
+            </span>
           </button>
         </div>
       </header>
@@ -595,10 +600,10 @@ export function AdminDashboardPage() {
             ? "Some information could not be loaded."
             : lastUpdated
               ? `Updated at ${new Intl.DateTimeFormat("en-GB", {
-                  timeZone: "Europe/Berlin",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }).format(new Date(lastUpdated))}`
+                   timeZone: "Asia/Kolkata",
+                   hour: "2-digit",
+                   minute: "2-digit",
+                 }).format(new Date(lastUpdated))} IST`
               : "Waiting for information"}
       </footer>
     </div>

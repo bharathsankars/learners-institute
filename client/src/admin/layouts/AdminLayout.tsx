@@ -161,12 +161,17 @@ export function AdminLayout() {
               }
             }}
           >
-            <summary>
+            <summary
+              aria-label="Toggle admin navigation"
+              title="Navigation"
+            >
               <Menu
-                size={20}
+                size={21}
                 aria-hidden="true"
               />
-              Navigation
+              <span className="admin-layout__mobile-menu-label">
+                Navigation
+              </span>
             </summary>
 
             <div
