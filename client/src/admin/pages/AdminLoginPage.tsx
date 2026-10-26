@@ -158,7 +158,7 @@ export function AdminLoginPage() {
         <div className="admin-login__visual-content">
           <div className="admin-login__brand">
             <div className="admin-login__brand-mark" aria-hidden="true">
-              L
+              <img src="/learners-logo-mark.png" alt="" />
             </div>
 
             <div>
@@ -173,14 +173,19 @@ export function AdminLoginPage() {
               <ShieldCheck size={26} strokeWidth={1.8} aria-hidden="true" />
             </div>
 
-            <span>Administration Portal</span>
+            <span>OFFICIAL STAFF PORTAL</span>
 
-            <h2>Learners Administration</h2>
+            <h1>Supporting every step of learning.</h1>
 
             <p>
-              Secure access for authorised institute staff to manage students,
-              courses, enquiries, attendance and administration.
+              A dedicated workspace for the people behind Learners Commercial
+              Institute. Manage institute operations in one secure place.
             </p>
+
+            <div className="admin-login__portal-label">
+              <ShieldCheck size={17} aria-hidden="true" />
+              <span>Restricted to authorised personnel</span>
+            </div>
           </div>
 
           <div className="admin-login__visual-footer">
@@ -197,17 +202,17 @@ export function AdminLoginPage() {
 
       <section className="admin-login__form-section">
         <div className="admin-login__form-wrapper">
-          <Link className="admin-login__back" to="/">
-            <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
-            Back to website
-          </Link>
+
 
           <div className="admin-login__form-header">
-            <span>Welcome back</span>
+            <span>LEARNERS STAFF ACCESS</span>
 
-            <h2>Sign in to your account</h2>
+            <h2>Welcome back.</h2>
 
-            <p>Enter your administrator credentials to continue.</p>
+            <p>
+              Sign in with your assigned credentials to access your
+              administration workspace.
+            </p>
           </div>
 
           <form
@@ -306,16 +311,22 @@ export function AdminLoginPage() {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Signing in..." : "Sign In"}
+              {isSubmitting ? "Signing in..." : "Sign in to dashboard"}
             </button>
           </form>
+
+          <div className="admin-login__back-container">
+            <Link className="admin-login__back" to="/">
+              <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
+              Back to Learners
+            </Link>
+          </div>
 
           <div className="admin-login__security-note">
             <ShieldCheck size={15} strokeWidth={1.8} aria-hidden="true" />
 
             <span>
-              Authorised staff access only. Unauthorised access is not
-              permitted.
+              This portal is reserved for authorised Learners Institute staff.
             </span>
           </div>
         </div>

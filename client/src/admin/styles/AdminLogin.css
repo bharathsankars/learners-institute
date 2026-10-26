@@ -1620,234 +1620,6 @@ html[data-theme="dark"] .admin-login__password-toggle:hover:not(:disabled) {
   }
 }
 
-/* =========================================================
-   PROFESSIONAL LOGIN / WELCOME POLISH
-   ========================================================= */
-
-.admin-login-loading,
-.learners-login-transition {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  isolation: isolate;
-  background:
-    radial-gradient(circle at 12% 18%, rgb(217 119 6 / 0.16), transparent 24%),
-    radial-gradient(circle at 84% 20%, rgb(190 24 93 / 0.10), transparent 26%),
-    radial-gradient(circle at 78% 82%, rgb(14 116 144 / 0.08), transparent 24%),
-    linear-gradient(135deg, #fff8f3 0%, #fffdfb 42%, #f8fafc 100%);
-}
-
-.admin-login-loading::before,
-.learners-login-transition::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background:
-    linear-gradient(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.55)),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 38px,
-      rgb(148 163 184 / 0.06) 39px,
-      transparent 40px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0,
-      transparent 38px,
-      rgb(148 163 184 / 0.05) 39px,
-      transparent 40px
-    );
-  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.95), rgb(0 0 0 / 0.7));
-}
-
-.admin-login-loading::after,
-.learners-login-transition::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 15% 78%, rgb(234 88 12 / 0.12), transparent 16%),
-    radial-gradient(circle at 86% 76%, rgb(220 38 38 / 0.10), transparent 16%),
-    radial-gradient(circle at 50% 50%, rgb(255 255 255 / 0.52), transparent 46%);
-  filter: blur(8px);
-  animation: learnersLoginAmbientFloat 10s ease-in-out infinite alternate;
-}
-
-.learners-login-transition {
-  padding: 24px;
-}
-
-.learners-login-transition__stage {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 24px;
-  width: min(100%, 860px);
-}
-
-.learners-login-transition__logo,
-.learners-login-transition__brand-mark,
-.learners-login-transition__badge {
-  border: 1px solid rgb(15 23 42 / 0.08);
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.78));
-  box-shadow:
-    0 18px 60px rgb(15 23 42 / 0.10),
-    0 2px 10px rgb(15 23 42 / 0.06);
-  backdrop-filter: blur(14px);
-}
-
-.learners-login-transition__logo {
-  transform: translateY(4px);
-}
-
-.learners-login-transition__panel,
-.learners-login-transition__typewriter,
-.learners-login-transition__window {
-  position: relative;
-  width: min(100%, 520px);
-  padding: 28px 28px 26px;
-  border-radius: 24px;
-  border: 1px solid rgb(15 23 42 / 0.08);
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.82));
-  box-shadow:
-    0 30px 80px rgb(15 23 42 / 0.12),
-    0 10px 24px rgb(15 23 42 / 0.06);
-  backdrop-filter: blur(16px);
-  overflow: hidden;
-}
-
-.learners-login-transition__panel::before,
-.learners-login-transition__typewriter::before,
-.learners-login-transition__window::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto auto 0;
-  width: 100%;
-  height: 64px;
-  background:
-    linear-gradient(180deg, rgb(248 250 252 / 0.95), rgb(248 250 252 / 0.72));
-  border-bottom: 1px solid rgb(15 23 42 / 0.06);
-}
-
-.learners-login-transition__panel::after,
-.learners-login-transition__typewriter::after,
-.learners-login-transition__window::after {
-  content: "";
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  width: 36px;
-  height: 8px;
-  border-radius: 999px;
-  background: rgb(148 163 184 / 0.24);
-  box-shadow:
-    14px 0 0 rgb(148 163 184 / 0.18),
-    28px 0 0 rgb(148 163 184 / 0.14);
-}
-
-.learners-login-transition__typing {
-  position: relative;
-  z-index: 1;
-  margin-top: 28px;
-  min-width: 340px;
-  overflow: visible;
-  text-align: center;
-}
-
-.learners-login-transition__typed-primary {
-  display: inline-block;
-  max-width: none;
-  color: #991b1b;
-  text-shadow: 0 1px 0 rgb(255 255 255 / 0.7);
-}
-
-.learners-login-transition__typed-secondary,
-.learners-login-transition__subtitle,
-.learners-login-transition__typed-location {
-  position: relative;
-  z-index: 1;
-}
-
-.learners-login-transition__typed-secondary {
-  color: #1f4f46;
-  letter-spacing: 0.18em;
-}
-
-.learners-login-transition__typed-location {
-  color: #64748b;
-  letter-spacing: 0.12em;
-}
-
-.learners-login-transition__keyboard,
-.learners-login-transition__keys,
-.learners-login-transition__typewriter-base {
-  filter: drop-shadow(0 16px 28px rgb(15 23 42 / 0.12));
-}
-
-.learners-login-transition__progress,
-.learners-login-transition__status {
-  width: min(100%, 320px);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.72);
-  border: 1px solid rgb(15 23 42 / 0.06);
-  box-shadow: inset 0 1px 2px rgb(15 23 42 / 0.04);
-  overflow: hidden;
-}
-
-.learners-login-transition__progress-bar,
-.learners-login-transition__status-bar {
-  background: linear-gradient(90deg, #ea580c 0%, #dc2626 55%, #9f1239 100%);
-}
-
-.learners-login-transition__status-text,
-.learners-login-transition__caption,
-.learners-login-transition__hint {
-  color: #5b6574;
-}
-
-.learners-login-transition__status-text strong,
-.learners-login-transition__caption strong,
-.learners-login-transition__hint strong {
-  color: #7f1d1d;
-}
-
-@keyframes learnersLoginAmbientFloat {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  100% {
-    transform: translate3d(0, -10px, 0) scale(1.03);
-  }
-}
-
-@media (max-width: 640px) {
-  .learners-login-transition {
-    padding: 18px;
-  }
-
-  .learners-login-transition__panel,
-  .learners-login-transition__typewriter,
-  .learners-login-transition__window {
-    width: min(100%, 100%);
-    padding: 24px 18px 22px;
-    border-radius: 20px;
-  }
-
-  .learners-login-transition__typing {
-    min-width: 270px;
-    margin-top: 24px;
-  }
-}
-
-
-
 /* Forgot password */
 
 .admin-login__forgot-password {
@@ -1873,4 +1645,125 @@ html[data-theme="dark"] .admin-login__password-toggle:hover:not(:disabled) {
   outline: 2px solid #b84f38;
   outline-offset: 3px;
   border-radius: 3px;
+}
+
+
+/* Staff portal branding — original Learners theme */
+
+.admin-login__brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.admin-login__brand-mark:has(img) {
+  padding: 7px;
+  background: var(--color-white);
+}
+
+.admin-login__forgot-password a {
+  color: var(--color-blue-700);
+}
+
+.admin-login__forgot-password a:hover {
+  color: var(--color-navy-900);
+}
+
+.admin-login__forgot-password a:focus-visible {
+  outline-color: var(--color-blue-500);
+}
+
+/* Staff portal access badge — original Learners theme */
+.admin-login__portal-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin-top: 28px;
+  padding: 11px 15px;
+  border: 1px solid rgb(255 255 255 / 0.17);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.08);
+  color: var(--color-white);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admin-login__portal-label svg {
+  display: block;
+  flex-shrink: 0;
+  color: #8fc4ff;
+}
+
+.admin-login__portal-label span {
+  display: inline;
+  color: inherit;
+}
+
+
+/* Secondary navigation below sign-in */
+.admin-login__back-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.admin-login__back-container .admin-login__back {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+
+/* Prominent return navigation for public visitors */
+.admin-login__back-container {
+  display: flex;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.admin-login__back-container .admin-login__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 12px 18px;
+  border: 1.5px solid var(--color-navy-900);
+  border-radius: 11px;
+  background: transparent;
+  color: var(--color-navy-900);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.admin-login__back-container .admin-login__back:hover {
+  background: var(--color-navy-900);
+  color: var(--color-white);
+  transform: none;
+}
+
+.admin-login__back-container .admin-login__back:focus-visible {
+  outline: 3px solid var(--color-blue-500);
+  outline-offset: 3px;
+}
+
+
+
+/* Back to Learners — static secondary button */
+.admin-login__back-container .admin-login__back,
+.admin-login__back-container .admin-login__back:hover,
+.admin-login__back-container .admin-login__back:active {
+  background: transparent;
+  color: var(--color-navy-900);
+  border-color: var(--color-navy-900);
+  transform: none;
+  box-shadow: none;
+  transition: none;
 }
