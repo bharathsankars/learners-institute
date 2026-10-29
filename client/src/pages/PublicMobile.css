@@ -434,15 +434,6 @@
   }
 
 
-  /* Footer becomes single column */
-
-  .landing-page .site-footer__main {
-    grid-template-columns: 1fr;
-  }
-
-  .landing-page .site-footer__brand-block {
-    grid-column: auto;
-  }
 }
 
 

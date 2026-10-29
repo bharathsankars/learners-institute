@@ -1279,12 +1279,6 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
   }
 }
 
-/* FOOTER — SOFTER NAVY */
-
-.landing-page .site-footer {
-  background: linear-gradient(145deg, #173a56 0%, #25516f 100%);
-}
-
 .landing-page .site-footer::before {
   background: radial-gradient(circle, rgb(76 176 201 / 0.16), transparent 68%);
 }
