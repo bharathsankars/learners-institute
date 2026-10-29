@@ -1,5 +1,7 @@
 import type { FeePlan } from "./fees";
 import { API_URL } from "./config";
+import { getAdminSessionGeneration } from "../admin/auth/sessionEvents";
+import { parseApiError } from "./errors";
 export type PaymentMethod = "CASH" | "UPI" | "BANK_TRANSFER" | "CARD";
 export type Payment = {
   id: string; requestId: string; receiptNumber: number; feePlanId: string;
@@ -11,13 +13,17 @@ export type CreatePaymentInput = {
   paidAt: string; reference?: string; notes?: string;
 };
 async function request(path: string, input?: CreatePaymentInput) {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/payments${path}`, {
     method: input ? "POST" : "GET", credentials: "include",
     ...(input && { headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
   });
   if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    throw new Error(error?.message ?? "Unable to process payments.");
+    const error = await parseApiError(response, true, requestGeneration);
+    if (error.message === "Something went wrong.") {
+      throw new Error("Unable to process payments.");
+    }
+    throw error;
   }
   return response.json();
 }

@@ -1,5 +1,7 @@
 import type { Course } from "./courses";
 import { API_URL } from "./config";
+import { getAdminSessionGeneration } from "../admin/auth/sessionEvents";
+import { parseApiError } from "./errors";
 
 import type { Student } from "./students";
 
@@ -77,31 +79,15 @@ type FeePlanResponse = {
   };
 };
 
-type ApiErrorResponse = {
-  success: false;
-  message: string;
-  errors?: Record<string, string[]>;
-};
-
-
-async function parseApiError(response: Response): Promise<Error> {
-  try {
-    const error = (await response.json()) as ApiErrorResponse;
-
-    return new Error(error.message || "Something went wrong.");
-  } catch {
-    return new Error("Something went wrong.");
-  }
-}
-
 export async function fetchFeePlans(): Promise<FeePlan[]> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/fees`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as FeePlansResponse;
@@ -110,13 +96,14 @@ export async function fetchFeePlans(): Promise<FeePlan[]> {
 }
 
 export async function fetchFeePlanById(feePlanId: string): Promise<FeePlan> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/fees/${feePlanId}`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as FeePlanResponse;
@@ -127,6 +114,7 @@ export async function fetchFeePlanById(feePlanId: string): Promise<FeePlan> {
 export async function createFeePlan(
   input: CreateFeePlanInput,
 ): Promise<FeePlan> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/fees`, {
     method: "POST",
 
@@ -140,7 +128,7 @@ export async function createFeePlan(
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as FeePlanResponse;
@@ -152,6 +140,7 @@ export async function updateFeePlan(
   feePlanId: string,
   input: UpdateFeePlanInput,
 ): Promise<FeePlan> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/fees/${feePlanId}`, {
     method: "PATCH",
 
@@ -165,7 +154,7 @@ export async function updateFeePlan(
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as FeePlanResponse;
@@ -174,13 +163,14 @@ export async function updateFeePlan(
 }
 
 export async function cancelFeePlan(feePlanId: string): Promise<FeePlan> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/fees/${feePlanId}/cancel`, {
     method: "PATCH",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as FeePlanResponse;

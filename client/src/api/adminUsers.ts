@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { getAdminSessionGeneration } from "../admin/auth/sessionEvents";
 import { parseApiError } from "./errors";
 
 export type AdminUser = {
@@ -52,6 +53,7 @@ type AdminUserResponse = {
 
 export async function fetchAdminUsers():
 Promise<AdminUser[]> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(
     `${API_URL}/api/admin-users`,
     {
@@ -60,7 +62,7 @@ Promise<AdminUser[]> {
   );
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result =
@@ -72,6 +74,7 @@ Promise<AdminUser[]> {
 export async function createAdminUser(
   input: CreateAdminUserInput,
 ): Promise<AdminUser> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(
     `${API_URL}/api/admin-users`,
     {
@@ -89,7 +92,7 @@ export async function createAdminUser(
   );
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result =
@@ -102,6 +105,7 @@ export async function updateAdminUser(
   id: string,
   input: UpdateAdminUserInput,
 ): Promise<AdminUser> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(
     `${API_URL}/api/admin-users/${id}`,
     {
@@ -119,7 +123,7 @@ export async function updateAdminUser(
   );
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result =
@@ -131,6 +135,7 @@ export async function updateAdminUser(
 export async function deleteAdminUser(
   id: string,
 ): Promise<void> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(
     `${API_URL}/api/admin-users/${id}`,
     {
@@ -141,7 +146,7 @@ export async function deleteAdminUser(
   );
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 }
 
@@ -152,6 +157,7 @@ export async function changeOwnPassword(
     newPassword: string;
   },
 ): Promise<void> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(
     `${API_URL}/api/admin-users/me/password`,
     {
@@ -169,6 +175,6 @@ export async function changeOwnPassword(
   );
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 }

@@ -15,6 +15,10 @@ import {
   AdminAuthContext,
   type AdminAuthContextValue,
 } from "./authContext.ts";
+import {
+  advanceAdminSessionGeneration,
+  subscribeToAdminSessionExpiry,
+} from "./sessionEvents";
 
 type AdminAuthProviderProps = {
   children: ReactNode;
@@ -60,6 +64,12 @@ export function AdminAuthProvider({
     };
   }, []);
 
+  useEffect(() => {
+    return subscribeToAdminSessionExpiry(() => {
+      setUser(null);
+    });
+  }, []);
+
   const login = async (
     username: string,
     password: string,
@@ -75,6 +85,7 @@ export function AdminAuthProvider({
         return false;
       }
 
+      advanceAdminSessionGeneration();
       setUser(loggedInUser);
 
       return true;
@@ -86,6 +97,7 @@ export function AdminAuthProvider({
   };
 
   const logout = () => {
+    advanceAdminSessionGeneration();
     void logoutRequest();
     setUser(null);
   };

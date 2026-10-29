@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { getAdminSessionGeneration } from "../admin/auth/sessionEvents";
 import { parseApiError } from "./errors";
 export type StudentStatus = "ACTIVE" | "INACTIVE" | "COMPLETED";
 
@@ -63,13 +64,14 @@ type DeleteStudentResponse = {
 
 
 export async function fetchStudents(): Promise<Student[]> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/students`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as StudentsResponse;
@@ -80,6 +82,7 @@ export async function fetchStudents(): Promise<Student[]> {
 export async function createStudent(
   input: CreateStudentInput,
 ): Promise<Student> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/students`, {
     method: "POST",
     headers: {
@@ -90,7 +93,7 @@ export async function createStudent(
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as StudentResponse;
@@ -102,6 +105,7 @@ export async function updateStudent(
   studentId: string,
   input: UpdateStudentInput,
 ): Promise<Student> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/students/${studentId}`, {
     method: "PATCH",
     headers: {
@@ -112,7 +116,7 @@ export async function updateStudent(
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as StudentResponse;
@@ -121,13 +125,14 @@ export async function updateStudent(
 }
 
 export async function deleteStudent(studentId: string): Promise<void> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/students/${studentId}`, {
     method: "DELETE",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   (await response.json()) as DeleteStudentResponse;

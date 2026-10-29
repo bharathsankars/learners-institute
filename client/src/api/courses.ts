@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { getAdminSessionGeneration } from "../admin/auth/sessionEvents";
 import { parseApiError } from "./errors";
 export type Course = {
   id: string;
@@ -52,13 +53,14 @@ type DeleteCourseResponse = {
 
 
 export async function fetchCourses(): Promise<Course[]> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/courses`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as CoursesResponse;
@@ -82,13 +84,14 @@ export async function fetchPublicCourses(): Promise<Course[]> {
 }
 
 export async function fetchCourseById(courseId: string): Promise<Course> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/courses/${courseId}`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as CourseResponse;
@@ -97,6 +100,7 @@ export async function fetchCourseById(courseId: string): Promise<Course> {
 }
 
 export async function createCourse(input: CreateCourseInput): Promise<Course> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/courses`, {
     method: "POST",
 
@@ -110,7 +114,7 @@ export async function createCourse(input: CreateCourseInput): Promise<Course> {
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as CourseResponse;
@@ -122,6 +126,7 @@ export async function updateCourse(
   courseId: string,
   input: UpdateCourseInput,
 ): Promise<Course> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/courses/${courseId}`, {
     method: "PATCH",
 
@@ -135,7 +140,7 @@ export async function updateCourse(
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   const result = (await response.json()) as CourseResponse;
@@ -144,13 +149,14 @@ export async function updateCourse(
 }
 
 export async function deleteCourse(courseId: string): Promise<void> {
+  const requestGeneration = getAdminSessionGeneration();
   const response = await fetch(`${API_URL}/api/courses/${courseId}`, {
     method: "DELETE",
     credentials: "include",
   });
 
   if (!response.ok) {
-    throw await parseApiError(response);
+    throw await parseApiError(response, true, requestGeneration);
   }
 
   (await response.json()) as DeleteCourseResponse;
