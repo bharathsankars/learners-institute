@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { parseApiError } from "./errors";
 export type StudentStatus = "ACTIVE" | "INACTIVE" | "COMPLETED";
 
 export type Student = {
@@ -57,22 +58,9 @@ type DeleteStudentResponse = {
   message: string;
 };
 
-type ApiErrorResponse = {
-  success: false;
-  message: string;
-  errors?: Record<string, string[]>;
-};
 
 
-async function parseApiError(response: Response): Promise<Error> {
-  try {
-    const error = (await response.json()) as ApiErrorResponse;
 
-    return new Error(error.message || "Something went wrong.");
-  } catch {
-    return new Error("Something went wrong.");
-  }
-}
 
 export async function fetchStudents(): Promise<Student[]> {
   const response = await fetch(`${API_URL}/api/students`, {

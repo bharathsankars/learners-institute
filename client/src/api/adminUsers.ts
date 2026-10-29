@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { parseApiError } from "./errors";
 
 export type AdminUser = {
   id: string;
@@ -46,28 +47,8 @@ type AdminUserResponse = {
   };
 };
 
-type ApiErrorResponse = {
-  success: false;
-  message: string;
-};
 
-async function apiError(
-  response: Response,
-): Promise<Error> {
-  try {
-    const result =
-      (await response.json()) as ApiErrorResponse;
 
-    return new Error(
-      result.message ||
-        "Something went wrong.",
-    );
-  } catch {
-    return new Error(
-      "Something went wrong.",
-    );
-  }
-}
 
 export async function fetchAdminUsers():
 Promise<AdminUser[]> {
@@ -79,7 +60,7 @@ Promise<AdminUser[]> {
   );
 
   if (!response.ok) {
-    throw await apiError(response);
+    throw await parseApiError(response);
   }
 
   const result =
@@ -108,7 +89,7 @@ export async function createAdminUser(
   );
 
   if (!response.ok) {
-    throw await apiError(response);
+    throw await parseApiError(response);
   }
 
   const result =
@@ -138,7 +119,7 @@ export async function updateAdminUser(
   );
 
   if (!response.ok) {
-    throw await apiError(response);
+    throw await parseApiError(response);
   }
 
   const result =
@@ -160,7 +141,7 @@ export async function deleteAdminUser(
   );
 
   if (!response.ok) {
-    throw await apiError(response);
+    throw await parseApiError(response);
   }
 }
 
@@ -188,6 +169,6 @@ export async function changeOwnPassword(
   );
 
   if (!response.ok) {
-    throw await apiError(response);
+    throw await parseApiError(response);
   }
 }
