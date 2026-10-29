@@ -6,6 +6,7 @@ afterEach(() => vi.unstubAllGlobals());
 import {
   getCurrentUserRequest,
   loginRequest,
+  logoutRequest,
 } from "../src/api/auth.ts";
 
 const user = {
@@ -109,4 +110,43 @@ test("session restoration rejects an invalid success response", async () => {
     getCurrentUserRequest(),
     /Invalid session response/,
   );
+});
+
+test("logout accepts HTTP 204", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () =>
+    new Response(null, { status: 204 }),
+  ));
+
+  await assert.doesNotReject(logoutRequest());
+  vi.unstubAllGlobals();
+});
+
+test("logout accepts HTTP 401 for expired sessions", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () =>
+    new Response(null, { status: 401 }),
+  ));
+
+  await assert.doesNotReject(logoutRequest());
+  vi.unstubAllGlobals();
+});
+
+test("logout rejects server errors", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () =>
+    new Response(null, { status: 500 }),
+  ));
+
+  await assert.rejects(
+    logoutRequest(),
+    /Unable to sign out/,
+  );
+  vi.unstubAllGlobals();
+});
+
+test("logout rejects network failures", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () => {
+    throw new TypeError("Failed to fetch");
+  }));
+
+  await assert.rejects(logoutRequest(), /Failed to fetch/);
+  vi.unstubAllGlobals();
 });

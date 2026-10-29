@@ -103,8 +103,16 @@ export async function getCurrentUserRequest(): Promise<AuthUser | null> {
 }
 
 export async function logoutRequest(): Promise<void> {
-  await fetch(`${API_URL}/api/auth/logout`, {
+  const response = await fetch(`${API_URL}/api/auth/logout`, {
     method: "POST",
     credentials: "include",
   });
+
+  if (response.status === 401) {
+    return;
+  }
+
+  if (!response.ok) {
+    throw new Error("Unable to sign out. Please try again.");
+  }
 }

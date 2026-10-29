@@ -20,6 +20,8 @@ export function AdminLayout() {
   const finishTimer = useRef<number | null>(null);
 
   const [isRouteLoading, setIsRouteLoading] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -127,12 +129,26 @@ export function AdminLayout() {
             <button
               type="button"
               className="admin-layout__logout"
-              onClick={() => {
-                logout();
+              disabled={isLoggingOut}
+              onClick={async () => {
+                if (isLoggingOut) return;
 
-                navigate("/admin/login", {
-                  replace: true,
-                });
+                setIsLoggingOut(true);
+                setLogoutError("");
+
+                try {
+                  await logout();
+
+                  navigate("/admin/login", {
+                    replace: true,
+                  });
+                } catch {
+                  setLogoutError(
+                    "Unable to sign out. Please check your connection and try again.",
+                  );
+                } finally {
+                  setIsLoggingOut(false);
+                }
               }}
             >
               <LogOut
@@ -141,8 +157,13 @@ export function AdminLayout() {
                 aria-hidden="true"
               />
 
-              <span>Sign out</span>
+              <span>{isLoggingOut ? "Signing out…" : "Sign out"}</span>
             </button>
+            {logoutError && (
+              <span role="alert" className="admin-layout__logout-error">
+                {logoutError}
+              </span>
+            )}
           </div>
 
           <details

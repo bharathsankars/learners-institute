@@ -96,9 +96,9 @@ export function AdminAuthProvider({
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await logoutRequest();
     advanceAdminSessionGeneration();
-    void logoutRequest();
     setUser(null);
   };
 

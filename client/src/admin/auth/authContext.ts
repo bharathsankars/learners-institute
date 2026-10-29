@@ -8,7 +8,7 @@ export type AdminAuthContextValue = {
 
   login: (username: string, password: string) => Promise<boolean>;
 
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 export const AdminAuthContext = createContext<AdminAuthContextValue | null>(
