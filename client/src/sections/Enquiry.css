@@ -381,200 +381,6 @@
 }
 
 
-/* =========================================================
-   ENQUIRY SUCCESS SNACKBAR
-   ========================================================= */
-
-.enquiry-success-snackbar {
-  position: fixed;
-
-  top: 96px;
-  left: 50%;
-
-  z-index: 2200;
-
-  width:
-    min(
-      calc(100% - 32px),
-      440px
-    );
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 14px 15px;
-
-  border:
-    1px solid
-    #ead7cd;
-
-  border-radius: 12px;
-
-  background:
-    rgb(255 252 249 / 0.98);
-
-  color: #5f433b;
-
-  box-shadow:
-    0 14px 38px
-    rgb(71 39 30 / 0.16);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
-  transform:
-    translateX(-50%);
-
-  animation:
-    enquirySnackbarEnter
-    280ms
-    cubic-bezier(
-      0.22,
-      1,
-      0.36,
-      1
-    )
-    both;
-}
-
-
-.enquiry-success-snackbar__icon {
-  width: 34px;
-  height: 34px;
-
-  display: grid;
-  place-items: center;
-
-  flex: 0 0 auto;
-
-  border-radius: 50%;
-
-  background: #e9f7ee;
-  color: #247447;
-
-  font-size: 17px;
-  font-weight: 800;
-}
-
-
-.enquiry-success-snackbar__content {
-  min-width: 0;
-
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 3px;
-}
-
-
-.enquiry-success-snackbar__content strong {
-  color: #603b32;
-
-  font-size: 13px;
-  font-weight: 700;
-}
-
-
-.enquiry-success-snackbar__content span {
-  color: #80665e;
-
-  font-size: 11px;
-  line-height: 1.45;
-}
-
-
-.enquiry-success-snackbar__close {
-  width: 34px;
-  height: 34px;
-
-  display: grid;
-  place-items: center;
-
-  flex: 0 0 auto;
-
-  padding: 0;
-
-  border-radius: 8px;
-
-  background: transparent;
-  color: #8a7169;
-
-  cursor: pointer;
-
-  font-size: 21px;
-  line-height: 1;
-}
-
-
-.enquiry-success-snackbar__close:hover {
-  background: #fff1e9;
-  color: #c95638;
-}
-
-
-@keyframes enquirySnackbarEnter {
-  from {
-    opacity: 0;
-
-    transform:
-      translateX(-50%)
-      translateY(-14px);
-  }
-
-  to {
-    opacity: 1;
-
-    transform:
-      translateX(-50%)
-      translateY(0);
-  }
-}
-
-
-@media (max-width: 820px) {
-  .enquiry-success-snackbar {
-    top:
-      calc(
-        78px +
-        env(safe-area-inset-top)
-      );
-
-    width:
-      min(
-        calc(100% - 24px),
-        440px
-      );
-
-    padding:
-      12px
-      13px;
-  }
-}
-
-
-@media (max-width: 420px) {
-  .enquiry-success-snackbar__content strong {
-    font-size: 12px;
-  }
-
-  .enquiry-success-snackbar__content span {
-    font-size: 10px;
-  }
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-  .enquiry-success-snackbar {
-    animation: none;
-  }
-}
-
-
-
 /* INLINE ENQUIRY SUCCESS CONFIRMATION */
 
 .enquiry-success-inline {
@@ -710,36 +516,9 @@
   }
 }
 
-/* COURSE CHECKBOX — REMOVE SELECTED OUTER BOX */
-
-.enquiry-course-option:has(input:checked) {
-  border-color: transparent;
-  background: transparent;
-}
-
-.enquiry-course-option {
-  border-color: transparent;
-  background: transparent;
-}
+/* COURSE CHECKBOX INTERACTION */
 
 .enquiry-course-option:hover {
-  background: transparent;
-}
-
-.enquiry-course-option:focus-within {
-  outline: none;
-}
-
-.enquiry-course-option input:focus-visible {
-  outline: 2px solid var(--color-blue-500);
-  outline-offset: 3px;
-}
-
-
-/* Restore course option boxes */
-.enquiry-course-option,
-.enquiry-course-option:hover {
-  border-color: var(--color-border);
   background: var(--color-white);
 }
 
@@ -748,18 +527,15 @@
   background: var(--color-surface-soft);
 }
 
-/* No rectangular focus outline around the entire option */
 .enquiry-course-option:focus-within {
   outline: none;
 }
 
-/* Remove checkbox focus outline for mouse clicks */
 .enquiry-course-option input:focus:not(:focus-visible) {
   outline: none;
   box-shadow: none;
 }
 
-/* Preserve visible focus for keyboard users */
 .enquiry-course-option input:focus-visible {
   outline: 2px solid var(--color-blue-500);
   outline-offset: 3px;

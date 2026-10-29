@@ -10,6 +10,7 @@ import { contact } from "../data/contact";
 
 export function MobileContactBar() {
   const [enquiryVisible, setEnquiryVisible] = useState(false);
+  const [footerVisible, setFooterVisible] = useState(false);
 
   useEffect(() => {
     const enquiry = document.getElementById("enquiry");
@@ -29,6 +30,24 @@ export function MobileContactBar() {
 
     observer.observe(enquiry);
 
+    const footer = document.querySelector(".site-footer");
+
+    if (footer) {
+      const footerObserver = new IntersectionObserver(
+        ([entry]) => {
+          setFooterVisible(entry?.isIntersecting ?? false);
+        },
+        { threshold: 0 },
+      );
+
+      footerObserver.observe(footer);
+
+      return () => {
+        observer.disconnect();
+        footerObserver.disconnect();
+      };
+    }
+
     return () => {
       observer.disconnect();
     };
@@ -37,7 +56,7 @@ export function MobileContactBar() {
   return (
     <nav
       className={`mobile-contact-bar${
-        enquiryVisible
+        enquiryVisible || footerVisible
           ? " mobile-contact-bar--hidden"
           : ""
       }`}
