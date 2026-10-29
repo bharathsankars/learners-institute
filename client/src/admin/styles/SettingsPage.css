@@ -570,12 +570,16 @@
 
   z-index: 1000;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
 
   padding: 24px;
 
   overflow-y: auto;
+  overscroll-behavior: contain;
 
   background:
     rgb(15 23 42 / 0.56);
@@ -589,12 +593,15 @@
    ========================================================= */
 
 .settings-editor {
+  box-sizing: border-box;
+  flex: 0 1 auto;
   width: min(100%, 720px);
-
-  max-height:
-    calc(100dvh - 48px);
+  min-height: 0;
+  max-height: calc(100dvh - 48px);
+  margin: auto;
 
   overflow-y: auto;
+  overscroll-behavior: contain;
 
   border: 1px solid var(--settings-border);
   border-radius: 14px;
@@ -1112,12 +1119,12 @@ html[data-theme="dark"]
   }
 
   .settings-editor-backdrop {
-    padding: 10px;
+    padding: 12px;
   }
 
   .settings-editor {
-    max-height:
-      calc(100dvh - 20px);
+    width: 100%;
+    max-height: calc(100dvh - 24px);
   }
 
   .settings-editor__header,
@@ -1301,37 +1308,6 @@ html[data-theme="dark"]
 }
 
 
-/* USER MODAL ALIGNMENT FIX */
-
-.settings-editor-backdrop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.settings-editor-backdrop > .settings-editor {
-  flex: 0 0 auto;
-  margin: auto;
-  max-height: calc(100dvh - 48px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-@media (max-width: 520px) {
-  .settings-editor-backdrop > .settings-editor {
-    max-height: calc(100dvh - 20px);
-  }
-}
-
-.settings-editor {
-  box-sizing: border-box;
-  margin-inline: auto;
-}
-
 .settings-editor__header {
   flex-shrink: 0;
 }
@@ -1409,31 +1385,4 @@ html[data-theme="dark"]
 
 .settings-form__grid select:disabled {
   cursor: not-allowed;
-}
-
-
-/* FINAL USER MODAL MOBILE SCROLL FIX */
-
-.settings-editor-backdrop:has(> .settings-editor) {
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.settings-editor-backdrop > .settings-editor {
-  flex: 0 1 auto;
-  margin: auto;
-  min-height: 0;
-  max-height: calc(100dvh - 48px);
-  overflow-y: auto;
-}
-
-@media (max-width: 520px) {
-  .settings-editor-backdrop:has(> .settings-editor) {
-    padding: 12px;
-  }
-
-  .settings-editor-backdrop > .settings-editor {
-    width: 100%;
-    max-height: calc(100dvh - 24px);
-  }
 }
