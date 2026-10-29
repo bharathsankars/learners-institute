@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, MapPin, MessageCircle, Search, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -61,7 +61,7 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const requestId = useRef(crypto.randomUUID());
   const submitting = useRef(false);
-  const lastAppliedCourseSelection = useRef<number | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -77,32 +77,21 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
     },
   });
 
-  useEffect(() => {
-    if (!courseSelection) {
-      return;
-    }
+  const [appliedSelectionId, setAppliedSelectionId] = useState<number | null>(null);
 
-    if (lastAppliedCourseSelection.current === courseSelection.requestId) {
-      return;
-    }
-
-    const courseExists = courses.some(
-      (course) => course.id === courseSelection.courseId,
-    );
-
-    if (!courseExists) {
-      return;
-    }
-
+  if (
+    courseSelection &&
+    courseSelection.requestId !== appliedSelectionId &&
+    courses.some((course) => course.id === courseSelection.courseId)
+  ) {
+    setAppliedSelectionId(courseSelection.requestId);
     setSelectedCourseIds((current) =>
       current.includes(courseSelection.courseId)
         ? current
         : [...current, courseSelection.courseId],
     );
-    setCourseError("");
-
-    lastAppliedCourseSelection.current = courseSelection.requestId;
-  }, [courseSelection, courses]);
+    if (courseError) setCourseError("");
+  }
 
   const onSubmit = async (data: EnquiryFormValues) => {
     if (submitting.current) return;
