@@ -1,4 +1,4 @@
-import { API_URL } from "./config";
+import { API_URL } from "./config.ts";
 export type AdminRole =
   | "SUPER_ADMIN"
   | "RECOVERY_ADMIN"
@@ -52,10 +52,21 @@ export async function loginRequest(
     }),
   });
 
-  const result = (await response.json()) as LoginResponse | ApiErrorResponse;
+  const result = await response.json().catch(() => null) as
+    | LoginResponse
+    | ApiErrorResponse
+    | null;
 
-  if (!result.success) {
-    throw new Error(result.message || "Unable to sign in.");
+  if (!response.ok || !result?.success) {
+    throw new Error(
+      result && "message" in result
+        ? result.message || "Unable to sign in."
+        : "Unable to sign in.",
+    );
+  }
+
+  if (!result.data?.user) {
+    throw new Error("Invalid login response.");
   }
 
   return result.data.user;
@@ -71,12 +82,21 @@ export async function getCurrentUserRequest(): Promise<AuthUser | null> {
     return null;
   }
 
-  const result = (await response.json()) as
+  const result = await response.json().catch(() => null) as
     | CurrentUserResponse
-    | ApiErrorResponse;
+    | ApiErrorResponse
+    | null;
 
-  if (!result.success) {
-    throw new Error(result.message || "Unable to restore session.");
+  if (!response.ok || !result?.success) {
+    throw new Error(
+      result && "message" in result
+        ? result.message || "Unable to restore session."
+        : "Unable to restore session.",
+    );
+  }
+
+  if (!result.data?.user) {
+    throw new Error("Invalid session response.");
   }
 
   return result.data.user;
