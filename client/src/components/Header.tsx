@@ -1,7 +1,6 @@
 import { ArrowUpRight, Menu, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// import { ThemeToggle } from "./ThemeToggle";
 
 import "./Header.css";
 
@@ -167,7 +166,6 @@ export function Header() {
         </nav>
 
         <div className="site-header__actions">
-          {/* <ThemeToggle /> */}
 
           <a
             className="site-header__staff-profile"
