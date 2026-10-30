@@ -74,7 +74,7 @@ export async function createFeePlanController(
     if (isPrismaError(error, "P2002")) {
       res.status(409).json({
         success: false,
-        message: "A fee plan already exists for this enrollment.",
+        message: "An active enrollment or fee plan already exists. Refresh and try again if needed.",
       });
 
       return;

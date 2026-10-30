@@ -8,12 +8,26 @@ import type {
 
 export async function createFeePlan(input: CreateFeePlanInput) {
   return prisma.$transaction(async (transaction) => {
-    const enrollment = await transaction.enrollment.create({
-      data: {
+    // An enrollment may already have been assigned in Student Details.
+    // Reuse it rather than creating another active enrollment.
+    let enrollment = await transaction.enrollment.findFirst({
+      where: {
         studentId: input.studentId,
         courseId: input.courseId,
+        status: "ACTIVE",
       },
+      select: { id: true },
     });
+
+    if (!enrollment) {
+      enrollment = await transaction.enrollment.create({
+        data: {
+          studentId: input.studentId,
+          courseId: input.courseId,
+        },
+        select: { id: true },
+      });
+    }
 
     return transaction.feePlan.create({
       data: {

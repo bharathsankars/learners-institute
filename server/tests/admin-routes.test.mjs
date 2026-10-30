@@ -16,6 +16,8 @@ const protectedRoutes = [
   ["POST", `/api/enquiries/${id}/admit`],
   ["GET", "/api/students"], ["POST", "/api/students"],
   ["PATCH", `/api/students/${id}`], ["DELETE", `/api/students/${id}`],
+  ["GET", `/api/students/${id}/enrollments`],
+  ["POST", `/api/students/${id}/enrollments`],
   ["GET", "/api/courses"], ["GET", `/api/courses/${id}`],
   ["POST", "/api/courses"], ["PATCH", `/api/courses/${id}`], ["DELETE", `/api/courses/${id}`],
 ];

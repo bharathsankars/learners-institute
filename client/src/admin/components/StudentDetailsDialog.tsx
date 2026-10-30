@@ -25,6 +25,7 @@ import {
   studentStatusLabels,
 } from "../utils/students";
 
+import { StudentEnrollmentsSection } from "./StudentEnrollmentsSection";
 import "../styles/StudentDetailsDialog.css";
 
 type StudentDetailsDialogProps = {
@@ -372,6 +373,10 @@ export function StudentDetailsDialog({
             </div>
           </section>
 
+
+          {/* Enrolled courses */}
+
+          <StudentEnrollmentsSection studentId={student.id} />
 
           {/* Last updated */}
 
