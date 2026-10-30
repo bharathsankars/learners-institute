@@ -755,18 +755,6 @@
   color: #285448;
 }
 
-.student-action--delete {
-  border-color: #efd0d4;
-
-  color: #9f1239;
-}
-
-.student-action--delete:hover:not(:disabled) {
-  border-color: #e5aab2;
-
-  background: #fff1f2;
-}
-
 .student-action:disabled,
 .student-record__name:disabled {
   opacity: 0.5;

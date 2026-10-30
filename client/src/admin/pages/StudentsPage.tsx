@@ -11,7 +11,6 @@ import {
   Plus,
   RefreshCw,
   Search,
-  Trash2,
   UserCheck,
   UserMinus,
   Users,
@@ -28,7 +27,6 @@ import { useState } from "react";
 
 import {
   createStudent,
-  deleteStudent,
   fetchStudents,
   updateStudent,
   type CreateStudentInput,
@@ -37,7 +35,6 @@ import {
 } from "../../api/students";
 
 import { AddStudentModal } from "../components/AddStudentModal";
-import { DeleteConfirmationDialog } from "../components/DeleteConfirmationDialog";
 import { StudentDetailsDialog } from "../components/StudentDetailsDialog";
 
 import {
@@ -105,7 +102,6 @@ export function StudentsPage() {
 
   const [formError, setFormError] = useState("");
   const [notice, setNotice] = useState("");
-  const [deleting, setDeleting] = useState<Student | null>(null);
 
   const students = query.data ?? [];
   const counts = studentCounts(students);
@@ -200,38 +196,11 @@ export function StudentsPage() {
       setFormError(error.message),
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteStudent,
-
-    onSuccess: async (_data, id) => {
-      setDeleting(null);
-
-      queryClient.setQueryData<Student[]>(
-        ["students"],
-        (records) =>
-          records?.filter(
-            (record) =>
-              record.id !== id,
-          ),
-      );
-
-      setNotice(
-        "Student record deleted.",
-      );
-
-      await queryClient.invalidateQueries({
-        queryKey: ["students"],
-      });
-    },
-  });
-
   const saving =
     createMutation.isPending ||
     updateMutation.isPending;
 
-  const busy =
-    saving ||
-    deleteMutation.isPending;
+  const busy = saving;
 
   const openForm = (
     student: Student | null = null,
@@ -257,19 +226,6 @@ export function StudentsPage() {
     setSearch("");
     setFilter("ALL");
     setPage(1);
-  };
-
-  const handleDelete = (
-    student: Student,
-  ) => {
-    if (busy) {
-      return;
-    }
-
-    deleteMutation.reset();
-    setProfileId(null);
-    setNotice("");
-    setDeleting(student);
   };
 
   const handleCreate = async (
@@ -450,34 +406,6 @@ export function StudentsPage() {
           </button>
         </div>
       )}
-
-      {!deleting &&
-        deleteMutation.isError && (
-          <div
-            className="students-notice students-notice--error"
-            role="alert"
-          >
-            <span>
-              {
-                deleteMutation.error
-                  .message
-              }
-            </span>
-
-            <button
-              type="button"
-              aria-label="Dismiss error"
-              onClick={() =>
-                deleteMutation.reset()
-              }
-            >
-              <X
-                size={18}
-                aria-hidden="true"
-              />
-            </button>
-          </div>
-        )}
 
       <section className="students-search-panel">
         <div className="students-section-heading">
@@ -817,21 +745,6 @@ export function StudentsPage() {
                       Edit
                     </button>
 
-                    <button
-                      type="button"
-                      className="student-action student-action--delete"
-                      disabled={busy}
-                      onClick={() =>
-                        handleDelete(student)
-                      }
-                    >
-                      <Trash2
-                        size={16}
-                        aria-hidden="true"
-                      />
-
-                      Delete
-                    </button>
                   </div>
                 </article>
               ),
@@ -911,40 +824,6 @@ export function StudentsPage() {
           onEdit={() =>
             openForm(selected)
           }
-        />
-      )}
-
-      {deleting && (
-        <DeleteConfirmationDialog
-          entity="student"
-          name={studentName(
-            deleting,
-          )}
-          reference={
-            deleting.admissionNumber
-          }
-          isDeleting={
-            deleteMutation.isPending
-          }
-          error={
-            deleteMutation.error
-              ?.message
-          }
-          onClose={() => {
-            if (
-              !deleteMutation.isPending
-            ) {
-              setDeleting(null);
-              deleteMutation.reset();
-            }
-          }}
-          onConfirm={() => {
-            if (!busy) {
-              deleteMutation.mutate(
-                deleting.id,
-              );
-            }
-          }}
         />
       )}
 

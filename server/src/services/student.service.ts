@@ -70,11 +70,3 @@ export async function updateStudent(
     },
   });
 }
-
-export async function deleteStudent(studentId: string) {
-  return prisma.student.delete({
-    where: {
-      id: studentId,
-    },
-  });
-}

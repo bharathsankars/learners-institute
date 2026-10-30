@@ -4,7 +4,6 @@ import { ZodError } from "zod";
 
 import {
   createStudent,
-  deleteStudent,
   getStudents,
   updateStudent,
 } from "../services/student.service.js";
@@ -162,56 +161,18 @@ export async function updateStudentController(
 }
 
 /* =========================================================
-   DELETE STUDENT
+   DELETE STUDENT (DISABLED)
    ========================================================= */
 
-export async function deleteStudentController(
-  req: Request,
+// The student register is permanent so admissions, enrolments and fee plans
+// stay traceable. Students leave the register by status, never by deletion.
+export function rejectStudentDeletionController(
+  _req: Request,
   res: Response,
-): Promise<void> {
-  try {
-    const studentId = studentIdSchema.parse(req.params.id);
-
-    await deleteStudent(studentId);
-
-    res.status(200).json({
-      success: true,
-      message: "Student deleted successfully.",
-    });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid student ID.",
-      });
-
-      return;
-    }
-
-    if (isPrismaError(error, "P2025")) {
-      res.status(404).json({
-        success: false,
-        message: "Student not found.",
-      });
-
-      return;
-    }
-
-    if (isPrismaError(error, "P2003")) {
-      res.status(409).json({
-        success: false,
-        message:
-          "This student cannot be deleted because they have linked enrolment or enquiry records. Mark the student as inactive instead.",
-      });
-
-      return;
-    }
-
-    console.error("Failed to delete student:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Unable to delete student.",
-    });
-  }
+): void {
+  res.status(405).json({
+    success: false,
+    message:
+      "Student records cannot be deleted. Mark the student as inactive or completed instead.",
+  });
 }

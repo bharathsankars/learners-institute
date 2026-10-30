@@ -54,10 +54,6 @@ type StudentResponse = {
   };
 };
 
-type DeleteStudentResponse = {
-  success: true;
-  message: string;
-};
 
 
 
@@ -122,18 +118,4 @@ export async function updateStudent(
   const result = (await response.json()) as StudentResponse;
 
   return result.data.student;
-}
-
-export async function deleteStudent(studentId: string): Promise<void> {
-  const requestGeneration = getAdminSessionGeneration();
-  const response = await fetch(`${API_URL}/api/students/${studentId}`, {
-    method: "DELETE",
-    credentials: "include",
-  });
-
-  if (!response.ok) {
-    throw await parseApiError(response, true, requestGeneration);
-  }
-
-  (await response.json()) as DeleteStudentResponse;
 }

@@ -3,8 +3,8 @@ import { requireAuthenticated } from "../middleware/session.js";
 
 import {
   createStudentController,
-  deleteStudentController,
   getStudentsController,
+  rejectStudentDeletionController,
   updateStudentController,
 } from "../controllers/student.controller.js";
 import {
@@ -21,4 +21,4 @@ studentRouter.get("/:id/enrollments", getStudentEnrollmentsController);
 studentRouter.post("/:id/enrollments", assignStudentCourseController);
 studentRouter.post("/", createStudentController);
 studentRouter.patch("/:id", updateStudentController);
-studentRouter.delete("/:id", deleteStudentController);
+studentRouter.delete("/:id", rejectStudentDeletionController);

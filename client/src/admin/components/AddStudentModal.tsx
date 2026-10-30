@@ -8,6 +8,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  UserMinus,
   UserRound,
   X,
 } from "lucide-react";
@@ -30,6 +31,8 @@ import type {
   Student,
   UpdateStudentInput,
 } from "../../api/students";
+
+import { studentName } from "../utils/students";
 
 import "../styles/AddStudentModal.css";
 
@@ -149,6 +152,7 @@ export function AddStudentModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: {
       errors,
     },
@@ -870,6 +874,38 @@ export function AddStudentModal({
           </span>
 
           <div>
+            {student?.status ===
+              "ACTIVE" && (
+              <button
+                className="student-modal__deactivate"
+                type="button"
+                onClick={() => {
+                  setValue(
+                    "status",
+                    "INACTIVE",
+                  );
+
+                  void handleSubmit(
+                    handleFormSubmit,
+                  )();
+                }}
+                disabled={
+                  isSubmitting
+                }
+              >
+                <UserMinus
+                  size={18}
+                  aria-hidden="true"
+                />
+
+                Make{" "}
+                {studentName(
+                  student,
+                )}{" "}
+                Inactive
+              </button>
+            )}
+
             <button
               className="student-modal__cancel"
               type="button"

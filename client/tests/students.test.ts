@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { filterStudents, paginateStudents, studentCounts, studentDate, studentName } from "../src/admin/utils/students.ts";
 const base = { phone: "+91 94461 25964", email: null, dateOfBirth: null, gender: null, address: null, updatedAt: "2026-10-10T12:00:00Z" };
 const students = [
@@ -34,4 +35,15 @@ test("pagination remains valid after filters and deletions", () => {
 });
 test("birth dates stay on their stored calendar day", () => {
   assert.equal(studentDate("2000-01-01T00:00:00Z", true), "1 Jan 2000");
+});
+test("the student register offers no permanent delete action", () => {
+  const source = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8");
+  const page = source("../src/admin/pages/StudentsPage.tsx");
+  assert.doesNotMatch(page, /deleteStudent|DeleteConfirmationDialog|student-action--delete|>\s*Delete\s*</);
+  assert.doesNotMatch(source("../src/api/students.ts"), /deleteStudent|method:\s*"DELETE"/);
+});
+test("the edit screen offers Make {name} Inactive only for active students", () => {
+  const modal = readFileSync(new URL("../src/admin/components/AddStudentModal.tsx", import.meta.url), "utf8");
+  assert.match(modal, /student\?\.status ===\s*"ACTIVE" && \([\s\S]*?setValue\(\s*"status",\s*"INACTIVE",?\s*\)[\s\S]*?Make\{" "\}\s*\{studentName\(\s*student,?\s*\)\}\{" "\}\s*Inactive/);
+  assert.doesNotMatch(readFileSync(new URL("../src/admin/pages/StudentsPage.tsx", import.meta.url), "utf8"), /Inactive\s*<\/button>/);
 });
