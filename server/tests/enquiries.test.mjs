@@ -12,6 +12,10 @@ test("validates required details, trims fields, and allows an optional message",
   assert.equal(createEnquirySchema.safeParse({ ...input, message: undefined }).success, true);
   for (const values of [{ name: "" }, { phone: "letters" }, { phone: "+..----" }, { course: " " }, { message: "x".repeat(501) }, { requestId: "invalid" }]) assert.equal(createEnquirySchema.safeParse({ ...input, ...values }).success, false);
 });
+test("accepts Indian mobile and international numbers but rejects impossible phones", () => {
+  for (const phone of ["9446125964", "+91 94461 25964", "094461-25964", "919446125964", "+971 50 123 4567"]) assert.equal(createEnquirySchema.safeParse({ ...input, phone }).success, true, phone);
+  for (const phone of ["94461+25964", "++91 9446125964", "+0000000000", "1234567890", "1234567890123456", "123", "94461 2596", "+91 1234567890", "+1 23"]) assert.equal(createEnquirySchema.safeParse({ ...input, phone }).success, false, phone);
+});
 test("public submission persists enquiry and returns only confirmation", async () => {
   let saved;
   prisma.enquiry.upsert = async ({ create }) => { saved = create; return { id: "test-id", ...create, status: "NEW" }; };
@@ -70,4 +74,38 @@ test("admin access requires an active, unexpired session", async () => {
   const expired = response();
   await requireAuthenticated({ cookies: { session: "test" } }, expired, () => {});
   assert.equal(expired.statusCode, 401);
+});
+test("enquiry admission applies the shared duplicate rule under the registration lock", async () => {
+  const { admitEnquiryController } = await import("../dist/src/controllers/enquiry.controller.js");
+  const enquiryId = "2f0d1c55-8a4e-4b51-9d3c-0a8c1d6f9e11";
+  const original = prisma.$transaction;
+  let created = 0;
+  const run = (candidates, calls) => async (callback) => callback({
+    $executeRaw: async () => 0,
+    $queryRaw: async (strings) => { const sql = strings.join("?"); calls.push(sql); return sql.includes("FROM students") ? candidates : []; },
+    enquiry: {
+      findUnique: async () => ({ id: enquiryId, student: null }),
+      update: async () => ({ id: enquiryId, status: "CLOSED" }),
+    },
+    student: { create: async ({ data }) => { created++; return { id: "new", admissionNumber: "LIT010", ...data }; } },
+  });
+  const existing = { admissionNumber: "LIT004", firstName: "Test", lastName: "Visitor", phone: "9446125964", email: null };
+  try {
+    const calls = [];
+    prisma.$transaction = run([existing], calls);
+    const res = response();
+    await admitEnquiryController({ params: { id: enquiryId }, body: { firstName: "test  visitor", phone: "+91 94461 25964" } }, res);
+    assert.equal(res.statusCode, 409);
+    assert.equal(res.body.data.admissionNumber, "LIT004");
+    assert.equal(created, 0);
+    assert.ok(calls.some((sql) => sql.includes("student_admission_counter") && sql.includes("FOR UPDATE")));
+
+    prisma.$transaction = run([existing], []);
+    const sibling = response();
+    await admitEnquiryController({ params: { id: enquiryId }, body: { firstName: "Other Visitor", phone: "9446125964" } }, sibling);
+    assert.equal(sibling.statusCode, 200);
+    assert.equal(created, 1);
+  } finally {
+    prisma.$transaction = original;
+  }
 });

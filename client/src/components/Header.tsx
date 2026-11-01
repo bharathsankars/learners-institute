@@ -1,6 +1,8 @@
 import { ArrowUpRight, Menu, UserRound, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+
+import logoMark from "../assets/learners-logo-mark-small.webp";
 
 import "./Header.css";
 
@@ -33,6 +35,7 @@ const navItems = [
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -117,15 +120,32 @@ export function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      const toggle = menuToggleRef.current;
+      const focusInMenu = document
+        .getElementById("mobile-navigation")
+        ?.contains(document.activeElement);
+
+      setMenuOpen(false);
+
+      // The menu is about to be hidden; keep focus on its toggle.
+      if (focusInMenu || document.activeElement === document.body) {
+        toggle?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
+
   return (
-    <header
-      className="site-header"
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          setMenuOpen(false);
-        }
-      }}
-    >
+    <header className="site-header">
       <div className="container site-header__inner">
         <a
           className="site-header__brand"
@@ -135,7 +155,9 @@ export function Header() {
         >
           <img
             className="site-header__brand-logo"
-            src="/learners-logo-mark.png"
+            src={logoMark}
+            width={150}
+            height={143}
             alt=""
             aria-hidden="true"
           />
@@ -177,6 +199,7 @@ export function Header() {
           </a>
 
           <button
+            ref={menuToggleRef}
             className="site-header__menu-toggle"
             type="button"
             aria-expanded={menuOpen}

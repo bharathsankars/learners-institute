@@ -226,7 +226,7 @@
 .enquiry-form__field textarea {
   width: 100%;
 
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
 
   background: var(--color-white);
@@ -263,7 +263,7 @@
 .enquiry-form__field input:hover,
 .enquiry-form__field select:hover,
 .enquiry-form__field textarea:hover {
-  border-color: #94a3b8;
+  border-color: var(--color-text-muted);
 }
 
 .enquiry-form__field input:focus,
@@ -271,9 +271,10 @@
 .enquiry-form__field textarea:focus {
   outline: none;
 
-  border-color: var(--color-blue-500);
+  /* A 2px action edge, matching the site focus ring. */
+  border-color: var(--color-action);
 
-  box-shadow: 0 0 0 4px rgb(249 115 22 / 0.1);
+  box-shadow: 0 0 0 1px var(--color-action);
 }
 
 .enquiry-form__field input[aria-invalid="true"],
@@ -285,7 +286,7 @@
 .enquiry-form__field input[aria-invalid="true"]:focus,
 .enquiry-form__field select[aria-invalid="true"]:focus,
 .enquiry-form__field textarea[aria-invalid="true"]:focus {
-  box-shadow: 0 0 0 4px rgb(185 28 28 / 0.08);
+  box-shadow: 0 0 0 1px var(--color-error);
 }
 
 .enquiry-form__error {
@@ -293,6 +294,21 @@
 
   font-size: 12px;
   font-weight: 600;
+}
+
+.enquiry-form__hint {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+.enquiry-form__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .enquiry-form__submit {
@@ -601,7 +617,7 @@
   width: 100%;
   min-height: 43px;
   padding: 10px 13px;
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-input-border);
   border-radius: 9px;
   background: var(--color-white);
   color: var(--color-heading);
@@ -610,7 +626,7 @@
 }
 
 .enquiry-course-search-input:focus-visible {
-  outline: 2px solid var(--color-blue-500);
+  outline: 2px solid var(--color-action);
   outline-offset: 2px;
 }
 

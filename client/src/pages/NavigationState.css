@@ -6,6 +6,15 @@
 .navigation-state a { display:inline-flex; align-items:center; gap:8px; padding:12px 16px; border-radius:7px; color:#fff; background:#285448; font-size:13px; font-weight:600; text-decoration:none; }
 .navigation-state a:focus-visible { outline:3px solid #93afa6; outline-offset:3px; }
 .navigation-state--public { margin:10vh auto; width:calc(100% - 32px); }
+/* Public 404 uses the warm public brand; admin keeps its own palette. */
+.navigation-state--public { border-color:#f0d6cc; color:#6e342a; }
+.navigation-state--public .navigation-state__icon { background:#fff0e8; color:#b8452a; }
+.navigation-state--public .navigation-state__eyebrow { color:#b8452a; }
+.navigation-state--public h1 { color:#6e342a; }
+.navigation-state--public p { color:#75615a; }
+.navigation-state--public a { background:#b8452a; }
+.navigation-state--public a:hover { background:#9f3b23; }
+.navigation-state--public a:focus-visible { outline:2px solid #b8452a; outline-offset:2px; }
 html[data-theme="dark"] .navigation-state { background:#111e2e; color:#e5edf6; border-color:#2c3c50; }
 html[data-theme="dark"] .navigation-state p { color:#a3b2c5; }
 html[data-theme="dark"] .navigation-state__icon { background:#203c32; color:#a6d5bc; }

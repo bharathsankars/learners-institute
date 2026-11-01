@@ -1,6 +1,7 @@
 import { prisma } from "../config/database.js";
 import type { CreateStudentInput } from "../validators/student.validator.js";
 import type { CreateEnquiryInput } from "../validators/enquiry.validator.js";
+import { findDuplicateStudent, lockStudentRegistration, StudentDuplicateError } from "./student-duplicate.service.js";
 
 export async function createEnquiry(input: CreateEnquiryInput) {
   // A retry of the same submission must not create a second enquiry.
@@ -29,6 +30,10 @@ export async function admitEnquiry(id: string, input: CreateStudentInput) {
     const enquiry = await tx.enquiry.findUnique({ where: { id }, include: { student: true } });
     if (!enquiry) throw new EnquiryNotFoundError();
     if (enquiry.student) return { student: enquiry.student, enquiry };
+    // Same lock and rule as manual registration and Excel import.
+    await lockStudentRegistration(tx);
+    const duplicate = await findDuplicateStudent(tx, input);
+    if (duplicate) throw new StudentDuplicateError(duplicate);
     const student = await tx.student.create({ data: {
       firstName: input.firstName, phone: input.phone,
       lastName: input.lastName ?? null, gender: input.gender ?? null, address: input.address ?? null,

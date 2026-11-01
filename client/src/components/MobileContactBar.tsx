@@ -8,7 +8,12 @@ import { useEffect, useState } from "react";
 import "./MobileContactBar.css";
 import { contact } from "../data/contact";
 
-export function MobileContactBar() {
+type MobileContactBarProps = {
+  assistantOpen: boolean;
+  onAsk: () => void;
+};
+
+export function MobileContactBar({ assistantOpen, onAsk }: MobileContactBarProps) {
   const [enquiryVisible, setEnquiryVisible] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
 
@@ -24,7 +29,11 @@ export function MobileContactBar() {
         );
       },
       {
-        threshold: 0.12,
+        // Hide while the form crosses the middle of the screen. A ratio
+        // threshold never triggers when the section is much taller than
+        // the viewport (e.g. 400% zoom), leaving the bar over the fields.
+        rootMargin: "-25% 0px -25% 0px",
+        threshold: 0,
       },
     );
 
@@ -105,6 +114,19 @@ export function MobileContactBar() {
 
         <span>Enquire</span>
       </a>
+      <button
+        id="mobile-ask-learners"
+        type="button"
+        className="mobile-contact-bar__action"
+        onClick={onAsk}
+        aria-label="Ask Learners"
+        aria-expanded={assistantOpen}
+        aria-controls={assistantOpen ? "learner-assistant-panel" : undefined}
+        aria-haspopup="dialog"
+      >
+        <MessageCircle size={19} strokeWidth={1.9} aria-hidden="true" />
+        <span>Ask</span>
+      </button>
     </nav>
   );
 }

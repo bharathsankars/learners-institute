@@ -1,4 +1,9 @@
 import { prisma } from "../config/database.js";
+import {
+  findDuplicateStudent,
+  lockStudentRegistration,
+  StudentDuplicateError,
+} from "./student-duplicate.service.js";
 
 import type {
   CreateStudentInput,
@@ -6,31 +11,38 @@ import type {
 } from "../validators/student.validator.js";
 
 export async function createStudent(input: CreateStudentInput) {
-  return prisma.student.create({
-    data: {
-      firstName: input.firstName,
-      phone: input.phone,
+  return prisma.$transaction(async (tx) => {
+    await lockStudentRegistration(tx);
 
-      ...(input.lastName && {
-        lastName: input.lastName,
-      }),
+    const duplicate = await findDuplicateStudent(tx, input);
+    if (duplicate) throw new StudentDuplicateError(duplicate);
 
-      ...(input.email && {
-        email: input.email.toLowerCase(),
-      }),
+    return tx.student.create({
+      data: {
+        firstName: input.firstName,
+        phone: input.phone,
 
-      ...(input.dateOfBirth && {
-        dateOfBirth: new Date(`${input.dateOfBirth}T00:00:00.000Z`),
-      }),
+        ...(input.lastName && {
+          lastName: input.lastName,
+        }),
 
-      ...(input.gender && {
-        gender: input.gender,
-      }),
+        ...(input.email && {
+          email: input.email.toLowerCase(),
+        }),
 
-      ...(input.address && {
-        address: input.address,
-      }),
-    },
+        ...(input.dateOfBirth && {
+          dateOfBirth: new Date(`${input.dateOfBirth}T00:00:00.000Z`),
+        }),
+
+        ...(input.gender && {
+          gender: input.gender,
+        }),
+
+        ...(input.address && {
+          address: input.address,
+        }),
+      },
+    });
   });
 }
 

@@ -11,7 +11,7 @@ import { useLandingAnimations } from "../hooks/useLandingAnimations";
 
 import { About } from "../sections/About";
 import { Contact } from "../sections/Contact";
-import { Courses } from "../sections/Courses";
+import { Courses, type CourseCategory } from "../sections/Courses";
 import { Enquiry } from "../sections/Enquiry";
 import { FAQ } from "../sections/FAQ";
 import { Hero } from "../sections/Hero";
@@ -30,9 +30,24 @@ type CourseSelectionIntent = {
   requestId: number;
 };
 
+type CategorySelectionIntent = {
+  category: CourseCategory;
+  requestId: number;
+};
+
 export function PublicHomePage() {
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [courseSelection, setCourseSelection] =
     useState<CourseSelectionIntent | null>(null);
+  const [categorySelection, setCategorySelection] =
+    useState<CategorySelectionIntent | null>(null);
+
+  const handleCategorySelect = (category: CourseCategory) => {
+    setCategorySelection((current) => ({
+      category,
+      requestId: (current?.requestId ?? 0) + 1,
+    }));
+  };
 
   const handleCourseEnquiry = (courseId: string) => {
     setCourseSelection((current) => ({
@@ -54,9 +69,12 @@ export function PublicHomePage() {
       <Header />
 
       <main id="main-content" tabIndex={-1}>
-        <Hero />
+        <Hero onSelectCategory={handleCategorySelect} />
 
-        <Courses onEnquire={handleCourseEnquiry} />
+        <Courses
+          onEnquire={handleCourseEnquiry}
+          categorySelection={categorySelection}
+        />
 
         <About />
 
@@ -162,11 +180,15 @@ export function PublicHomePage() {
 
       <Footer />
 
+
       <BackToTop />
 
-      <MobileContactBar />
+      <MobileContactBar
+        assistantOpen={assistantOpen}
+        onAsk={() => setAssistantOpen(true)}
+      />
 
-      <LearnerAssistant />
+      <LearnerAssistant open={assistantOpen} onOpenChange={setAssistantOpen} />
     </div>
   );
 }

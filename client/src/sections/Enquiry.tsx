@@ -1,7 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, MapPin, MessageCircle, Search, X } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  MapPin,
+  MessageCircle,
+  Search,
+  X,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useForm, type FieldErrors } from "react-hook-form";
 import { z } from "zod";
 
 import { submitEnquiry, type CreateEnquiryInput } from "../api/enquiries";
@@ -9,6 +17,23 @@ import { usePublicCourses } from "../hooks/usePublicCourses";
 
 import "./Enquiry.css";
 import { contact } from "../data/contact";
+
+const phoneMessage = "Please enter a valid 10-digit mobile number.";
+
+// Indian numbers (optionally prefixed with +91, 91 or 0) must be a
+// 10-digit mobile number. Numbers with another country code are accepted
+// at international length. Mirrors the server enquiry validator.
+function isValidPhone(value: string) {
+  if (!/^\+?[\d\s().-]+$/.test(value.trim())) return false;
+
+  const digits = value.replace(/\D/g, "");
+
+  if (value.trim().startsWith("+") && !digits.startsWith("91")) {
+    return /^[1-9]\d{7,14}$/.test(digits);
+  }
+
+  return /^[6-9]\d{9}$/.test(digits.replace(/^(91|0)(?=\d{10}$)/, ""));
+}
 
 const enquirySchema = z.object({
   name: z
@@ -19,13 +44,10 @@ const enquirySchema = z.object({
   phone: z
     .string()
     .trim()
-    .min(7, "Please enter a valid phone number.")
-    .max(20, "Please enter a valid phone number.")
-    .regex(/^[+\d\s().-]+$/, "Please enter a valid phone number.")
-    .refine(
-      (value) => value.replace(/\D/g, "").length >= 7,
-      "Please enter a valid phone number.",
-    ),
+    .min(1, phoneMessage)
+    .max(20, phoneMessage)
+    .regex(/^[+\d\s().-]+$/, phoneMessage)
+    .refine(isValidPhone, phoneMessage),
   email: z
     .union([
       z.string().trim().email("Please enter a valid email address."),
@@ -59,6 +81,7 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
     course.title.toLowerCase().includes(courseSearch.trim().toLowerCase())
   );
   const [showSuccess, setShowSuccess] = useState(false);
+  const [errorSummary, setErrorSummary] = useState("");
   const requestId = useRef(crypto.randomUUID());
   const submitting = useRef(false);
 
@@ -93,13 +116,55 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
     if (courseError) setCourseError("");
   }
 
+  useEffect(() => {
+    if (appliedSelectionId === null) return;
+
+    // Move keyboard and screen-reader users into the form after
+    // "Enquire about this course". The #enquiry link handles scrolling,
+    // and its fragment navigation runs after this effect, so wait a frame.
+    const frame = requestAnimationFrame(() => {
+      document
+        .getElementById("enquiry-name")
+        ?.focus({ preventScroll: true });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [appliedSelectionId]);
+
+  const announceErrors = (count: number) => {
+    setErrorSummary(
+      count === 1
+        ? "1 field needs attention."
+        : `${count} fields need attention.`,
+    );
+  };
+
+  const validateCourses = () => {
+    if (selectedCourseIds.length > 0) return true;
+
+    setCourseError("Please select at least one course.");
+    return false;
+  };
+
+  // Report the course requirement alongside field errors in one pass.
+  const onInvalid = (fieldErrors: FieldErrors<EnquiryFormValues>) => {
+    const coursesValid = validateCourses();
+
+    announceErrors(Object.keys(fieldErrors).length + (coursesValid ? 0 : 1));
+  };
+
   const onSubmit = async (data: EnquiryFormValues) => {
     if (submitting.current) return;
 
-    if (selectedCourseIds.length === 0) {
-      setCourseError("Please select at least one course.");
+    if (!validateCourses()) {
+      announceErrors(1);
+      document
+        .querySelector<HTMLInputElement>(".enquiry-course-option input")
+        ?.focus();
       return;
     }
+
+    setErrorSummary("");
 
     submitting.current = true;
     setCourseError("");
@@ -199,12 +264,13 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
           <form
             className="enquiry-form"
             onSubmit={(event) => {
-              void handleSubmit(onSubmit)(event);
+              void handleSubmit(onSubmit, onInvalid)(event);
             }}
             onChange={() => {
               requestId.current = crypto.randomUUID();
               setShowSuccess(false);
               setSubmitError("");
+              setErrorSummary("");
             }}
             noValidate
           >
@@ -218,11 +284,14 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                   autoComplete="name"
                   placeholder="Enter your name"
                   aria-invalid={Boolean(errors.name)}
+                  aria-describedby={
+                    errors.name ? "enquiry-name-error" : undefined
+                  }
                   {...register("name")}
                 />
 
                 {errors.name && (
-                  <span className="enquiry-form__error">
+                  <span id="enquiry-name-error" className="enquiry-form__error">
                     {errors.name.message}
                   </span>
                 )}
@@ -234,14 +303,24 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                 <input
                   id="enquiry-phone"
                   type="tel"
+                  inputMode="tel"
                   autoComplete="tel"
                   placeholder="Enter your phone number"
                   aria-invalid={Boolean(errors.phone)}
+                  aria-describedby={
+                    errors.phone
+                      ? "enquiry-phone-hint enquiry-phone-error"
+                      : "enquiry-phone-hint"
+                  }
                   {...register("phone")}
                 />
 
+                <small id="enquiry-phone-hint" className="enquiry-form__hint">
+                  10-digit mobile number
+                </small>
+
                 {errors.phone && (
-                  <span className="enquiry-form__error">
+                  <span id="enquiry-phone-error" className="enquiry-form__error">
                     {errors.phone.message}
                   </span>
                 )}
@@ -258,11 +337,14 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                   autoComplete="email"
                   placeholder="Enter your email address"
                   aria-invalid={Boolean(errors.email)}
+                  aria-describedby={
+                    errors.email ? "enquiry-email-error" : undefined
+                  }
                   {...register("email")}
                 />
 
                 {errors.email && (
-                  <span className="enquiry-form__error">
+                  <span id="enquiry-email-error" className="enquiry-form__error">
                     {errors.email.message}
                   </span>
                 )}
@@ -382,9 +464,11 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                     {showAllCourses
                       ? "Show fewer courses"
                       : `View all ${courses.length} courses`}
-                    <span aria-hidden="true">
-                      {showAllCourses ? "↑" : "↓"}
-                    </span>
+                    {showAllCourses ? (
+                      <ChevronUp size={16} aria-hidden="true" />
+                    ) : (
+                      <ChevronDown size={16} aria-hidden="true" />
+                    )}
                   </button>
                 )}
 
@@ -430,12 +514,17 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                 <textarea
                   id="enquiry-message"
                   rows={4}
+                  maxLength={500}
                   placeholder="Anything you would like to ask?"
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={
+                    errors.message ? "enquiry-message-error" : undefined
+                  }
                   {...register("message")}
                 />
 
                 {errors.message && (
-                  <span className="enquiry-form__error">
+                  <span id="enquiry-message-error" className="enquiry-form__error">
                     {errors.message.message}
                   </span>
                 )}
@@ -486,6 +575,10 @@ export function Enquiry({ courseSelection = null }: EnquiryProps) {
                 {submitError}
               </p>
             )}
+
+            <p className="enquiry-form__sr-only" aria-live="polite">
+              {errorSummary}
+            </p>
 
             <p className="enquiry-form__note">
               Your details will be used to respond to your course enquiry.

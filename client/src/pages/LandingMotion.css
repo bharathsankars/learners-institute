@@ -4,7 +4,7 @@
 
 .landing-page {
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --accent-gradient: linear-gradient(90deg, #285448, #c2aa85);
+  --accent-gradient: linear-gradient(90deg, #b8452a, #f28c45);
 }
 
 /* ---------- Scroll progress ---------- */
@@ -65,7 +65,7 @@
   border-radius: 0;
   background: radial-gradient(
     560px circle at var(--pointer-x, 68%) var(--pointer-y, 32%),
-    rgb(40 84 72 / 0.09),
+    rgb(216 90 58 / 0.08),
     transparent 65%
   );
   transition: background 0.2s linear;
@@ -194,8 +194,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #285448;
-  box-shadow: 0 0 0 0 rgb(40 84 72 / 0.4);
+  background: #b8452a;
+  box-shadow: 0 0 0 0 rgb(184 69 42 / 0.4);
   animation: landingPulse 2.8s ease-out infinite;
 }
 
@@ -208,11 +208,11 @@
 
 @keyframes landingPulse {
   0% {
-    box-shadow: 0 0 0 0 rgb(40 84 72 / 0.4);
+    box-shadow: 0 0 0 0 rgb(184 69 42 / 0.4);
   }
   70%,
   100% {
-    box-shadow: 0 0 0 9px rgb(40 84 72 / 0);
+    box-shadow: 0 0 0 9px rgb(184 69 42 / 0);
   }
 }
 
@@ -425,7 +425,7 @@
 .landing-page .course-card:hover .course-card__icon,
 .landing-page .about-feature:hover .about-feature__icon {
   transform: translateY(-3px) rotate(-6deg);
-  background: #285448;
+  background: #b8452a;
   color: #fff;
 }
 
@@ -440,7 +440,7 @@
   bottom: 0;
   left: -1px;
   width: 2px;
-  background: linear-gradient(180deg, #285448, #c2aa85);
+  background: linear-gradient(180deg, #b8452a, #f28c45);
   transform: scaleY(0);
   transform-origin: 50% 0;
   transition: transform 0.5s var(--ease-out-soft);
@@ -459,7 +459,7 @@
 }
 
 .landing-page .about-feature:hover h3 {
-  color: #285448;
+  color: #b8452a;
 }
 
 /* ---------- Dark mode ---------- */

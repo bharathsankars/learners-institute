@@ -16,7 +16,7 @@
     z-index: 950;
 
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 
     width: min(
       calc(100% - 24px),
@@ -30,13 +30,13 @@
 
     border:
       1px solid
-      rgba(24, 46, 59, 0.12);
+      rgba(110, 52, 42, 0.14);
 
     border-radius: 10px;
 
     box-shadow:
       0 14px 38px
-      rgba(24, 46, 59, 0.17);
+      rgba(110, 52, 42, 0.17);
 
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -92,7 +92,7 @@
 
     border-radius: 7px;
 
-    color: #285448;
+    color: #6e342a;
 
     font-size: 10px;
     font-weight: 650;
@@ -114,12 +114,10 @@
     color: #fff;
   }
 
+  /* The sticky header and this bar already cover navigation on phones;
+     a third floating button only hides content. */
   .landing-page .back-to-top {
-    bottom:
-      calc(
-        86px +
-        env(safe-area-inset-bottom)
-      );
+    display: none;
   }
 }
 
@@ -151,5 +149,22 @@ html[data-theme="dark"]
 ) {
   .mobile-contact-bar {
     transition: none;
+  }
+}
+
+/* Match the Ask button to the existing contact links. */
+@media (max-width: 820px) {
+  button.mobile-contact-bar__action {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .mobile-contact-bar__action:focus-visible {
+    outline: 2px solid var(--color-action, #b8452a);
+    outline-offset: -2px;
   }
 }

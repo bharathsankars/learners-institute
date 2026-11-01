@@ -61,9 +61,6 @@
   overflow-wrap: anywhere;
 }
 @media (max-width: 820px) {
-  .landing-page .back-to-top {
-    bottom: calc(82px + env(safe-area-inset-bottom));
-  }
   .landing-page .site-footer {
     padding-bottom: calc(94px + env(safe-area-inset-bottom));
   }

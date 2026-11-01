@@ -73,6 +73,7 @@ model User {
   password String
 
   sessions Session[]
+  studentImports StudentImportBatch[]
 
   role     UserRole @default(STAFF)
   isActive Boolean  @default(true)
@@ -127,6 +128,21 @@ model Student {
   @@index([firstName, lastName])
   @@index([phone])
   @@map("students")
+}
+
+// One row per confirmed Excel import; makes confirmation retries idempotent.
+model StudentImportBatch {
+  id           String   @id @default(uuid()) @db.Uuid
+  requestId    String   @unique @db.Uuid
+  fileSha256   String   @db.Char(64)
+  studentCount Int
+  importedById String?  @db.Uuid
+  importedBy   User?    @relation(fields: [importedById], references: [id], onDelete: SetNull)
+  result       Json
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([fileSha256])
+  @@map("student_import_batches")
 }
 
 model Course {

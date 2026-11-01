@@ -4,26 +4,42 @@ import {
   Laptop2,
   MapPin,
   NotebookPen,
+  Pause,
+  Play,
 } from "lucide-react";
+import { useState } from "react";
+
+import logoMark from "../assets/learners-logo-mark.webp";
+
+import type { CourseCategory } from "./Courses";
 
 import "./Hero.css";
 
-const pathways = [
+const pathways: {
+  number: string;
+  title: string;
+  category: CourseCategory;
+  detail: string;
+  icon: typeof Keyboard;
+}[] = [
   {
     number: "01",
     title: "Typewriting",
+    category: "Typewriting",
     detail: "English & Malayalam",
     icon: Keyboard,
   },
   {
     number: "02",
     title: "Shorthand",
+    category: "Shorthand",
     detail: "Dictation & transcription",
     icon: NotebookPen,
   },
   {
     number: "03",
     title: "Computer skills",
+    category: "Computer Courses",
     detail: "Practical office training",
     icon: Laptop2,
   },
@@ -56,11 +72,17 @@ const trustStats = [
   },
 ];
 
-export function Hero() {
+type HeroProps = {
+  onSelectCategory?: (category: CourseCategory) => void;
+};
+
+export function Hero({ onSelectCategory }: HeroProps) {
+  const [tickerPaused, setTickerPaused] = useState(false);
+
   return (
     <section id="home" className="hero-section">
       <div className="hero-brand-watermark" aria-hidden="true">
-        <img src="/learners-logo-mark.png" alt="" />
+        <img src={logoMark} alt="" width={617} height={590} />
       </div>
 
       <div className="container hero-section__inner">
@@ -126,8 +148,12 @@ export function Hero() {
           </h2>
 
           <div className="learning-guide__pathways">
-            {pathways.map(({ number, title, detail, icon: Icon }) => (
-              <a href="#courses" key={number}>
+            {pathways.map(({ number, title, category, detail, icon: Icon }) => (
+              <a
+                href="#courses"
+                key={number}
+                onClick={() => onSelectCategory?.(category)}
+              >
                 <span className="learning-guide__number">{number}</span>
 
                 <div>
@@ -165,7 +191,10 @@ export function Hero() {
         <p>Practical application</p>
       </div>
 
-      <div className="hero-ticker" aria-label="What you can learn">
+      <div
+        className={`hero-ticker${tickerPaused ? " hero-ticker--paused" : ""}`}
+        aria-label="What you can learn"
+      >
         {[0, 1].map((copy) => (
           <ul
             className="hero-ticker__track"
@@ -177,6 +206,20 @@ export function Hero() {
             ))}
           </ul>
         ))}
+
+        <button
+          type="button"
+          className="hero-ticker__control"
+          aria-pressed={tickerPaused}
+          aria-label={tickerPaused ? "Play scrolling text" : "Pause scrolling text"}
+          onClick={() => setTickerPaused((paused) => !paused)}
+        >
+          {tickerPaused ? (
+            <Play size={14} aria-hidden="true" />
+          ) : (
+            <Pause size={14} aria-hidden="true" />
+          )}
+        </button>
       </div>
     </section>
   );

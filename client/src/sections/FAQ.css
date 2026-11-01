@@ -136,7 +136,7 @@
 }
 
 .faq-item:hover {
-  border-color: #cbd5e1;
+  border-color: var(--color-border-strong);
 }
 
 .faq-item--open {
@@ -185,7 +185,7 @@
 
   flex-shrink: 0;
 
-  color: #64748b;
+  color: var(--color-text-muted);
 
   background: #f8fafc;
 

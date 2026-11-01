@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { contact } from "../data/contact";
+import logoFull from "../assets/learners-logo-full.webp";
 
 const quickLinks = [
   { label: "Courses", href: "#courses" },
@@ -23,7 +24,9 @@ export function Footer() {
               aria-label="Learners Commercial Institute home"
             >
               <img
-                src="/learners-logo-full.png"
+                src={logoFull}
+                width={320}
+                height={229}
                 alt="Learners Commercial Institute"
               />
             </a>
@@ -100,7 +103,7 @@ export function Footer() {
             © {new Date().getFullYear()} Learners Commercial Institute
           </span>
 
-          <span className="site-footer__bottom-location">
+          <span className="site-footer__bottom-location" aria-hidden="true">
             Thirunakkara · Kottayam
           </span>
 

@@ -17,11 +17,17 @@ export function PublicCourseDetailsDialog({
   onEnquire,
 }: PublicCourseDetailsDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const restoreFocusOnClose = useRef(true);
 
   useEffect(() => {
     const dialog = dialogRef.current;
 
     if (!dialog) return;
+
+    const trigger =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
 
     if (!dialog.open) {
       dialog.showModal();
@@ -31,10 +37,18 @@ export function PublicCourseDetailsDialog({
       if (dialog.open) {
         dialog.close();
       }
+
+      // The dialog unmounts instead of closing natively, so return focus
+      // to the button that opened it.
+      if (restoreFocusOnClose.current && trigger?.isConnected) {
+        trigger.focus({ preventScroll: true });
+      }
     };
   }, []);
 
   const handleEnquire = () => {
+    // The enquiry form takes focus instead of the trigger.
+    restoreFocusOnClose.current = false;
     onEnquire?.(course.id);
     onClose();
   };

@@ -453,7 +453,7 @@
   color: var(--color-text);
 }
 .landing-page .why-card__number {
-  color: #738174;
+  color: #75615a;
 }
 .landing-page .faq-section {
   background: #faf9f5;
@@ -721,7 +721,7 @@ html[data-theme="dark"] .landing-page .site-footer__bottom a:hover {
     max-width: 630px;
   }
   .landing-page .hero-section__title {
-    font-size: clamp(42px, 7vw, 60px);
+    font-size: clamp(42px, 7vw, 50px);
   }
   .learning-guide {
     max-width: 600px;
@@ -1163,10 +1163,10 @@ html[data-theme="dark"] .site-footer__brand--logo {
 
   padding: 0 15px;
 
-  border: 1px solid #d85a3a;
+  border: 1px solid var(--color-action);
   border-radius: 8px;
 
-  background: #d85a3a;
+  background: var(--color-action);
   color: #ffffff;
 
   font-size: 13px;
@@ -1191,8 +1191,8 @@ html[data-theme="dark"] .site-footer__brand--logo {
 }
 
 .home-batch__action:hover {
-  background: #c95034;
-  border-color: #c95034;
+  background: var(--color-action-hover);
+  border-color: var(--color-action-hover);
 
   transform: translateY(-1px);
 
@@ -1206,7 +1206,7 @@ html[data-theme="dark"] .site-footer__brand--logo {
 }
 
 .home-batch__action--whatsapp {
-  border-color: #d85a3a;
+  border-color: var(--color-action);
 
   background: #ffffff;
   color: #b84f38;
@@ -1304,7 +1304,7 @@ html[data-theme="dark"] .site-footer__brand--logo {
 .home-cta__eyebrow {
   display: inline-block;
   margin-bottom: 12px;
-  color: #d85a3a;
+  color: var(--color-action);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -1344,7 +1344,7 @@ html[data-theme="dark"] .site-footer__brand--logo {
 }
 
 .home-cta__primary {
-  background: #d85a3a;
+  background: var(--color-action);
   color: #fff;
 }
 

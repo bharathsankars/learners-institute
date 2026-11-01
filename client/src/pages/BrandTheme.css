@@ -21,7 +21,7 @@
   --color-surface-soft: #fff4ee;
 
   --color-text: #405965;
-  --color-text-muted: #667d88;
+  --color-text-muted: #75615a;
 
   --color-border: #efd8cf;
 }
@@ -38,7 +38,7 @@
 }
 
 .landing-page .site-header__brand-text span {
-  color: #667d88;
+  color: #75615a;
 }
 
 .landing-page .site-header__nav-link--active {
@@ -220,7 +220,7 @@
 
 .landing-page .site-footer {
   background: #fff7f2;
-  color: #667d88;
+  color: #75615a;
 }
 
 .landing-page .site-footer__main a:not(.site-footer__brand) {
@@ -364,7 +364,7 @@ html[data-theme="dark"] .landing-page .enquiry-form__submit:hover {
 }
 
 .landing-page .about-feature p {
-  color: #667d88;
+  color: #75615a;
 }
 
 .landing-page .about-section__cta {
@@ -577,7 +577,7 @@ html[data-theme="dark"] .landing-page .enquiry-form__submit:hover {
 }
 
 .landing-page .contact-map__location-chip small {
-  color: #667d88;
+  color: #75615a;
 
   font-size: 10px;
 }
@@ -880,18 +880,16 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
   opacity: 0.075;
 }
 
+/* Motion only: opacity stays at the per-breakpoint values below so the
+   watermark never lowers the headline accent under 3:1 on phones. */
 @keyframes learnersBrandFloatRefined {
   0%,
   100% {
     transform: translateY(-50%) translateX(0) rotate(-4deg);
-
-    opacity: 0.07;
   }
 
   50% {
     transform: translateY(-53%) translateX(8px) rotate(-2.5deg);
-
-    opacity: 0.09;
   }
 }
 
@@ -1029,7 +1027,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
   color: #ffb067;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 
   letter-spacing: 0.16em;
@@ -1143,7 +1141,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 .landing-page .site-footer__address small {
   color: rgb(255 255 255 / 0.55);
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .landing-page .site-footer__address:hover {
@@ -1153,7 +1151,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 .landing-page .site-footer__founder {
   color: rgb(255 255 255 / 0.5);
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 /* Bottom bar */
@@ -1194,7 +1192,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
   color: rgb(255 255 255 / 0.72);
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 
   text-decoration: none;
@@ -1280,7 +1278,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .site-footer::before {
-  background: radial-gradient(circle, rgb(76 176 201 / 0.16), transparent 68%);
+  background: radial-gradient(circle, rgb(242 140 69 / 0.12), transparent 68%);
 }
 
 /* =========================================================
@@ -1290,7 +1288,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
 .landing-page .site-footer {
   background: #fff7f2;
-  color: #667d88;
+  color: #75615a;
 
   padding-top: 48px;
 }
@@ -1337,7 +1335,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
   font-size: 12px;
   line-height: 1.6;
 
-  color: #667d88;
+  color: #75615a;
 }
 
 /* Reduce spacing inside footer columns */
@@ -1358,7 +1356,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 .landing-page .site-footer__address {
   font-size: 12px;
 
-  color: #294b60;
+  color: #6e342a;
 }
 
 /* Founder text */
@@ -1366,9 +1364,9 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 .landing-page .site-footer__founder {
   margin-top: 3px;
 
-  font-size: 11px;
+  font-size: 12px;
 
-  color: #748891;
+  color: #75615a;
 }
 
 /* Bottom row */
@@ -1382,7 +1380,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
   min-height: 42px;
 
-  color: #71858e;
+  color: #75615a;
 }
 
 .landing-page .site-footer__bottom-location {
@@ -1390,7 +1388,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .site-footer__bottom a {
-  color: #294b60;
+  color: #6e342a;
 }
 
 /* Tablet */
@@ -1540,7 +1538,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .site-footer__tagline {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.35;
 }
 
@@ -1558,7 +1556,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
   min-height: 26px;
   padding-top: 8px;
   gap: 8px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 @media (max-width: 620px) {
@@ -1641,7 +1639,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 /* FOOTER — LOCATION SECOND LINE COLOR FIX */
 
 .landing-page .site-footer__address small {
-  color: #748891;
+  color: #75615a;
 }
 
 .landing-page .site-footer__address:hover small {
@@ -1708,10 +1706,16 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
    ========================================================= */
 
 .landing-page {
+  /* Action orange meets WCAG AA for white text and on cream surfaces.
+     The lighter accent is for display text and decorative icons only. */
+  --color-action: #b8452a;
+  --color-action-hover: #9f3b23;
+  --color-accent: #d85a3a;
+
   --color-navy-900: #6e342a;
 
-  --color-blue-700: #d85a3a;
-  --color-blue-600: #e56d3f;
+  --color-blue-700: var(--color-action);
+  --color-blue-600: var(--color-action-hover);
   --color-blue-500: #f28c45;
 
   --color-blue-100: #fff0e8;
@@ -1727,6 +1731,9 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
   --color-text-muted: #75615a;
 
   --color-border: #f0d6cc;
+  --color-border-strong: #e6ad95;
+  /* Form field edges: a tint of the muted brown, 3:1 on white and cream. */
+  --color-input-border: #917d75;
 }
 
 /* Header */
@@ -1745,19 +1752,23 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .site-header__nav-link--active {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .site-header__nav-link--active::after {
   background: #f28c45;
 }
 
+.landing-page .site-header__mobile-nav {
+  color: var(--color-text);
+}
+
 .landing-page .site-header__cta {
-  background: #d85a3a;
+  background: var(--color-action);
 }
 
 .landing-page .site-header__cta:hover {
-  background: #c94e32;
+  background: var(--color-action-hover);
 }
 
 /* Hero */
@@ -1768,9 +1779,12 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
     linear-gradient(180deg, #ffffff 0%, #fff8f4 100%);
 }
 
-.landing-page .hero-section__eyebrow,
+.landing-page .hero-section__eyebrow {
+  color: var(--color-action);
+}
+
 .landing-page .hero-section__title > span {
-  color: #d85a3a;
+  color: var(--color-accent);
 }
 
 .landing-page .hero-section__title {
@@ -1778,13 +1792,13 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .hero-section__primary {
-  background: #d85a3a;
-  border-color: #d85a3a;
+  background: var(--color-action);
+  border-color: var(--color-action);
 }
 
 .landing-page .hero-section__primary:hover {
-  background: #e56d3f;
-  border-color: #e56d3f;
+  background: var(--color-action-hover);
+  border-color: var(--color-action-hover);
 }
 
 /* Courses */
@@ -1794,7 +1808,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .courses-section__eyebrow {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .course-card {
@@ -1810,18 +1824,18 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
 .landing-page .course-card__icon {
   background: #fff0e8;
-  color: #d85a3a;
+  color: var(--color-accent);
 }
 
 .landing-page .course-card__link {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 /* About */
 
 .landing-page .about-section__eyebrow,
 .landing-page .about-feature__icon {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .about-feature__icon {
@@ -1840,7 +1854,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
 .landing-page .why-section__eyebrow,
 .landing-page .why-card__icon {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .why-card {
@@ -1853,9 +1867,12 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
   background: #fffaf7;
 }
 
-.landing-page .voices-section__eyebrow,
+.landing-page .voices-section__eyebrow {
+  color: var(--color-action);
+}
+
 .landing-page .voices-section__title em {
-  color: #d85a3a;
+  color: var(--color-accent);
 }
 
 .landing-page .voice-card {
@@ -1864,13 +1881,13 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
 .landing-page .voice-card__avatar {
   background: #fff0e8;
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 /* FAQ */
 
 .landing-page .faq-section__eyebrow {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .faq-item--open {
@@ -1890,20 +1907,20 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 /* Enquiry */
 
 .landing-page .enquiry-section__eyebrow {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .enquiry-form__submit {
-  background: #d85a3a;
+  background: var(--color-action);
 }
 
 .landing-page .enquiry-form__submit:hover {
-  background: #c94e32;
+  background: var(--color-action-hover);
 }
 
 .landing-page .enquiry-whatsapp {
-  border-color: #d85a3a;
-  color: #d85a3a;
+  border-color: var(--color-action);
+  color: var(--color-action);
 }
 
 .landing-page .enquiry-whatsapp:hover {
@@ -1922,41 +1939,56 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .site-footer__label {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .site-footer__bottom {
   border-color: #f0d6cc;
 }
 
+/* Focus: one visible ring for every public control */
+
+.landing-page :focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+}
+
+/* Dark surfaces need a light ring to stay visible. */
+.landing-page .contact-section :focus-visible,
+.landing-page .hero-ticker :focus-visible,
+.landing-page .learning-guide :focus-visible {
+  outline-color: #fff8f4;
+}
+
 /* Floating controls */
 
 .landing-page .back-to-top {
-  background: #d85a3a;
+  background: var(--color-action);
 }
 
 .landing-page .back-to-top:hover {
-  background: #c94e32;
+  background: var(--color-action-hover);
 }
 
 /* Map */
 
 .landing-page .contact-map {
-  background: #b84e35;
-  border-color: rgb(242 140 69 / 0.35);
+  background: #5c2a22;
+  border-color: rgb(255 255 255 / 0.22);
 }
 
 .landing-page .contact-map__header {
-  background: linear-gradient(135deg, #b84e35 0%, #d96a3b 100%);
+  background: #5c2a22;
 }
 
 .landing-page .contact-map__pin,
-.landing-page .contact-map__eyebrow {
-  color: #ffd0b4;
+.landing-page .contact-map__eyebrow,
+.landing-page .contact-map__header p {
+  color: #ffe0cf;
 }
 
 .landing-page .contact-map__location-chip {
-  color: #d85a3a;
+  color: var(--color-action);
 }
 
 .landing-page .contact-map__location-chip strong {
@@ -1968,7 +2000,8 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
    ========================================================= */
 
 .landing-page .contact-section {
-  background: linear-gradient(135deg, #b84f38 0%, #d9653b 55%, #ee8748 100%);
+  /* Solid heading brown keeps contact details readable (white 9.6:1). */
+  background: #6e342a;
 }
 
 /* Heading */
@@ -1980,7 +2013,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 /* Intro text */
 
 .landing-page .contact-section__header > p {
-  color: rgb(255 255 255 / 0.82);
+  color: #ffe0cf;
 }
 
 /* Eyebrow */
@@ -2010,7 +2043,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 /* Card text */
 
 .landing-page .contact-card p {
-  color: rgb(255 255 255 / 0.78);
+  color: #ffe0cf;
 }
 
 /* Icons */
@@ -2025,7 +2058,7 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 
 .landing-page .contact-card__label,
 .landing-page .contact-card__location-note {
-  color: rgb(255 255 255 / 0.7);
+  color: #ffe0cf;
 }
 
 /* Links */
@@ -2059,12 +2092,15 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .learning-guide__top > span:first-child {
-  color: rgb(255 248 244 / 0.68);
+  color: #ffe0cf;
 }
 
 /* Small accent text */
 
-.landing-page .learning-guide__label,
+.landing-page .learning-guide__label {
+  color: #ffd0b4;
+}
+
 .landing-page .learning-guide h2 em {
   color: #f4b487;
 }
@@ -2084,13 +2120,13 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 /* Numbers */
 
 .landing-page .learning-guide__number {
-  color: #eab18d;
+  color: #ffd0b4;
 }
 
 /* Secondary course text */
 
 .landing-page .learning-guide__pathways div span {
-  color: rgb(255 248 244 / 0.66);
+  color: #ffe0cf;
 }
 
 /* Course icons */
@@ -2112,11 +2148,11 @@ html[data-theme="dark"] .landing-page .hero-brand-watermark {
 }
 
 .landing-page .learning-guide__bottom > span {
-  color: rgb(255 248 244 / 0.62);
+  color: #ffe0cf;
 }
 
 .landing-page .learning-guide__bottom strong span {
-  color: #eab18d;
+  color: #ffd0b4;
 }
 
 /* =========================================================

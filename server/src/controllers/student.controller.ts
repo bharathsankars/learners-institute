@@ -7,6 +7,7 @@ import {
   getStudents,
   updateStudent,
 } from "../services/student.service.js";
+import { StudentDuplicateError } from "../services/student-duplicate.service.js";
 
 import {
   createStudentSchema,
@@ -64,6 +65,18 @@ export async function createStudentController(
   } catch (error) {
     if (error instanceof ZodError) {
       sendValidationError(error, res);
+
+      return;
+    }
+
+    if (error instanceof StudentDuplicateError) {
+      res.status(409).json({
+        success: false,
+        message: error.message,
+        data: {
+          admissionNumber: error.admissionNumber,
+        },
+      });
 
       return;
     }

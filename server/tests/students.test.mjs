@@ -64,6 +64,20 @@ test("the student register lists every status, newest first", async () => {
   }, [[prisma.student, "findMany", async options => { assert.deepEqual(options, { orderBy: { createdAt: "desc" } }); return records; }]]);
 });
 
+// Interactive-transaction stand-in: records the registration lock and returns
+// the given rows from the duplicate lookup.
+function fakeRegistrationTx(candidates, calls = []) {
+  return {
+    $executeRaw: async (strings) => { calls.push(strings.join("?")); return 0; },
+    $queryRaw: async (strings) => {
+      const sql = strings.join("?");
+      calls.push(sql);
+      return sql.includes("student_admission_counter") ? [{ lastNumber: 1 }] : candidates;
+    },
+    student: { create: async ({ data }) => { calls.push("create"); return { id, status: "ACTIVE", ...data }; } },
+  };
+}
+
 test("students can still be created and have their details updated", async () => {
   await asRole("ADMIN", async () => {
     const created = await request("POST", "/api/students", { ...student, email: "Alice@Example.invalid" });
@@ -78,7 +92,7 @@ test("students can still be created and have their details updated", async () =>
 
     assert.equal((await request("PATCH", `/api/students/${courseId}`, { ...student, status: "ACTIVE" })).status, 404);
   }, [
-    [prisma.student, "create", async ({ data }) => ({ id, status: "ACTIVE", ...data })],
+    [prisma, "$transaction", async (run) => run(fakeRegistrationTx([]))],
     [prisma.student, "update", async ({ where, data }) => {
       if (where.id === courseId) throw Object.assign(new Error("Not found"), { code: "P2025" });
       return { id: where.id, ...data };
@@ -117,4 +131,25 @@ test("enrolment APIs keep working for students in the permanent register", async
     [prisma.enrollment, "findFirst", async () => null],
     [prisma.enrollment, "create", async () => enrollment],
   ]);
+});
+
+test("manual registration rejects a duplicate under the registration lock but accepts siblings", async () => {
+  const existing = { admissionNumber: "LIT007", firstName: "Alice", lastName: null, phone: "9446125964", email: "family@example.invalid" };
+  await asRole("STAFF", async () => {
+    const calls = [];
+    prisma.$transaction = async (run) => run(fakeRegistrationTx([existing], calls));
+    const duplicate = await request("POST", "/api/students", { firstName: " alice ", phone: "+91 94461 25964" });
+    assert.equal(duplicate.status, 409);
+    assert.match(duplicate.body.message, /already registered as LIT007/);
+    assert.equal(duplicate.body.data.admissionNumber, "LIT007");
+    assert.ok(calls.findIndex((sql) => sql.includes("FOR UPDATE")) < calls.findIndex((sql) => sql.includes("FROM students")), "lock before lookup");
+    assert.equal(calls.includes("create"), false);
+
+    const sameEmail = await request("POST", "/api/students", { firstName: "Alice", phone: "9000000000", email: "FAMILY@example.invalid" });
+    assert.equal(sameEmail.status, 409);
+
+    // A sibling sharing the family phone and email is a different student.
+    const sibling = await request("POST", "/api/students", { firstName: "Bob", phone: "9446125964", email: "family@example.invalid" });
+    assert.equal(sibling.status, 201);
+  }, [[prisma, "$transaction", async () => { throw new Error("replaced in test"); }]]);
 });

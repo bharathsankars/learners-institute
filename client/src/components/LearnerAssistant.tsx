@@ -7,8 +7,11 @@ import { contact } from "../data/contact";
 
 type Message = { id: number; role: "assistant" | "visitor"; text: string };
 const suggestions = ["Courses", "Admissions", "Fees & timings", "Location"];
-export function LearnerAssistant() {
-  const [open, setOpen] = useState(false);
+type LearnerAssistantProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+export function LearnerAssistant({ open, onOpenChange }: LearnerAssistantProps) {
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([{ id: 0, role: "assistant", text: "Welcome to Learners. I’m the FAQ assistant. Ask about courses, admissions or how to reach us." }]);
   const messageId = useRef(1);
@@ -18,7 +21,19 @@ export function LearnerAssistant() {
   const transcript = useRef<HTMLDivElement>(null);
   useEffect(() => { if (open) input.current?.focus(); }, [open]);
   useEffect(() => { if (transcript.current) transcript.current.scrollTop = transcript.current.scrollHeight; }, [messages, open]);
-  const close = () => { setOpen(false); launcher.current?.focus(); };
+  const close = () => {
+    onOpenChange(false);
+    if (window.matchMedia("(max-width: 820px)").matches) {
+      const mobileButton = document.getElementById("mobile-ask-learners");
+      const visible = mobileButton &&
+        mobileButton.getClientRects().length > 0 &&
+        getComputedStyle(mobileButton).visibility === "visible";
+      if (visible) mobileButton.focus({ preventScroll: true });
+      else document.getElementById("main-content")?.focus({ preventScroll: true });
+    } else {
+      launcher.current?.focus({ preventScroll: true });
+    }
+  };
   const ask = (question: string) => {
     const text = question.trim();
     if (!text) return;
@@ -39,6 +54,6 @@ export function LearnerAssistant() {
       <form onSubmit={submit} className="learner-assistant__form"><label htmlFor="learner-assistant-input" className="learner-assistant__sr-only">Ask a question</label><input ref={input} id="learner-assistant-input" value={draft} onChange={event => setDraft(event.target.value)} maxLength={300} placeholder="Ask about courses or admissions…" autoComplete="off" /><button type="submit" disabled={!draft.trim()} aria-label="Send question"><Send size={18} aria-hidden="true" /></button></form>
       <p className="learner-assistant__note">FAQ guidance · Confirm fees and availability with our team.</p>
     </section>}
-    <button ref={launcher} className="learner-assistant__launcher" type="button" aria-expanded={open} aria-controls={open ? "learner-assistant-panel" : undefined} aria-label={open ? "Close Learners assistant" : "Open Learners assistant"} onClick={() => { if (open) close(); else setOpen(true); }}><MessageCircle size={23} aria-hidden="true" /><span>Ask Learners</span></button>
+    <button ref={launcher} className="learner-assistant__launcher" type="button" aria-expanded={open} aria-controls={open ? "learner-assistant-panel" : undefined} aria-label={open ? "Close Learners assistant" : "Open Learners assistant"} onClick={() => { if (open) close(); else onOpenChange(true); }}><MessageCircle size={23} aria-hidden="true" /><span>Ask Learners</span></button>
   </div>;
 }

@@ -1,16 +1,38 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./Courses.css";
 
-import { ArrowRight, BookOpen, Check } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  ClipboardCheck,
+  Keyboard,
+  Laptop2,
+  NotebookPen,
+} from "lucide-react";
 
 import { usePublicCourses } from "../hooks/usePublicCourses";
 import { PublicCourseDetailsDialog } from "../components/PublicCourseDetailsDialog";
 
+export type CourseCategory = (typeof quickFilters)[number];
+
 type CoursesProps = {
   onEnquire?: (courseId: string) => void;
+  categorySelection?: {
+    category: CourseCategory;
+    requestId: number;
+  } | null;
 };
 
-
+// Same icons as the hero pathways, so each category reads consistently.
+const categoryIcons: Record<string, typeof BookOpen> = {
+  typewriting: Keyboard,
+  shorthand: NotebookPen,
+  "computer courses": Laptop2,
+  "exam preparation": ClipboardCheck,
+};
 
 const quickFilters = [
   "All Courses",
@@ -20,7 +42,7 @@ const quickFilters = [
   "Exam Preparation",
 ] as const;
 
-export function Courses({ onEnquire }: CoursesProps) {
+export function Courses({ onEnquire, categorySelection = null }: CoursesProps) {
   const query = usePublicCourses();
   const courses = query.data ?? [];
 
@@ -28,9 +50,23 @@ export function Courses({ onEnquire }: CoursesProps) {
     Record<string, boolean>
   >({});
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [showAllMobileCourses, setShowAllMobileCourses] = useState(false);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
 
   const [activeFilter, setActiveFilter] =
-    useState<(typeof quickFilters)[number]>("All Courses");
+    useState<CourseCategory>("All Courses");
+  const [appliedCategoryId, setAppliedCategoryId] = useState<number | null>(
+    null,
+  );
+
+  // Hero shortcuts ask for a category; apply each request once.
+  if (
+    categorySelection &&
+    categorySelection.requestId !== appliedCategoryId
+  ) {
+    setAppliedCategoryId(categorySelection.requestId);
+    setActiveFilter(categorySelection.category);
+  }
 
   const filteredCourses =
     activeFilter === "All Courses"
@@ -41,8 +77,46 @@ export function Courses({ onEnquire }: CoursesProps) {
             activeFilter.toLowerCase(),
         );
 
+  const featuredTitles = [
+    "english typewriting - lower",
+    "english shorthand",
+    "computer word processing",
+  ];
+
+  const featuredCourses = featuredTitles
+    .map((title) =>
+      filteredCourses.find(
+        (course) => course.title.trim().toLowerCase() === title,
+      ),
+    )
+    .filter((course): course is (typeof filteredCourses)[number] =>
+      Boolean(course),
+    );
+
+  const otherCourses = filteredCourses.filter(
+    (course) => !featuredCourses.some((featured) => featured.id === course.id),
+  );
+
+  const mobileOrderedCourses = [
+    ...featuredCourses,
+    ...otherCourses,
+  ];
+
   const selectedCourse =
     courses.find((course) => course.id === selectedCourseId) ?? null;
+
+  const toggleMobileCourses = () => {
+    const isCollapsing = showAllMobileCourses;
+
+    setShowAllMobileCourses(!isCollapsing);
+
+    if (isCollapsing) {
+      // Hidden cards above the button shift it up; bring it back into view.
+      requestAnimationFrame(() => {
+        mobileToggleRef.current?.scrollIntoView({ block: "center" });
+      });
+    }
+  };
 
   const toggleCourse = (courseId: string) => {
     setExpandedCourses((current) => ({
@@ -158,8 +232,19 @@ export function Courses({ onEnquire }: CoursesProps) {
             admission information.
           </p>
         )}
-        <div className="courses-section__grid">
-          {filteredCourses.map((course, index) => {
+        <div id="courses-list" className="courses-section__grid">
+          {(activeFilter === "All Courses"
+            ? mobileOrderedCourses
+            : filteredCourses
+          ).map((course, index) => {
+            const hideOnMobile =
+              activeFilter === "All Courses" &&
+              !showAllMobileCourses &&
+              index >= 3;
+
+            const CategoryIcon =
+              categoryIcons[course.category?.trim().toLowerCase() ?? ""] ??
+              BookOpen;
             const isExpanded = Boolean(expandedCourses[course.id]);
             const descriptionText =
               course.shortDescription || course.description || "";
@@ -170,10 +255,15 @@ export function Courses({ onEnquire }: CoursesProps) {
               : course.skills.slice(0, 3);
 
             return (
-              <article className="course-card" key={course.id}>
+              <article
+                className={`course-card${
+                  hideOnMobile ? " course-card--mobile-hidden" : ""
+                }`}
+                key={course.id}
+              >
                 <div className="course-card__top">
                   <div className="course-card__icon" aria-hidden="true">
-                    <BookOpen size={24} strokeWidth={1.8} />
+                    <CategoryIcon size={24} strokeWidth={1.8} />
                   </div>
 
                   <span className="course-card__number">
@@ -202,17 +292,19 @@ export function Courses({ onEnquire }: CoursesProps) {
                   </button>
                 )}
 
-                <ul className="course-card__highlights">
-                  {visibleSkills.map((highlight, skillIndex) => (
-                    <li key={`${course.id}-${skillIndex}`}>
-                      <span aria-hidden="true">
-                        <Check size={14} strokeWidth={2.4} />
-                      </span>
+                {visibleSkills.length > 0 && (
+                  <ul className="course-card__highlights">
+                    {visibleSkills.map((highlight, skillIndex) => (
+                      <li key={`${course.id}-${skillIndex}`}>
+                        <span aria-hidden="true">
+                          <Check size={14} strokeWidth={2.4} />
+                        </span>
 
-                      {highlight}
-                    </li>
-                  ))}
-                </ul>
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 <button
                   type="button"
@@ -227,6 +319,26 @@ export function Courses({ onEnquire }: CoursesProps) {
             );
           })}
         </div>
+
+        {activeFilter === "All Courses" && mobileOrderedCourses.length > 3 && (
+          <button
+            type="button"
+            ref={mobileToggleRef}
+            className="courses-section__mobile-toggle"
+            onClick={toggleMobileCourses}
+            aria-expanded={showAllMobileCourses}
+            aria-controls="courses-list"
+          >
+            {showAllMobileCourses
+              ? "Show Less"
+              : "View More"}
+            {showAllMobileCourses ? (
+              <ChevronUp size={18} aria-hidden="true" />
+            ) : (
+              <ChevronDown size={18} aria-hidden="true" />
+            )}
+          </button>
+        )}
 
         {selectedCourse && (
           <PublicCourseDetailsDialog

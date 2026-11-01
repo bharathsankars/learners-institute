@@ -130,6 +130,7 @@ async function checkSession(
       return;
     }
 
+    res.locals.userId = user.id;
     next();
   } catch (error) {
     next(error);

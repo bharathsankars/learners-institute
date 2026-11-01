@@ -9,6 +9,7 @@ import {
   Pencil,
   Phone,
   Plus,
+  FileSpreadsheet,
   RefreshCw,
   Search,
   UserCheck,
@@ -35,6 +36,7 @@ import {
 } from "../../api/students";
 
 import { AddStudentModal } from "../components/AddStudentModal";
+import { StudentImportDialog } from "../components/StudentImportDialog";
 import { StudentDetailsDialog } from "../components/StudentDetailsDialog";
 
 import {
@@ -97,6 +99,7 @@ export function StudentsPage() {
   const [page, setPage] = useState(1);
 
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<Student | null>(null);
   const [profileId, setProfileId] = useState<string | null>(null);
 
@@ -272,6 +275,15 @@ export function StudentsPage() {
         </div>
 
         <div className="students-header__actions">
+          <button
+            className="students-button"
+            type="button"
+            disabled={busy}
+            onClick={() => setImportOpen(true)}
+          >
+            <FileSpreadsheet size={18} aria-hidden="true" />
+            Import students
+          </button>
           <button
             className="students-button"
             type="button"
@@ -826,6 +838,11 @@ export function StudentsPage() {
           }
         />
       )}
+
+      <StudentImportDialog
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+      />
 
       <AddStudentModal
         open={formOpen}

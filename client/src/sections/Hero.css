@@ -166,10 +166,10 @@
 
   padding-inline: 22px;
 
-  border: 1px solid #d85a3a;
+  border: 1px solid var(--color-action);
   border-radius: 7px;
 
-  background: #d85a3a;
+  background: var(--color-action);
   color: #ffffff;
 
   font-size: 14px;
@@ -185,9 +185,9 @@
 }
 
 .hero-section__primary:hover {
-  background: #c94f32;
+  background: var(--color-action-hover);
 
-  border-color: #c94f32;
+  border-color: var(--color-action-hover);
 
   transform: translateY(-2px);
 
@@ -561,6 +561,51 @@
   background: #f4b487;
 
   transform: rotate(45deg);
+}
+
+/* WCAG 2.2.2: moving text can be paused by any input. */
+
+.hero-ticker--paused .hero-ticker__track,
+.hero-ticker:focus-within .hero-ticker__track {
+  animation-play-state: paused;
+}
+
+.hero-ticker__control {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 2;
+
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgb(255 248 244 / 0.45);
+  border-radius: 50%;
+
+  background: var(--ticker-bg, #65372f);
+  color: #fff8f4;
+
+  cursor: pointer;
+
+  transform: translateY(-50%);
+}
+
+.hero-ticker__control:hover {
+  border-color: #fff8f4;
+}
+
+.hero-ticker__control:focus-visible {
+  outline: 2px solid #fff8f4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticker__control {
+    display: none;
+  }
 }
 
 /* =========================================================
