@@ -7,11 +7,13 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useCallback, useState } from "react";
 
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { useAdminAuth } from "../auth/useAdminAuth.ts";
+
+import { LoginWelcomeTransition } from "../components/LoginWelcomeTransition";
 
 import "../styles/AdminLogin.css";
 
@@ -31,6 +33,12 @@ export function AdminLoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [showLoginAnimation, setShowLoginAnimation] = useState(false);
+
+  const goToDashboard = useCallback(() => {
+    navigate("/admin/dashboard", {
+      replace: true,
+    });
+  }, [navigate]);
 
   if (user && !isSubmitting && !showLoginAnimation) {
     return <Navigate to="/admin/dashboard" replace />;
@@ -61,14 +69,6 @@ export function AdminLoginPage() {
       }
 
       setShowLoginAnimation(true);
-
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 7000);
-      });
-
-      navigate("/admin/dashboard", {
-        replace: true,
-      });
     } catch {
       setError("Unable to sign in. Please try again.");
     } finally {
@@ -79,76 +79,10 @@ export function AdminLoginPage() {
   return (
     <main className="admin-login">
       {showLoginAnimation && (
-        <div
-          className="learners-login-transition"
-          role="status"
-          aria-live="polite"
-          aria-label="Signing in to Learners Admin"
-        >
-          <div className="learners-login-transition__scene">
-            <div className="learners-login-transition__logo">
-              <img src="/learners-logo-mark.png" alt="" aria-hidden="true" />
-            </div>
-
-            <div className="learners-login-transition__paper">
-              <div className="learners-login-transition__paper-top">
-                <span />
-                <span />
-                <span />
-              </div>
-
-              <div className="learners-login-transition__typing">
-                <span className="learners-login-transition__typed-primary">
-                  LEARNERS
-                </span>
-
-                <span
-                  className="learners-login-transition__cursor"
-                  aria-hidden="true"
-                />
-              </div>
-
-              <div className="learners-login-transition__typed-secondary">
-                COMMERCIAL INSTITUTE
-              </div>
-
-              <div className="learners-login-transition__location">
-                THIRUNAKKARA · KOTTAYAM
-              </div>
-            </div>
-
-            <div
-              className="learners-login-transition__typewriter"
-              aria-hidden="true"
-            >
-              <div className="learners-login-transition__rail" />
-
-              <div className="learners-login-transition__keys">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-            </div>
-
-            <div className="learners-login-transition__status">
-              <strong>Opening Learners Admin</strong>
-              <span>Preparing your workspace…</span>
-            </div>
-
-            <div
-              className="learners-login-transition__progress"
-              aria-hidden="true"
-            >
-              <span />
-            </div>
-          </div>
-        </div>
+        <LoginWelcomeTransition
+          fullName={user ? `${user.firstName} ${user.lastName}`.trim() : undefined}
+          onComplete={goToDashboard}
+        />
       )}
       {/* =====================================================
           LEFT VISUAL

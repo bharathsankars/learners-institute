@@ -24,6 +24,7 @@
 .admin-layout :is(
   .students-search-box,
   .enquiries-search,
+  .records-search,
   .admin-directory-search,
   .fees-page__search
 ):has(input:focus-visible) {
@@ -35,6 +36,7 @@
 .admin-layout :is(
   .students-search-box,
   .enquiries-search,
+  .records-search,
   .admin-directory-search,
   .fees-page__search
 ) input:focus-visible {

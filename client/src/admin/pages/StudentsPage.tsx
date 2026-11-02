@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   CircleCheck,
@@ -12,9 +11,6 @@ import {
   FileSpreadsheet,
   RefreshCw,
   Search,
-  UserCheck,
-  UserMinus,
-  Users,
   X,
 } from "lucide-react";
 
@@ -52,37 +48,21 @@ import {
 
 import "../styles/AdminDirectory.css";
 import "../styles/StudentsPage.css";
+import "../styles/AdminRecords.css";
 
-const cards = [
-  {
-    key: "ALL",
-    label: "All students",
-    description: "Everyone registered",
-    icon: Users,
-    tone: "blue",
-  },
-  {
-    key: "ACTIVE",
-    label: "Active",
-    description: "Currently learning",
-    icon: UserCheck,
-    tone: "green",
-  },
-  {
-    key: "INACTIVE",
-    label: "Inactive",
-    description: "Not currently active",
-    icon: UserMinus,
-    tone: "amber",
-  },
-  {
-    key: "COMPLETED",
-    label: "Completed",
-    description: "Finished learning",
-    icon: CheckCircle2,
-    tone: "slate",
-  },
+const statusTabs = [
+  { key: "ALL", label: "All" },
+  { key: "ACTIVE", label: "Active" },
+  { key: "INACTIVE", label: "Inactive" },
+  { key: "COMPLETED", label: "Completed" },
 ] as const;
+
+function initials(student: Student) {
+  return [student.firstName, student.lastName]
+    .filter(Boolean)
+    .map((part) => part?.trim()[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 export function StudentsPage() {
   const queryClient = useQueryClient();
@@ -254,132 +234,59 @@ export function StudentsPage() {
   };
 
   return (
-    <div className="students-page">
-
-      <header className="students-header">
+    <div className="students-page records-page">
+      <header className="records-header">
         <div>
-          <span className="students-eyebrow">
-            Student management
-          </span>
+          <span className="records-eyebrow">Student register</span>
 
-          <h1>
-            Students
-          </h1>
+          <h1>Students</h1>
 
           <p>
-            Find students quickly,
-            view their details and
-            keep their information
-            up to date.
+            Find students quickly, view their details and keep their
+            information up to date.
           </p>
         </div>
 
-        <div className="students-header__actions">
+        <div className="records-header__actions">
           <button
-            className="students-button"
+            className="records-button records-button--icon"
+            type="button"
+            disabled={query.isFetching}
+            onClick={() => void query.refetch()}
+            aria-label={query.isFetching ? "Refreshing students" : "Refresh students"}
+            title="Refresh"
+          >
+            <RefreshCw
+              size={16}
+              aria-hidden="true"
+              className={query.isFetching ? "records-spin" : undefined}
+            />
+          </button>
+
+          <button
+            className="records-button"
             type="button"
             disabled={busy}
             onClick={() => setImportOpen(true)}
           >
-            <FileSpreadsheet size={18} aria-hidden="true" />
-            Import students
-          </button>
-          <button
-            className="students-button"
-            type="button"
-            disabled={query.isFetching}
-            onClick={() =>
-              void query.refetch()
-            }
-          >
-            <RefreshCw
-              size={18}
-              aria-hidden="true"
-              className={
-                query.isFetching
-                  ? "students-spin"
-                  : undefined
-              }
-            />
-
-            Refresh
+            <FileSpreadsheet size={16} aria-hidden="true" />
+            Import
           </button>
 
           <button
-            className="students-button students-button--primary"
+            className="records-button records-button--primary"
             type="button"
             disabled={busy}
             onClick={() => openForm()}
           >
-            <Plus
-              size={19}
-              aria-hidden="true"
-            />
-
+            <Plus size={17} aria-hidden="true" />
             Add student
           </button>
         </div>
       </header>
 
-      <section
-        className="students-overview"
-        aria-label="Student status overview"
-      >
-        {cards.map(
-          ({
-            key,
-            label,
-            description,
-            icon: Icon,
-            tone,
-          }) => (
-            <button
-              key={key}
-              type="button"
-              className={`students-overview-card students-overview-card--${tone}${
-                filter === key
-                  ? " students-overview-card--selected"
-                  : ""
-              }`}
-              aria-pressed={
-                filter === key
-              }
-              onClick={() =>
-                selectFilter(key)
-              }
-            >
-              <div className="students-overview-card__top">
-                <span className="students-overview-card__icon">
-                  <Icon
-                    size={22}
-                    aria-hidden="true"
-                  />
-                </span>
-
-                <strong>
-                  {loaded
-                    ? counts[key]
-                    : "—"}
-                </strong>
-              </div>
-
-              <span className="students-overview-card__label">
-                {label}
-              </span>
-
-              <small>
-                {description}
-              </small>
-            </button>
-          ),
-        )}
-      </section>
-
       {query.isError && (
-        <div
-          className="students-notice students-notice--error"
-          role="alert"
-        >
+        <div className="records-notice records-notice--error" role="alert">
           <span>
             {query.error.message}
 
@@ -391,69 +298,54 @@ export function StudentsPage() {
       )}
 
       {notice && (
-        <div
-          className="students-notice students-notice--success"
-          role="status"
-        >
-          <CircleCheck
-            size={19}
-            aria-hidden="true"
-          />
+        <div className="records-notice records-notice--success" role="status">
+          <CircleCheck size={18} aria-hidden="true" />
 
-          <span>
-            {notice}
-          </span>
+          <span>{notice}</span>
 
           <button
             type="button"
             aria-label="Dismiss message"
-            onClick={() =>
-              setNotice("")
-            }
+            onClick={() => setNotice("")}
           >
-            <X
-              size={18}
-              aria-hidden="true"
-            />
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
       )}
 
-      <section className="students-search-panel">
-        <div className="students-section-heading">
-          <div>
-            <h2>
-              Find a student
-            </h2>
+      <section className="records-panel" aria-label="Student list">
+        <div className="records-tabs" role="group" aria-label="Filter by status">
+          {statusTabs.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className={
+                filter === key ? "records-tab records-tab--active" : "records-tab"
+              }
+              aria-pressed={filter === key}
+              onClick={() => selectFilter(key)}
+            >
+              {label}
 
-            <p>
-              Search by name,
-              admission number,
-              phone number or email.
-            </p>
-          </div>
+              <span className="records-tab__count">
+                {loaded ? counts[key] : "·"}
+              </span>
+            </button>
+          ))}
         </div>
 
-        <div className="students-search-controls">
-          <label className="students-search-box">
-            <Search
-              size={20}
-              aria-hidden="true"
-            />
+        <div className="records-toolbar">
+          <label className="records-search">
+            <Search size={17} aria-hidden="true" />
 
-            <span className="students-sr-only">
-              Search students
-            </span>
+            <span className="records-sr-only">Search students</span>
 
             <input
               type="search"
               value={search}
-              placeholder="Search students..."
+              placeholder="Search by name, admission number, phone or email"
               onChange={(event) => {
-                setSearch(
-                  event.target.value,
-                );
-
+                setSearch(event.target.value);
                 setPage(1);
               }}
             />
@@ -467,143 +359,65 @@ export function StudentsPage() {
                   setPage(1);
                 }}
               >
-                <X
-                  size={18}
-                  aria-hidden="true"
-                />
+                <X size={16} aria-hidden="true" />
               </button>
             )}
           </label>
 
-          <label className="students-sort">
-            <span>
-              Sort by
-            </span>
+          <label className="records-select">
+            <span className="records-sr-only">Sort by</span>
 
             <select
               value={sort}
               onChange={(event) => {
-                setSort(
-                  event.target
-                    .value as StudentSort,
-                );
-
+                setSort(event.target.value as StudentSort);
                 setPage(1);
               }}
             >
-              <option value="NEWEST">
-                Newest first
-              </option>
-
-              <option value="OLDEST">
-                Oldest first
-              </option>
-
-              <option value="NAME">
-                Name A–Z
-              </option>
-
-              <option value="ADMISSION">
-                Admission number
-              </option>
+              <option value="NEWEST">Newest first</option>
+              <option value="OLDEST">Oldest first</option>
+              <option value="NAME">Name A–Z</option>
+              <option value="ADMISSION">Admission number</option>
             </select>
           </label>
-        </div>
 
-        {hasFilters && (
-          <button
-            type="button"
-            className="students-clear-filter"
-            onClick={resetFilters}
-          >
-            <X
-              size={15}
-              aria-hidden="true"
-            />
-
-            Clear search and filter
-          </button>
-        )}
-      </section>
-
-      <section className="students-list-panel">
-
-        <div className="students-list-heading">
-          <div>
-            <h2>
-              Student list
-            </h2>
-
-            <p>
-              {loaded
-                ? `${filtered.length} ${
-                    filtered.length === 1
-                      ? "student"
-                      : "students"
-                  }${
-                    hasFilters
-                      ? " found"
-                      : " registered"
-                  }`
-                : "Loading student records"}
-            </p>
-          </div>
-
-          <span className="students-auto-refresh">
-            <span />
-
-            Updates every 30 seconds
-          </span>
+          {hasFilters && (
+            <button
+              type="button"
+              className="records-clear"
+              onClick={resetFilters}
+            >
+              <X size={14} aria-hidden="true" />
+              Clear
+            </button>
+          )}
         </div>
 
         {query.isPending ? (
-          <div
-            className="students-empty"
-            role="status"
-          >
-            <GraduationCap
-              size={34}
-              aria-hidden="true"
-            />
-
-            <h3>
-              Loading students…
-            </h3>
-
-            <p>
-              Your student records
-              will appear here.
-            </p>
+          <div className="records-list" role="status" aria-label="Loading students">
+            {Array.from({ length: 6 }, (_, row) => (
+              <div key={row} className="records-row records-row--skeleton">
+                <span className="records-skeleton records-skeleton--avatar" />
+                <span className="records-skeleton" style={{ width: "60%" }} />
+                <span className="records-skeleton" style={{ width: "70%" }} />
+                <span className="records-skeleton" style={{ width: "50%" }} />
+                <span className="records-skeleton" style={{ width: "72px" }} />
+              </div>
+            ))}
           </div>
         ) : !loaded ? (
-          <div className="students-empty">
-            <GraduationCap
-              size={34}
-              aria-hidden="true"
-            />
+          <div className="records-empty">
+            <GraduationCap size={28} aria-hidden="true" />
 
-            <h3>
-              Unable to load students
-            </h3>
+            <h3>Unable to load students</h3>
 
-            <p>
-              Refresh the page to
-              retrieve student
-              records.
-            </p>
+            <p>Use Refresh to try again.</p>
           </div>
         ) : !filtered.length ? (
-          <div className="students-empty">
-            <GraduationCap
-              size={34}
-              aria-hidden="true"
-            />
+          <div className="records-empty">
+            <GraduationCap size={28} aria-hidden="true" />
 
-            <h3>
-              {hasFilters
-                ? "No matching students"
-                : "No students yet"}
-            </h3>
+            <h3>{hasFilters ? "No matching students" : "No students yet"}</h3>
 
             <p>
               {hasFilters
@@ -613,218 +427,143 @@ export function StudentsPage() {
 
             <button
               type="button"
-              className="students-button students-button--primary"
-              onClick={
+              className={
                 hasFilters
-                  ? resetFilters
-                  : () => openForm()
+                  ? "records-button"
+                  : "records-button records-button--primary"
               }
+              onClick={hasFilters ? resetFilters : () => openForm()}
             >
-              {hasFilters
-                ? "Clear filter"
-                : "Add first student"}
+              {hasFilters ? "Clear filter" : "Add first student"}
             </button>
           </div>
         ) : (
-          <div className="students-records">
-            {pagination.records.map(
-              (student) => (
-                <article
-                  key={student.id}
-                  className="student-record"
+          <div className="records-list">
+            <div className="records-columns records-columns--students" aria-hidden="true">
+              <span>Student</span>
+              <span>Contact</span>
+              <span>Added</span>
+              <span>Status</span>
+              <span />
+            </div>
+
+            {pagination.records.map((student) => (
+              <article
+                key={student.id}
+                className="records-row records-row--students"
+              >
+                <div className="records-person">
+                  <span className="records-avatar" aria-hidden="true">
+                    {initials(student)}
+                  </span>
+
+                  <div>
+                    <button
+                      type="button"
+                      className="records-name"
+                      disabled={busy}
+                      onClick={() => setProfileId(student.id)}
+                    >
+                      {studentName(student)}
+                    </button>
+
+                    <span className="records-sub records-sub--mono">
+                      {student.admissionNumber}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="records-detail">
+                  <a
+                    className="records-sub records-sub--strong"
+                    href={`tel:${student.phone.replace(/[^+\d]/g, "")}`}
+                  >
+                    <Phone size={13} aria-hidden="true" />
+                    {student.phone}
+                  </a>
+
+                  {student.email ? (
+                    <a className="records-sub" href={`mailto:${student.email}`}>
+                      <Mail size={13} aria-hidden="true" />
+                      {student.email}
+                    </a>
+                  ) : (
+                    <span className="records-sub records-sub--faint">
+                      No email
+                    </span>
+                  )}
+                </div>
+
+                <div className="records-date">{studentDate(student.createdAt)}</div>
+
+                <span
+                  className={`records-status records-status--${student.status.toLowerCase()}`}
                 >
-                  <div className="student-record__main">
-                    <div
-                      className="student-record__avatar"
-                      aria-hidden="true"
-                    >
-                      {student.firstName
-                        .slice(0, 1)
-                        .toUpperCase()}
-                    </div>
+                  {studentStatusLabels[student.status]}
+                </span>
 
-                    <div className="student-record__identity">
-                      <div className="student-record__title-row">
-                        <button
-                          type="button"
-                          className="student-record__name"
-                          disabled={busy}
-                          onClick={() =>
-                            setProfileId(
-                              student.id,
-                            )
-                          }
-                        >
-                          {studentName(
-                            student,
-                          )}
-                        </button>
+                <div className="records-actions">
+                  <button
+                    type="button"
+                    className="records-action records-action--icon"
+                    disabled={busy}
+                    onClick={() => openForm(student)}
+                    aria-label={`Edit ${studentName(student)}`}
+                    title="Edit"
+                  >
+                    <Pencil size={15} aria-hidden="true" />
+                  </button>
 
-                        <span
-                          className={`student-record__status student-record__status--${student.status.toLowerCase()}`}
-                        >
-                          {
-                            studentStatusLabels[
-                              student.status
-                            ]
-                          }
-                        </span>
-                      </div>
-
-                      <span className="student-record__admission">
-                        Admission no.{" "}
-                        <strong>
-                          {
-                            student.admissionNumber
-                          }
-                        </strong>
-                      </span>
-
-                      <div className="student-record__contact">
-                        <a
-                          href={`tel:${student.phone.replace(
-                            /[^+\d]/g,
-                            "",
-                          )}`}
-                        >
-                          <Phone
-                            size={16}
-                            aria-hidden="true"
-                          />
-
-                          {student.phone}
-                        </a>
-
-                        {student.email ? (
-                          <a
-                            href={`mailto:${student.email}`}
-                          >
-                            <Mail
-                              size={16}
-                              aria-hidden="true"
-                            />
-
-                            {student.email}
-                          </a>
-                        ) : (
-                          <span className="student-record__no-email">
-                            No email provided
-                          </span>
-                        )}
-                      </div>
-
-                      <span className="student-record__added">
-                        Added{" "}
-                        {studentDate(
-                          student.createdAt,
-                        )}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="student-record__actions">
-                    <button
-                      type="button"
-                      className="student-action student-action--view"
-                      disabled={busy}
-                      onClick={() =>
-                        setProfileId(
-                          student.id,
-                        )
-                      }
-                    >
-                      View details
-
-                      <ArrowRight
-                        size={17}
-                        aria-hidden="true"
-                      />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="student-action"
-                      disabled={busy}
-                      onClick={() =>
-                        openForm(student)
-                      }
-                    >
-                      <Pencil
-                        size={16}
-                        aria-hidden="true"
-                      />
-
-                      Edit
-                    </button>
-
-                  </div>
-                </article>
-              ),
-            )}
+                  <button
+                    type="button"
+                    className="records-action"
+                    disabled={busy}
+                    onClick={() => setProfileId(student.id)}
+                  >
+                    View
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </button>
+                </div>
+              </article>
+            ))}
           </div>
         )}
 
-        {loaded &&
-          filtered.length > 0 && (
-            <footer className="students-pagination">
-              <span>
-                Showing{" "}
-                {pagination.start}–
-                {pagination.end} of{" "}
-                {filtered.length} students
-              </span>
+        {loaded && filtered.length > 0 && (
+          <footer className="records-pagination">
+            <span>
+              Showing {pagination.start}–{pagination.end} of {filtered.length}{" "}
+              {filtered.length === 1 ? "student" : "students"}
+              <span className="records-live">Updates every 30 seconds</span>
+            </span>
 
-              <div>
-                <button
-                  type="button"
-                  className="students-page-button"
-                  disabled={
-                    pagination.currentPage === 1
-                  }
-                  onClick={() =>
-                    setPage(
-                      pagination.currentPage -
-                        1,
-                    )
-                  }
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft
-                    size={19}
-                    aria-hidden="true"
-                  />
-                </button>
+            <div>
+              <button
+                type="button"
+                className="records-page-button"
+                disabled={pagination.currentPage === 1}
+                onClick={() => setPage(pagination.currentPage - 1)}
+                aria-label="Previous page"
+              >
+                <ChevronLeft size={17} aria-hidden="true" />
+              </button>
 
-                <strong>
-                  Page{" "}
-                  {pagination.currentPage}{" "}
-                  of{" "}
-                  {pagination.pageCount}
-                </strong>
+              <strong>
+                {pagination.currentPage} / {pagination.pageCount}
+              </strong>
 
-                <button
-                  type="button"
-                  className="students-page-button"
-                  disabled={
-                    pagination.currentPage ===
-                    pagination.pageCount
-                  }
-                  onClick={() =>
-                    setPage(
-                      pagination.currentPage +
-                        1,
-                    )
-                  }
-                  aria-label="Next page"
-                >
-                  <ChevronRight
-                    size={19}
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-            </footer>
-          )}
+              <button
+                type="button"
+                className="records-page-button"
+                disabled={pagination.currentPage === pagination.pageCount}
+                onClick={() => setPage(pagination.currentPage + 1)}
+                aria-label="Next page"
+              >
+                <ChevronRight size={17} aria-hidden="true" />
+              </button>
+            </div>
+          </footer>
+        )}
       </section>
 
       {selected && (

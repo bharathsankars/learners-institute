@@ -20,7 +20,6 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleCheck,
-  Clock3,
   FileText,
   GraduationCap,
   MessageSquare,
@@ -54,37 +53,23 @@ import {
 } from "../utils/enquiries";
 
 import "../styles/Enquiries.css";
+import "../styles/AdminRecords.css";
 
-const summaryCards = [
-  {
-    key: "ALL",
-    label: "All enquiries",
-    description: "All website requests",
-    icon: FileText,
-    tone: "blue",
-  },
-  {
-    key: "NEW",
-    label: "Awaiting contact",
-    description: "Needs follow-up",
-    icon: Clock3,
-    tone: "amber",
-  },
-  {
-    key: "CONTACTED",
-    label: "Contacted",
-    description: "Conversation started",
-    icon: MessageSquare,
-    tone: "green",
-  },
-  {
-    key: "CLOSED",
-    label: "Closed",
-    description: "Follow-up completed",
-    icon: CircleCheck,
-    tone: "slate",
-  },
+const statusTabs = [
+  { key: "ALL", label: "All" },
+  { key: "NEW", label: "Awaiting contact" },
+  { key: "CONTACTED", label: "Contacted" },
+  { key: "CLOSED", label: "Closed" },
 ] as const;
+
+function initials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 export function EnquiriesPage() {
   const queryClient =
@@ -407,134 +392,49 @@ export function EnquiriesPage() {
     };
 
   return (
-    <div className="enquiries-page">
-
+    <div className="enquiries-page records-page">
       {/* =====================================================
           HEADER
           ===================================================== */}
 
-      <header className="enquiries-heading">
+      <header className="records-header">
         <div>
-          <span className="enquiries-eyebrow">
-            Admissions & follow-up
-          </span>
+          <span className="records-eyebrow">Admissions & follow-up</span>
 
-          <h1>
-            Enquiries
-          </h1>
+          <h1>Enquiries</h1>
 
           <p>
-            Review new requests,
-            contact interested students
-            and keep every follow-up
-            organised.
+            Review new requests, contact interested students and keep every
+            follow-up organised.
           </p>
         </div>
 
-        <button
-          className="enquiries-button"
-          type="button"
-          disabled={
-            query.isFetching
-          }
-          onClick={() =>
-            void query.refetch()
-          }
-        >
-          <RefreshCw
-            size={18}
-            aria-hidden="true"
-            className={
-              query.isFetching
-                ? "enquiries-spin"
-                : undefined
-            }
-          />
+        <div className="records-header__actions">
+          <button
+            className="records-button"
+            type="button"
+            disabled={query.isFetching}
+            onClick={() => void query.refetch()}
+          >
+            <RefreshCw
+              size={16}
+              aria-hidden="true"
+              className={query.isFetching ? "records-spin" : undefined}
+            />
 
-          {query.isFetching
-            ? "Refreshing…"
-            : "Refresh"}
-        </button>
+            {query.isFetching ? "Refreshing…" : "Refresh"}
+          </button>
+        </div>
       </header>
-
-
-      {/* =====================================================
-          STATUS OVERVIEW
-          ===================================================== */}
-
-      <section
-        className="enquiries-summary"
-        aria-label="Enquiry status summary"
-      >
-        {summaryCards.map(
-          ({
-            key,
-            label,
-            description,
-            icon: Icon,
-            tone,
-          }) => (
-            <button
-              key={key}
-              type="button"
-              className={`enquiries-summary-card enquiries-summary-card--${tone}${
-                filter === key
-                  ? " enquiries-summary-card--selected"
-                  : ""
-              }`}
-              aria-pressed={
-                filter === key
-              }
-              onClick={() =>
-                selectFilter(
-                  key,
-                )
-              }
-            >
-              <div className="enquiries-summary-card__top">
-                <span className="enquiries-summary-icon">
-                  <Icon
-                    size={22}
-                    aria-hidden="true"
-                  />
-                </span>
-
-                <strong>
-                  {loaded
-                    ? counts[
-                        key
-                      ]
-                    : "—"}
-                </strong>
-              </div>
-
-              <span className="enquiries-summary-card__label">
-                {label}
-              </span>
-
-              <small>
-                {description}
-              </small>
-            </button>
-          ),
-        )}
-      </section>
-
 
       {/* =====================================================
           NOTICES
           ===================================================== */}
 
       {query.isError && (
-        <div
-          className="enquiries-notice enquiries-notice--error"
-          role="alert"
-        >
+        <div className="records-notice records-notice--error" role="alert">
           <span>
-            {
-              query.error
-                .message
-            }
+            {query.error.message}
 
             {loaded
               ? " Showing previously loaded enquiries."
@@ -544,113 +444,73 @@ export function EnquiriesPage() {
       )}
 
       {successMessage && (
-        <div
-          className="enquiries-notice enquiries-notice--success"
-          role="status"
-        >
-          <CircleCheck
-            size={19}
-            aria-hidden="true"
-          />
+        <div className="records-notice records-notice--success" role="status">
+          <CircleCheck size={18} aria-hidden="true" />
 
-          <span>
-            {
-              successMessage
-            }
-          </span>
+          <span>{successMessage}</span>
 
           <button
             type="button"
             aria-label="Dismiss confirmation"
-            onClick={() =>
-              setSuccessMessage(
-                "",
-              )
-            }
+            onClick={() => setSuccessMessage("")}
           >
-            <X
-              size={18}
-              aria-hidden="true"
-            />
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
       )}
 
-      {mutation.isError &&
-        !selected && (
-          <div
-            className="enquiries-notice enquiries-notice--error"
-            role="alert"
+      {mutation.isError && !selected && (
+        <div className="records-notice records-notice--error" role="alert">
+          <span>{mutation.error.message}</span>
+
+          <button
+            type="button"
+            aria-label="Dismiss error"
+            onClick={() => mutation.reset()}
           >
-            <span>
-              {
-                mutation.error
-                  .message
-              }
-            </span>
-
-            <button
-              type="button"
-              aria-label="Dismiss error"
-              onClick={() =>
-                mutation.reset()
-              }
-            >
-              <X
-                size={18}
-                aria-hidden="true"
-              />
-            </button>
-          </div>
-        )}
-
+            <X size={16} aria-hidden="true" />
+          </button>
+        </div>
+      )}
 
       {/* =====================================================
-          FIND ENQUIRY
+          ENQUIRY LIST
           ===================================================== */}
 
-      <section className="enquiries-search-panel">
-        <div className="enquiries-section-heading">
-          <div>
-            <h2>
-              Find an enquiry
-            </h2>
+      <section className="records-panel" aria-label="Enquiry list">
+        <div className="records-tabs" role="group" aria-label="Filter by status">
+          {statusTabs.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className={
+                filter === key ? "records-tab records-tab--active" : "records-tab"
+              }
+              aria-pressed={filter === key}
+              onClick={() => selectFilter(key)}
+            >
+              {label}
 
-            <p>
-              Search by name,
-              phone number,
-              course or message.
-            </p>
-          </div>
+              <span className="records-tab__count">
+                {loaded ? counts[key] : "·"}
+              </span>
+            </button>
+          ))}
         </div>
 
-        <div className="enquiries-search-controls">
+        <div className="records-toolbar">
+          <label className="records-search">
+            <Search size={17} aria-hidden="true" />
 
-          <label className="enquiries-search">
-            <Search
-              size={20}
-              aria-hidden="true"
-            />
-
-            <span className="enquiries-sr-only">
-              Search enquiries
-            </span>
+            <span className="records-sr-only">Search enquiries</span>
 
             <input
               type="search"
               value={search}
-              placeholder="Search enquiries..."
-              onChange={(
-                event,
-              ) => {
-                setSearch(
-                  event.target
-                    .value,
-                );
-
-                setPage(
-                  1,
-                );
+              placeholder="Search by name, phone, course or message"
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
               }}
             />
 
@@ -659,202 +519,88 @@ export function EnquiriesPage() {
                 type="button"
                 aria-label="Clear search"
                 onClick={() => {
-                  setSearch(
-                    "",
-                  );
-
-                  setPage(
-                    1,
-                  );
+                  setSearch("");
+                  setPage(1);
                 }}
               >
-                <X
-                  size={18}
-                  aria-hidden="true"
-                />
+                <X size={16} aria-hidden="true" />
               </button>
             )}
           </label>
 
-          <label className="enquiries-filter">
-            <span>
-              Course
-            </span>
+          <label className="records-select">
+            <span className="records-sr-only">Course</span>
 
             <select
               value={course}
-              onChange={(
-                event,
-              ) => {
-                setCourse(
-                  event.target
-                    .value,
-                );
-
-                setPage(
-                  1,
-                );
+              onChange={(event) => {
+                setCourse(event.target.value);
+                setPage(1);
               }}
             >
-              <option value="">
-                All courses
-              </option>
+              <option value="">All courses</option>
 
-              {courses.map(
-                (
-                  title,
-                ) => (
-                  <option
-                    key={
-                      title
-                    }
-                    value={
-                      title
-                    }
-                  >
-                    {title}
-                  </option>
-                ),
-              )}
+              {courses.map((title) => (
+                <option key={title} value={title}>
+                  {title}
+                </option>
+              ))}
             </select>
           </label>
 
-          <label className="enquiries-filter">
-            <span>
-              Sort by
-            </span>
+          <label className="records-select">
+            <span className="records-sr-only">Sort by</span>
 
             <select
               value={sort}
-              onChange={(
-                event,
-              ) => {
-                setSort(
-                  event.target
-                    .value as EnquirySort,
-                );
-
-                setPage(
-                  1,
-                );
+              onChange={(event) => {
+                setSort(event.target.value as EnquirySort);
+                setPage(1);
               }}
             >
-              <option value="NEWEST">
-                Newest first
-              </option>
-
-              <option value="OLDEST">
-                Oldest first
-              </option>
-
-              <option value="NEW_FIRST">
-                Awaiting contact first
-              </option>
+              <option value="NEWEST">Newest first</option>
+              <option value="OLDEST">Oldest first</option>
+              <option value="NEW_FIRST">Awaiting contact first</option>
             </select>
           </label>
-        </div>
 
-        {hasFilters && (
-          <button
-            type="button"
-            className="enquiries-clear"
-            onClick={
-              resetFilters
-            }
-          >
-            <X
-              size={15}
-              aria-hidden="true"
-            />
-
-            Clear search and filters
-          </button>
-        )}
-      </section>
-
-
-      {/* =====================================================
-          ENQUIRY LIST
-          ===================================================== */}
-
-      <section className="enquiries-inbox">
-
-        <div className="enquiries-inbox__heading">
-          <div>
-            <h2>
-              Enquiry list
-            </h2>
-
-            <p>
-              {loaded
-                ? `${filtered.length} ${
-                    filtered.length ===
-                    1
-                      ? "enquiry"
-                      : "enquiries"
-                  }${
-                    hasFilters
-                      ? " found"
-                      : " received"
-                  }`
-                : "Loading enquiries"}
-            </p>
-          </div>
-
-          <span className="enquiries-auto-refresh">
-            <span />
-
-            Updates every 30 seconds
-          </span>
+          {hasFilters && (
+            <button
+              type="button"
+              className="records-clear"
+              onClick={resetFilters}
+            >
+              <X size={14} aria-hidden="true" />
+              Clear
+            </button>
+          )}
         </div>
 
         {query.isPending ? (
-          <div
-            className="enquiries-empty"
-            role="status"
-          >
-            <FileText
-              size={34}
-              aria-hidden="true"
-            />
-
-            <h3>
-              Loading enquiries…
-            </h3>
-
-            <p>
-              Website requests will
-              appear here.
-            </p>
+          <div className="records-list" role="status" aria-label="Loading enquiries">
+            {Array.from({ length: 6 }, (_, row) => (
+              <div key={row} className="records-row records-row--skeleton">
+                <span className="records-skeleton records-skeleton--avatar" />
+                <span className="records-skeleton" style={{ width: "60%" }} />
+                <span className="records-skeleton" style={{ width: "70%" }} />
+                <span className="records-skeleton" style={{ width: "50%" }} />
+                <span className="records-skeleton" style={{ width: "72px" }} />
+              </div>
+            ))}
           </div>
         ) : !loaded ? (
-          <div className="enquiries-empty">
-            <FileText
-              size={34}
-              aria-hidden="true"
-            />
+          <div className="records-empty">
+            <FileText size={28} aria-hidden="true" />
 
-            <h3>
-              Unable to load enquiries
-            </h3>
+            <h3>Unable to load enquiries</h3>
 
-            <p>
-              Refresh the page to
-              retrieve enquiries.
-            </p>
+            <p>Use Refresh to try again.</p>
           </div>
         ) : !filtered.length ? (
-          <div className="enquiries-empty">
-            <MessageSquare
-              size={34}
-              aria-hidden="true"
-            />
+          <div className="records-empty">
+            <MessageSquare size={28} aria-hidden="true" />
 
-            <h3>
-              {hasFilters
-                ? "No matching enquiries"
-                : "No enquiries yet"}
-            </h3>
+            <h3>{hasFilters ? "No matching enquiries" : "No enquiries yet"}</h3>
 
             <p>
               {hasFilters
@@ -865,255 +611,137 @@ export function EnquiriesPage() {
             {hasFilters && (
               <button
                 type="button"
-                className="enquiries-button"
-                onClick={
-                  resetFilters
-                }
+                className="records-button"
+                onClick={resetFilters}
               >
                 Clear filters
               </button>
             )}
           </div>
         ) : (
-          <div className="enquiries-records">
+          <div className="records-list">
+            <div className="records-columns records-columns--enquiries" aria-hidden="true">
+              <span>Enquirer</span>
+              <span>Course & message</span>
+              <span>Received</span>
+              <span>Status</span>
+              <span />
+            </div>
 
-            {paginated.records.map(
-              (
-                enquiry,
-              ) => (
-                <article
-                  key={
-                    enquiry.id
-                  }
-                  className="enquiry-record"
-                >
+            {paginated.records.map((enquiry) => (
+              <article
+                key={enquiry.id}
+                className="records-row records-row--enquiries"
+              >
+                <div className="records-person">
+                  <span className="records-avatar" aria-hidden="true">
+                    {initials(enquiry.name)}
+                  </span>
 
-                  <div className="enquiry-record__main">
-
-                    <div
-                      className="enquiry-record__avatar"
-                      aria-hidden="true"
-                    >
-                      {
-                        enquiry.name
-                          .trim()
-                          .slice(
-                            0,
-                            1,
-                          )
-                          .toUpperCase()
-                      }
-                    </div>
-
-                    <div className="enquiry-record__content">
-
-                      <div className="enquiry-record__title-row">
-
-                        <button
-                          className="enquiry-record__name"
-                          type="button"
-                          disabled={
-                            mutation.isPending
-                          }
-                          onClick={() =>
-                            openDetails(
-                              enquiry.id,
-                            )
-                          }
-                        >
-                          {
-                            enquiry.name
-                          }
-                        </button>
-
-                        <span
-                          className={`enquiry-record__status enquiry-record__status--${enquiry.status.toLowerCase()}`}
-                        >
-                          {
-                            enquiryStatusLabels[
-                              enquiry
-                                .status
-                            ]
-                          }
-                        </span>
-                      </div>
-
-                      <a
-                        className="enquiry-record__phone"
-                        href={`tel:${enquiry.phone.replace(
-                          /[^+\d]/g,
-                          "",
-                        )}`}
-                      >
-                        <Phone
-                          size={16}
-                          aria-hidden="true"
-                        />
-
-                        {
-                          enquiry.phone
-                        }
-                      </a>
-
-                      <div className="enquiry-record__course">
-                        <span>
-                          Interested in
-                        </span>
-
-                        <strong>
-                          {
-                            enquiry.course
-                          }
-                        </strong>
-                      </div>
-
-                      <div className="enquiry-record__message">
-                        <MessageSquare
-                          size={16}
-                          aria-hidden="true"
-                        />
-
-                        <p>
-                          {enquiry.message ||
-                            "No additional message provided."}
-                        </p>
-                      </div>
-
-                      <div className="enquiry-record__meta">
-                        <span>
-                          Received{" "}
-                          <strong>
-                            {formatEnquiryDate(
-                              enquiry.createdAt,
-                            )}
-                          </strong>
-                        </span>
-
-                        {enquiry.student && (
-                          <span className="enquiry-record__admitted">
-                            <GraduationCap
-                              size={15}
-                              aria-hidden="true"
-                            />
-
-                            Admitted ·{" "}
-                            {
-                              enquiry
-                                .student
-                                .admissionNumber
-                            }
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="enquiry-record__actions">
+                  <div>
                     <button
-                      className="enquiry-record__view"
+                      className="records-name"
                       type="button"
-                      disabled={
-                        mutation.isPending
-                      }
-                      onClick={() =>
-                        openDetails(
-                          enquiry.id,
-                        )
-                      }
+                      disabled={mutation.isPending}
+                      onClick={() => openDetails(enquiry.id)}
                     >
-                      View enquiry
-
-                      <ArrowRight
-                        size={17}
-                        aria-hidden="true"
-                      />
+                      {enquiry.name}
                     </button>
+
+                    <a
+                      className="records-sub"
+                      href={`tel:${enquiry.phone.replace(/[^+\d]/g, "")}`}
+                    >
+                      <Phone size={13} aria-hidden="true" />
+                      {enquiry.phone}
+                    </a>
                   </div>
-                </article>
-              ),
-            )}
+                </div>
+
+                <div className="records-detail">
+                  <strong>{enquiry.course}</strong>
+
+                  <span
+                    className={
+                      enquiry.message
+                        ? "records-sub records-sub--clamp"
+                        : "records-sub records-sub--faint"
+                    }
+                    title={enquiry.message ?? undefined}
+                  >
+                    {enquiry.message || "No message"}
+                  </span>
+                </div>
+
+                <div className="records-date">
+                  {formatEnquiryDate(enquiry.createdAt)}
+
+                  {enquiry.student && (
+                    <span className="records-chip">
+                      <GraduationCap size={13} aria-hidden="true" />
+                      {enquiry.student.admissionNumber}
+                    </span>
+                  )}
+                </div>
+
+                <span
+                  className={`records-status records-status--${enquiry.status.toLowerCase()}`}
+                >
+                  {enquiryStatusLabels[enquiry.status]}
+                </span>
+
+                <div className="records-actions">
+                  <button
+                    className="records-action"
+                    type="button"
+                    disabled={mutation.isPending}
+                    onClick={() => openDetails(enquiry.id)}
+                  >
+                    View
+                    <ArrowRight size={15} aria-hidden="true" />
+                  </button>
+                </div>
+              </article>
+            ))}
           </div>
         )}
 
-        {loaded &&
-          filtered.length >
-            0 && (
-            <footer className="enquiries-pagination">
+        {loaded && filtered.length > 0 && (
+          <footer className="records-pagination">
+            <span>
+              Showing {paginated.start}–{paginated.end} of {filtered.length}{" "}
+              {filtered.length === 1 ? "enquiry" : "enquiries"}
+              <span className="records-live">Updates every 30 seconds</span>
+            </span>
 
-              <span>
-                Showing{" "}
-                {
-                  paginated.start
-                }
-                –
-                {
-                  paginated.end
-                }{" "}
-                of{" "}
-                {
-                  filtered.length
-                }{" "}
-                enquiries
-              </span>
+            <div>
+              <button
+                type="button"
+                className="records-page-button"
+                disabled={paginated.currentPage === 1}
+                onClick={() => setPage(paginated.currentPage - 1)}
+                aria-label="Previous page"
+              >
+                <ChevronLeft size={17} aria-hidden="true" />
+              </button>
 
-              <div>
-                <button
-                  type="button"
-                  className="enquiries-page-button"
-                  disabled={
-                    paginated.currentPage ===
-                    1
-                  }
-                  onClick={() =>
-                    setPage(
-                      paginated.currentPage -
-                        1,
-                    )
-                  }
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft
-                    size={19}
-                    aria-hidden="true"
-                  />
-                </button>
+              <strong>
+                {paginated.currentPage} / {paginated.pageCount}
+              </strong>
 
-                <strong>
-                  Page{" "}
-                  {
-                    paginated.currentPage
-                  }{" "}
-                  of{" "}
-                  {
-                    paginated.pageCount
-                  }
-                </strong>
-
-                <button
-                  type="button"
-                  className="enquiries-page-button"
-                  disabled={
-                    paginated.currentPage ===
-                    paginated.pageCount
-                  }
-                  onClick={() =>
-                    setPage(
-                      paginated.currentPage +
-                        1,
-                    )
-                  }
-                  aria-label="Next page"
-                >
-                  <ChevronRight
-                    size={19}
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-            </footer>
-          )}
+              <button
+                type="button"
+                className="records-page-button"
+                disabled={paginated.currentPage === paginated.pageCount}
+                onClick={() => setPage(paginated.currentPage + 1)}
+                aria-label="Next page"
+              >
+                <ChevronRight size={17} aria-hidden="true" />
+              </button>
+            </div>
+          </footer>
+        )}
       </section>
-
 
       {/* =====================================================
           DIALOGS

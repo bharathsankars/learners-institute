@@ -108,14 +108,16 @@
 }
 
 .students-button--primary {
-  border-color: var(--students-green);
+  border-color: var(--color-blue-700);
 
-  background: var(--students-green);
+  background: var(--color-blue-700);
   color: #ffffff;
 }
 
 .students-button--primary:hover:not(:disabled) {
-  background: #203f36;
+  border-color: var(--color-navy-800);
+
+  background: var(--color-navy-800);
 }
 
 .students-button:disabled {

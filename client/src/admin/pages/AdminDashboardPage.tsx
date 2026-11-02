@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import {
+  AlertTriangle,
   ArrowRight,
   BookOpen,
   CircleCheck,
@@ -28,68 +29,119 @@ import {
 
 import "../styles/AdminDashboard.css";
 
+const INSTITUTE_TIME_ZONE = "Asia/Kolkata";
+
 const statusLabels = {
   NEW: "New",
   CONTACTED: "Contacted",
   CLOSED: "Closed",
 };
 
-type SummaryCardProps = {
+function greeting(now: Date) {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: INSTITUTE_TIME_ZONE,
+      hour: "numeric",
+      hourCycle: "h23",
+    }).format(now),
+  );
+
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+
+  return "Good evening";
+}
+
+function Skeleton({ width }: { width: string }) {
+  return (
+    <span
+      className="dashboard-skeleton"
+      style={{ width }}
+      aria-hidden="true"
+    />
+  );
+}
+
+type StatCardProps = {
   label: string;
-  value: string;
-  detail: string;
+  value?: string;
+  detail?: string;
   icon: LucideIcon;
   to?: string;
+  highlight?: boolean;
 };
 
-function SummaryCard({
+function StatCard({
   label,
   value,
   detail,
   icon: Icon,
   to,
-}: SummaryCardProps) {
+  highlight = false,
+}: StatCardProps) {
+  const isLoading = value === undefined;
+
   const content = (
     <>
-      <div className="dashboard-summary__icon" aria-hidden="true">
-        <Icon size={24} strokeWidth={1.8} />
-      </div>
-
-      <div className="dashboard-summary__content">
+      <div className="dashboard-stat__top">
         <span>{label}</span>
-        <strong>{value}</strong>
-        <p>{detail}</p>
+
+        <span className="dashboard-stat__icon" aria-hidden="true">
+          <Icon size={18} strokeWidth={1.9} />
+        </span>
       </div>
 
-      {to && (
-        <ArrowRight
-          className="dashboard-summary__arrow"
-          size={20}
-          aria-hidden="true"
-        />
-      )}
+      <strong className="dashboard-stat__value">
+        {isLoading ? <Skeleton width="56%" /> : value}
+      </strong>
+
+      <p className="dashboard-stat__detail">
+        {isLoading ? <Skeleton width="40%" /> : detail}
+      </p>
     </>
   );
 
+  const className = highlight
+    ? "dashboard-stat dashboard-stat--highlight"
+    : "dashboard-stat";
+
   if (to) {
     return (
-      <Link className="dashboard-summary" to={to}>
+      <Link className={className} to={to} aria-busy={isLoading}>
         {content}
       </Link>
     );
   }
 
-  return <div className="dashboard-summary">{content}</div>;
+  return (
+    <div className={className} aria-busy={isLoading}>
+      {content}
+    </div>
+  );
 }
 
 function EmptyState({ title, detail }: { title: string; detail: string }) {
   return (
     <div className="dashboard-empty">
-      <CircleCheck size={32} aria-hidden="true" />
+      <CircleCheck size={28} aria-hidden="true" />
 
       <strong>{title}</strong>
 
       <p>{detail}</p>
+    </div>
+  );
+}
+
+function TableSkeleton() {
+  return (
+    <div className="dashboard-table-skeleton" aria-hidden="true">
+      {Array.from({ length: 4 }, (_, row) => (
+        <div key={row}>
+          <Skeleton width="32%" />
+          <Skeleton width="26%" />
+          <Skeleton width="14%" />
+        </div>
+      ))}
     </div>
   );
 }
@@ -160,7 +212,9 @@ export function AdminDashboardPage() {
   const ready = (query: { isPending: boolean; isError: boolean }) =>
     !query.isPending && !query.isError;
 
-  const today = dashboardDateKey(new Date());
+  const now = new Date();
+
+  const today = dashboardDateKey(now);
 
   const activeStudents =
     students.data?.filter((student) => student.status === "ACTIVE").length ?? 0;
@@ -186,26 +240,11 @@ export function AdminDashboardPage() {
 
   const lastUpdated = Math.min(...queries.map((query) => query.dataUpdatedAt));
 
-  const quickActions = [
-    {
-      label: "Students",
-      detail: "View student records and admissions",
-      to: "/admin/students",
-      icon: GraduationCap,
-    },
-    {
-      label: "Enquiries",
-      detail: "Follow up website enquiries",
-      to: "/admin/enquiries",
-      icon: FileText,
-    },
-    {
-      label: "Courses",
-      detail: "Manage available courses",
-      to: "/admin/courses",
-      icon: BookOpen,
-    },
-  ];
+  const hasNewEnquiries = ready(enquiries) && newEnquiries.length > 0;
+
+  const hasOverdueFees = isSuperAdmin && ready(fees) && overduePlans.length > 0;
+
+  const attentionReady = ready(enquiries) && (!isSuperAdmin || ready(fees));
 
   return (
     <div className="admin-dashboard">
@@ -215,47 +254,45 @@ export function AdminDashboardPage() {
 
       <header className="dashboard-header">
         <div>
-          <span className="dashboard-eyebrow">Learners Admin</span>
-
-          <h1>
-            Welcome
-            {user ? `, ${user.firstName} ${user.lastName}`.trimEnd() : ""}
-          </h1>
-
-          <p>Choose what you would like to manage today.</p>
-        </div>
-
-        <div className="dashboard-header__right">
-          <span className="dashboard-date">
+          <span className="dashboard-eyebrow">
             {new Intl.DateTimeFormat("en-GB", {
-              timeZone: "Europe/Berlin",
+              timeZone: INSTITUTE_TIME_ZONE,
               weekday: "long",
               day: "numeric",
               month: "long",
-            }).format(new Date())}
+              year: "numeric",
+            }).format(now)}
           </span>
 
-          <button
-            type="button"
-            className="dashboard-refresh-button"
-            aria-label={refreshing ? "Refreshing dashboard" : "Refresh dashboard"}
-            title={refreshing ? "Refreshing dashboard" : "Refresh dashboard"}
-            onClick={() => {
-              void Promise.allSettled(queries.map((query) => query.refetch()));
-            }}
-            disabled={refreshing}
-          >
-            <RefreshCw
-              size={18}
-              className={refreshing ? "dashboard-spin" : ""}
-              aria-hidden="true"
-            />
+          <h1>Institute overview</h1>
 
-            <span className="dashboard-refresh-button__text">
-              {refreshing ? "Refreshing..." : "Refresh"}
-            </span>
-          </button>
+          <p>
+            {greeting(now)}
+            {user?.firstName ? `, ${user.firstName}` : ""}. Here’s what’s
+            happening at Learners today.
+          </p>
         </div>
+
+        <button
+          type="button"
+          className="dashboard-refresh-button"
+          aria-label={refreshing ? "Refreshing dashboard" : "Refresh dashboard"}
+          title={refreshing ? "Refreshing dashboard" : "Refresh dashboard"}
+          onClick={() => {
+            void Promise.allSettled(queries.map((query) => query.refetch()));
+          }}
+          disabled={refreshing}
+        >
+          <RefreshCw
+            size={16}
+            className={refreshing ? "dashboard-spin" : ""}
+            aria-hidden="true"
+          />
+
+          <span className="dashboard-refresh-button__text">
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </span>
+        </button>
       </header>
 
       {errors.length > 0 && (
@@ -266,286 +303,263 @@ export function AdminDashboardPage() {
       )}
 
       {/* =====================================================
-          PRIMARY ACTIONS
+          KEY NUMBERS
           ===================================================== */}
 
-      <section
-        className="dashboard-section"
-        aria-labelledby="dashboard-actions-title"
-      >
-        <div className="dashboard-section__heading">
-          <div>
-            <h2 id="dashboard-actions-title">What would you like to do?</h2>
-
-            <p>Select an area to open and manage it.</p>
-          </div>
-        </div>
-
-        <div className="dashboard-actions">
-          {quickActions.map(({ label, detail, to, icon: Icon }) => (
-            <Link key={to} to={to} className="dashboard-action">
-              <span className="dashboard-action__icon" aria-hidden="true">
-                <Icon size={30} strokeWidth={1.8} />
-              </span>
-
-              <div>
-                <strong>{label}</strong>
-
-                <span>{detail}</span>
-              </div>
-
-              <ArrowRight size={22} aria-hidden="true" />
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* =====================================================
-          AT A GLANCE
-          ===================================================== */}
-
-      <section
-        className="dashboard-section"
-        aria-labelledby="dashboard-summary-title"
-      >
-        <div className="dashboard-section__heading">
-          <div>
-            <h2 id="dashboard-summary-title">At a glance</h2>
-
-            <p>Current institute information.</p>
-          </div>
-        </div>
-
-        <div className="dashboard-summary-grid">
-          <SummaryCard
+      <section aria-label="Key numbers">
+        <div className="dashboard-stats">
+          <StatCard
             label="Students"
-            value={ready(students) ? String(students.data?.length ?? 0) : "—"}
-            detail={ready(students) ? `${activeStudents} active` : "Loading..."}
+            value={ready(students) ? String(students.data?.length ?? 0) : undefined}
+            detail={`${activeStudents} currently active`}
             icon={GraduationCap}
             to="/admin/students"
           />
 
-          <SummaryCard
+          <StatCard
             label="New enquiries"
-            value={ready(enquiries) ? String(newEnquiries.length) : "—"}
+            value={ready(enquiries) ? String(newEnquiries.length) : undefined}
             detail={
-              ready(enquiries)
-                ? newEnquiries.length === 1
-                  ? "Needs follow-up"
-                  : "Need follow-up"
-                : "Loading..."
+              newEnquiries.length > 0
+                ? "Waiting for follow-up"
+                : "All followed up"
             }
             icon={FileText}
             to="/admin/enquiries"
+            highlight={hasNewEnquiries}
           />
 
-          <SummaryCard
+          <StatCard
             label="Active courses"
-            value={ready(courses) ? String(activeCourses) : "—"}
-            detail={
-              ready(courses)
-                ? `${courses.data?.length ?? 0} total courses`
-                : "Loading..."
-            }
+            value={ready(courses) ? String(activeCourses) : undefined}
+            detail={`${courses.data?.length ?? 0} courses in total`}
             icon={BookOpen}
             to="/admin/courses"
           />
 
           {isSuperAdmin && (
-            <SummaryCard
+            <StatCard
               label="Outstanding fees"
               value={
-                ready(fees) ? formatIndianRupees(finance.outstanding) : "—"
+                ready(fees) ? formatIndianRupees(finance.outstanding) : undefined
               }
-              detail={
-                ready(fees) ? `${overduePlans.length} overdue` : "Loading..."
-              }
+              detail={`${overduePlans.length} overdue ${
+                overduePlans.length === 1 ? "plan" : "plans"
+              }`}
               icon={Wallet}
+              to="/admin/fees"
+              highlight={hasOverdueFees}
             />
           )}
         </div>
       </section>
 
       {/* =====================================================
-          NEEDS ATTENTION
+          ENQUIRIES + ATTENTION
           ===================================================== */}
 
-      <section
-        className="dashboard-section"
-        aria-labelledby="dashboard-attention-title"
-      >
-        <div className="dashboard-section__heading">
-          <div>
-            <h2 id="dashboard-attention-title">Needs your attention</h2>
-
-            <p>Items that may need action.</p>
-          </div>
-        </div>
-
-        <Link
-          to="/admin/enquiries"
-          className={
-            newEnquiries.length > 0
-              ? "dashboard-alert dashboard-alert--attention"
-              : "dashboard-alert"
-          }
+      <div className="dashboard-columns">
+        <section
+          className="dashboard-panel"
+          aria-labelledby="recent-enquiries-title"
         >
-          <span className="dashboard-alert__icon" aria-hidden="true">
-            <FileText size={28} strokeWidth={1.8} />
-          </span>
+          <div className="dashboard-panel__header">
+            <div>
+              <h2 id="recent-enquiries-title">Latest enquiries</h2>
 
-          <div>
-            <strong>
-              {ready(enquiries)
-                ? newEnquiries.length > 0
-                  ? `${newEnquiries.length} new ${
-                      newEnquiries.length === 1 ? "enquiry" : "enquiries"
-                    } waiting`
-                  : "No new enquiries waiting"
-                : "Checking enquiries..."}
-            </strong>
+              <p>Most recent requests from the website.</p>
+            </div>
 
-            <p>
-              {ready(enquiries)
-                ? newEnquiries.length > 0
-                  ? "Open enquiries and contact these prospective students."
-                  : "All enquiries have already been contacted or closed."
-                : "Please wait while enquiry information loads."}
-            </p>
+            <Link to="/admin/enquiries" className="dashboard-view-all">
+              View all
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           </div>
 
-          <span className="dashboard-alert__action">
-            Open enquiries
-            <ArrowRight size={18} aria-hidden="true" />
-          </span>
-        </Link>
-      </section>
-
-      {/* =====================================================
-          RECENT ENQUIRIES
-          ===================================================== */}
-
-      <section
-        className="dashboard-section dashboard-panel"
-        aria-labelledby="recent-enquiries-title"
-      >
-        <div className="dashboard-panel__header">
-          <div>
-            <h2 id="recent-enquiries-title">Latest enquiries</h2>
-
-            <p>Most recent requests from the website.</p>
-          </div>
-
-          <Link to="/admin/enquiries" className="dashboard-view-all">
-            View all enquiries
-            <ArrowRight size={18} aria-hidden="true" />
-          </Link>
-        </div>
-
-        {!ready(enquiries) ? (
-          <div className="dashboard-panel-state">
-            {enquiries.isError
-              ? "Enquiries could not be loaded."
-              : "Loading enquiries..."}
-          </div>
-        ) : !enquiries.data?.length ? (
-          <EmptyState
-            title="No enquiries yet"
-            detail="New website enquiries will appear here."
-          />
-        ) : (
-          <div className="dashboard-table-scroll">
-            <table className="dashboard-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Course</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {enquiries.data.slice(0, 5).map((enquiry) => (
-                  <tr key={enquiry.id}>
-                    <td>
-                      <strong>{enquiry.name}</strong>
-
-                      <a href={`tel:${enquiry.phone.replace(/[^+\d]/g, "")}`}>
-                        {enquiry.phone}
-                      </a>
-                    </td>
-
-                    <td>{enquiry.course}</td>
-
-                    <td>
-                      <span
-                        className={`dashboard-badge dashboard-badge--${enquiry.status.toLowerCase()}`}
-                      >
-                        {statusLabels[enquiry.status]}
-                      </span>
-                    </td>
+          {enquiries.isError ? (
+            <div className="dashboard-panel-state">
+              Enquiries could not be loaded.
+            </div>
+          ) : !ready(enquiries) ? (
+            <TableSkeleton />
+          ) : !enquiries.data?.length ? (
+            <EmptyState
+              title="No enquiries yet"
+              detail="New website enquiries will appear here."
+            />
+          ) : (
+            <div className="dashboard-table-scroll">
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {enquiries.data.slice(0, 5).map((enquiry) => (
+                    <tr key={enquiry.id}>
+                      <td>
+                        <strong>{enquiry.name}</strong>
+
+                        <a href={`tel:${enquiry.phone.replace(/[^+\d]/g, "")}`}>
+                          {enquiry.phone}
+                        </a>
+                      </td>
+
+                      <td>{enquiry.course}</td>
+
+                      <td>
+                        <span
+                          className={`dashboard-badge dashboard-badge--${enquiry.status.toLowerCase()}`}
+                        >
+                          {statusLabels[enquiry.status]}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <section
+          className="dashboard-panel"
+          aria-labelledby="dashboard-attention-title"
+        >
+          <div className="dashboard-panel__header">
+            <div>
+              <h2 id="dashboard-attention-title">Needs attention</h2>
+
+              <p>Items waiting on someone at the institute.</p>
+            </div>
           </div>
-        )}
-      </section>
+
+          {!attentionReady ? (
+            <div className="dashboard-attention" aria-hidden="true">
+              <Skeleton width="100%" />
+              <Skeleton width="100%" />
+            </div>
+          ) : !hasNewEnquiries && !hasOverdueFees ? (
+            <EmptyState
+              title="All caught up"
+              detail="Nothing needs follow-up right now."
+            />
+          ) : (
+            <ul className="dashboard-attention">
+              {hasNewEnquiries && (
+                <li>
+                  <Link to="/admin/enquiries" className="dashboard-task">
+                    <span className="dashboard-task__icon" aria-hidden="true">
+                      <FileText size={18} strokeWidth={1.9} />
+                    </span>
+
+                    <div>
+                      <strong>
+                        {newEnquiries.length} new{" "}
+                        {newEnquiries.length === 1 ? "enquiry" : "enquiries"}
+                      </strong>
+
+                      <span>Contact these prospective students.</span>
+                    </div>
+
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                </li>
+              )}
+
+              {hasOverdueFees && (
+                <li>
+                  <Link
+                    to="/admin/fees"
+                    className="dashboard-task dashboard-task--urgent"
+                  >
+                    <span className="dashboard-task__icon" aria-hidden="true">
+                      <AlertTriangle size={18} strokeWidth={1.9} />
+                    </span>
+
+                    <div>
+                      <strong>
+                        {overduePlans.length} overdue fee{" "}
+                        {overduePlans.length === 1 ? "plan" : "plans"}
+                      </strong>
+
+                      <span>
+                        Oldest: {overduePlans[0].enrollment.student.firstName}{" "}
+                        {overduePlans[0].enrollment.student.lastName} ·{" "}
+                        {formatIndianRupees(feeBalance(overduePlans[0]))}
+                      </span>
+                    </div>
+
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                </li>
+              )}
+            </ul>
+          )}
+        </section>
+      </div>
 
       {/* =====================================================
           FINANCE — SUPER ADMIN ONLY
           ===================================================== */}
 
       {isSuperAdmin && (
-        <section
-          className="dashboard-section dashboard-finance"
-          aria-labelledby="finance-title"
-        >
-          <div className="dashboard-section__heading">
+        <section className="dashboard-panel" aria-labelledby="finance-title">
+          <div className="dashboard-panel__header">
             <div>
-              <h2 id="finance-title">Financial summary</h2>
+              <h2 id="finance-title">Fee collections</h2>
 
-              <p>Simple overview of recorded fee collections.</p>
+              <p>Recorded payments across all fee plans.</p>
             </div>
+
+            <Link to="/admin/payments" className="dashboard-view-all">
+              View payments
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           </div>
 
-          <div className="dashboard-finance__grid">
-            <div className="dashboard-finance-card">
-              <span>Total collected</span>
-
-              <strong>
-                {ready(fees) ? formatIndianRupees(finance.collected) : "—"}
-              </strong>
+          <dl className="dashboard-finance">
+            <div>
+              <dt>Total collected</dt>
+              <dd>
+                {ready(fees) ? (
+                  formatIndianRupees(finance.collected)
+                ) : (
+                  <Skeleton width="60%" />
+                )}
+              </dd>
             </div>
 
-            <div className="dashboard-finance-card">
-              <span>Collected this month</span>
-
-              <strong>
-                {ready(payments) ? formatIndianRupees(monthlyPayments) : "—"}
-              </strong>
+            <div>
+              <dt>Collected this month</dt>
+              <dd>
+                {ready(payments) ? (
+                  formatIndianRupees(monthlyPayments)
+                ) : (
+                  <Skeleton width="60%" />
+                )}
+              </dd>
             </div>
 
-            <div className="dashboard-finance-card dashboard-finance-card--attention">
-              <span>Outstanding</span>
-
-              <strong>
-                {ready(fees) ? formatIndianRupees(finance.outstanding) : "—"}
-              </strong>
-
-              <small>
-                {ready(fees)
-                  ? `${overduePlans.length} overdue fee ${
-                      overduePlans.length === 1 ? "plan" : "plans"
-                    }`
-                  : "Loading..."}
-              </small>
+            <div>
+              <dt>Outstanding</dt>
+              <dd className="dashboard-finance__outstanding">
+                {ready(fees) ? (
+                  formatIndianRupees(finance.outstanding)
+                ) : (
+                  <Skeleton width="60%" />
+                )}
+              </dd>
             </div>
-          </div>
+          </dl>
 
           {ready(payments) && (payments.data?.length ?? 0) > 0 && (
-            <div className="dashboard-finance__recent">
-              <h3>Latest payment</h3>
+            <div className="dashboard-latest-payment">
+              <span>Latest payment</span>
 
               {payments.data?.slice(0, 1).map((payment) => (
                 <div className="dashboard-payment" key={payment.id}>
@@ -563,27 +577,6 @@ export function AdminDashboardPage() {
               ))}
             </div>
           )}
-
-          {ready(fees) && overduePlans.length > 0 && (
-            <div className="dashboard-finance__recent">
-              <h3>Oldest overdue fee</h3>
-
-              {overduePlans.slice(0, 1).map((plan) => (
-                <div className="dashboard-payment" key={plan.id}>
-                  <div>
-                    <strong>
-                      {plan.enrollment.student.firstName}{" "}
-                      {plan.enrollment.student.lastName}
-                    </strong>
-
-                    <span>{plan.enrollment.course.title}</span>
-                  </div>
-
-                  <strong>{formatIndianRupees(feeBalance(plan))}</strong>
-                </div>
-              ))}
-            </div>
-          )}
         </section>
       )}
 
@@ -592,7 +585,14 @@ export function AdminDashboardPage() {
           ===================================================== */}
 
       <footer className="dashboard-update-note">
-        <span className="dashboard-status-dot" aria-hidden="true" />
+        <span
+          className={
+            errors.length
+              ? "dashboard-status-dot dashboard-status-dot--error"
+              : "dashboard-status-dot"
+          }
+          aria-hidden="true"
+        />
 
         {refreshing
           ? "Updating information..."
@@ -600,10 +600,10 @@ export function AdminDashboardPage() {
             ? "Some information could not be loaded."
             : lastUpdated
               ? `Updated at ${new Intl.DateTimeFormat("en-GB", {
-                   timeZone: "Asia/Kolkata",
-                   hour: "2-digit",
-                   minute: "2-digit",
-                 }).format(new Date(lastUpdated))} IST`
+                  timeZone: INSTITUTE_TIME_ZONE,
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }).format(new Date(lastUpdated))} IST · refreshes every 30 seconds`
               : "Waiting for information"}
       </footer>
     </div>
