@@ -12,6 +12,7 @@ import { AdminSidebar } from "../components/AdminSidebar";
 
 import "../styles/AdminLayout.css";
 import "../styles/AdminRouteLoader.css";
+import "../styles/AdminFocus.css";
 
 export function AdminLayout() {
   const mobileMenu = useRef<HTMLDetailsElement>(null);
@@ -129,6 +130,8 @@ export function AdminLayout() {
             <button
               type="button"
               className="admin-layout__logout"
+              aria-label={isLoggingOut ? "Signing out…" : "Sign out"}
+              aria-busy={isLoggingOut}
               disabled={isLoggingOut}
               onClick={async () => {
                 if (isLoggingOut) return;

@@ -4,17 +4,39 @@ import "./Courses.css";
 import {
   ArrowRight,
   BookOpen,
+  createLucideIcon,
   Check,
   ChevronDown,
   ChevronUp,
   ClipboardCheck,
-  Keyboard,
   Laptop2,
   NotebookPen,
+  FileText,
+  Landmark,
+  LayoutGrid,
+  Monitor,
+  PenLine,
+  Table2,
 } from "lucide-react";
 
 import { usePublicCourses } from "../hooks/usePublicCourses";
 import { PublicCourseDetailsDialog } from "../components/PublicCourseDetailsDialog";
+
+// Typewriter drawn in the same 24px outline style as the other icons.
+const Typewriter = createLucideIcon("CourseTypewriter", [
+  ["rect", { x: "7", y: "2", width: "10", height: "9", rx: "1", key: "paper" }],
+  ["path", { d: "M10 5h4M10 8h4", key: "text" }],
+  ["path", { d: "M3 10h18", key: "carriage" }],
+  ["path", {
+    d: "M5 10 2.5 19a2 2 0 0 0 2 2.5h15a2 2 0 0 0 2-2.5L19 10",
+    key: "body"
+  }],
+  ["path", {
+    d: "M7 14h.01M10.3 14h.01M13.7 14h.01M17 14h.01M6 17h.01M9 17h.01M12 17h.01M15 17h.01M18 17h.01",
+    key: "keys"
+  }],
+  ["path", { d: "M9 20h6", key: "spacebar" }],
+]);
 
 export type CourseCategory = (typeof quickFilters)[number];
 
@@ -28,11 +50,36 @@ type CoursesProps = {
 
 // Same icons as the hero pathways, so each category reads consistently.
 const categoryIcons: Record<string, typeof BookOpen> = {
-  typewriting: Keyboard,
+  typewriting: Typewriter,
   shorthand: NotebookPen,
   "computer courses": Laptop2,
   "exam preparation": ClipboardCheck,
 };
+
+// Course-specific icons; category icons remain the fallback for new courses.
+const courseIcons: Record<string, typeof BookOpen> = {
+  "english typewriting - lower": Typewriter,
+  "english typewriting - higher": Typewriter,
+  "malayalam typewriting - lower": Typewriter,
+  "malayalam typewriting - higher": Typewriter,
+  "english shorthand": NotebookPen,
+  "malayalam shorthand": PenLine,
+  "computer word processing": FileText,
+  "computer basics": Monitor,
+  "microsoft 365": LayoutGrid,
+  "ssc training": ClipboardCheck,
+  "psc training": Landmark,
+  "advanced microsoft excel": Table2,
+};
+
+function getCourseIcon(title: string, category?: string | null) {
+  const normalizedTitle = title.trim().toLowerCase()
+    .replace(/[–—]/g, "-").replace(/\s+/g, " ");
+
+  return courseIcons[normalizedTitle]
+    ?? categoryIcons[category?.trim().toLowerCase() ?? ""]
+    ?? BookOpen;
+}
 
 const quickFilters = [
   "All Courses",
@@ -242,9 +289,7 @@ export function Courses({ onEnquire, categorySelection = null }: CoursesProps) {
               !showAllMobileCourses &&
               index >= 3;
 
-            const CategoryIcon =
-              categoryIcons[course.category?.trim().toLowerCase() ?? ""] ??
-              BookOpen;
+            const CategoryIcon = getCourseIcon(course.title, course.category);
             const isExpanded = Boolean(expandedCourses[course.id]);
             const descriptionText =
               course.shortDescription || course.description || "";
