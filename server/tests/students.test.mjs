@@ -61,7 +61,7 @@ test("the student register lists every status, newest first", async () => {
     const response = await request("GET", "/api/students");
     assert.equal(response.status, 200);
     assert.deepEqual(response.body.data.students.map(record => record.status), ["ACTIVE", "INACTIVE", "COMPLETED"]);
-  }, [[prisma.student, "findMany", async options => { assert.deepEqual(options, { orderBy: { createdAt: "desc" } }); return records; }]]);
+  }, [[prisma.student, "findMany", async options => { assert.deepEqual(options, { include: { admittedBy: { select: { id: true, firstName: true, lastName: true } } }, orderBy: { createdAt: "desc" } }); return records; }]]);
 });
 
 // Interactive-transaction stand-in: records the registration lock and returns
@@ -101,7 +101,7 @@ test("students can still be created and have their details updated", async () =>
 });
 
 test("students keep ACTIVE, INACTIVE and COMPLETED as their only statuses", async () => {
-  await asRole("STAFF", async () => {
+  await asRole("ADMIN", async () => {
     for (const status of ["ACTIVE", "INACTIVE", "COMPLETED"]) {
       const response = await request("PATCH", `/api/students/${id}`, { ...student, status });
       assert.equal(response.status, 200, status);
@@ -120,6 +120,13 @@ test("enrolment APIs keep working for students in the permanent register", async
     const listed = await request("GET", `/api/students/${id}/enrollments`);
     assert.equal(listed.status, 200);
     assert.equal(listed.body.data.enrollments[0].course.title, "Tally Prime");
+    // Lecturers can see enrolments but not assign courses.
+    assert.equal((await request("POST", `/api/students/${id}/enrollments`, { courseId })).status, 403);
+  }, [
+    [prisma.student, "findUnique", async () => ({ id })],
+    [prisma.enrollment, "findMany", async () => [enrollment]],
+  ]);
+  await asRole("ADMIN", async () => {
 
     const assigned = await request("POST", `/api/students/${id}/enrollments`, { courseId });
     assert.equal(assigned.status, 201);
@@ -135,7 +142,7 @@ test("enrolment APIs keep working for students in the permanent register", async
 
 test("manual registration rejects a duplicate under the registration lock but accepts siblings", async () => {
   const existing = { admissionNumber: "LIT007", firstName: "Alice", lastName: null, phone: "9446125964", email: "family@example.invalid" };
-  await asRole("STAFF", async () => {
+  await asRole("ADMIN", async () => {
     const calls = [];
     prisma.$transaction = async (run) => run(fakeRegistrationTx([existing], calls));
     const duplicate = await request("POST", "/api/students", { firstName: " alice ", phone: "+91 94461 25964" });

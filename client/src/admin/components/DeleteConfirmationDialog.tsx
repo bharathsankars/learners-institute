@@ -4,7 +4,7 @@ import "../styles/AddStudentModal.css";
 import "../styles/DeleteConfirmationDialog.css";
 
 type Props = {
-  entity: "student" | "course";
+  entity: "student" | "course" | "batch";
   name: string;
   reference?: string;
   isDeleting: boolean;
@@ -32,7 +32,7 @@ export function DeleteConfirmationDialog({ entity, name, reference, isDeleting, 
     </header>
     <div className="student-modal__body">
       <div className="delete-dialog__record"><strong>{name}</strong>{reference && <span>{reference}</span>}</div>
-      <p id="delete-dialog-description" className="delete-dialog__description">{entity === "course" ? "This will permanently remove the course from the catalogue and the homepage. You can mark it inactive instead to keep the record." : "This will permanently remove the student’s profile and contact details from the register."}</p>
+      <p id="delete-dialog-description" className="delete-dialog__description">{entity === "course" ? "This will permanently remove the course from the catalogue and the homepage. You can mark it inactive instead to keep the record." : entity === "batch" ? "This will permanently remove the batch. Only empty batches can be deleted; to keep a batch for records, archive it instead." : "This will permanently remove the student’s profile and contact details from the register."}</p>
       {error && <div className="student-modal__server-error" role="alert">{error}</div>}
     </div>
     <footer className="student-modal__actions"><span className="student-modal__save-note">Please review the record before deleting.</span><div>

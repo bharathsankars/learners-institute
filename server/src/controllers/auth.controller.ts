@@ -1,3 +1,4 @@
+import { prisma } from "../config/database.js";
 import type { Request, Response } from "express";
 import { ZodError } from "zod";
 
@@ -34,6 +35,11 @@ export async function loginController(
     }
 
     await startSession(user.id, res);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
 
     res.status(200).json({
       success: true,

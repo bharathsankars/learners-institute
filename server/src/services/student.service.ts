@@ -10,7 +10,10 @@ import type {
   UpdateStudentInput,
 } from "../validators/student.validator.js";
 
-export async function createStudent(input: CreateStudentInput) {
+export async function createStudent(
+  input: CreateStudentInput,
+  admittedById: string | null = null,
+) {
   return prisma.$transaction(async (tx) => {
     await lockStudentRegistration(tx);
 
@@ -21,6 +24,9 @@ export async function createStudent(input: CreateStudentInput) {
       data: {
         firstName: input.firstName,
         phone: input.phone,
+
+        admissionSource: "WALK_IN",
+        admittedById,
 
         ...(input.lastName && {
           lastName: input.lastName,
@@ -48,6 +54,11 @@ export async function createStudent(input: CreateStudentInput) {
 
 export async function getStudents() {
   return prisma.student.findMany({
+    include: {
+      admittedBy: {
+        select: { id: true, firstName: true, lastName: true },
+      },
+    },
     orderBy: {
       createdAt: "desc",
     },

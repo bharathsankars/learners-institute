@@ -95,6 +95,8 @@ export async function confirmStudentImport(input: {
             id: randomUUID(),
             firstName: student.firstName,
             phone: student.phone,
+            admissionSource: "IMPORT" as const,
+            admittedById: input.importedById,
             email: student.email?.toLowerCase() ?? null,
             dateOfBirth: student.dateOfBirth
               ? new Date(`${student.dateOfBirth}T00:00:00.000Z`)

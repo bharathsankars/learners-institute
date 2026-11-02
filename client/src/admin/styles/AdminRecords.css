@@ -488,6 +488,27 @@
     116px;
 }
 
+.records-columns--batches,
+.records-row--batches {
+  grid-template-columns:
+    minmax(200px, 1.3fr)
+    minmax(170px, 1fr)
+    minmax(130px, 0.9fr)
+    minmax(110px, 0.8fr)
+    100px
+    236px;
+}
+
+.records-instructor {
+  min-width: 0;
+
+  overflow: hidden;
+
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .records-columns--courses,
 .records-row--courses {
   grid-template-columns:
@@ -809,6 +830,11 @@ a.records-sub:hover {
 .records-status--active {
   background: #eef5f0;
   color: #2f6b4a;
+}
+
+.records-status--archived {
+  background: #f3f1ee;
+  color: #6f665f;
 }
 
 .records-status--completed {
@@ -1141,7 +1167,8 @@ html[data-theme="dark"] .records-tab__count {
 
   .records-row--enquiries,
   .records-row--students,
-  .records-row--courses {
+  .records-row--courses,
+  .records-row--batches {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "person status"
@@ -1188,6 +1215,31 @@ html[data-theme="dark"] .records-tab__count {
 
   .records-row .records-order {
     display: none;
+  }
+
+  /* Batches: timing and instructor share a line, seats sit by the actions */
+  .records-row--batches {
+    grid-template-areas:
+      "person status"
+      "detail detail"
+      "instructor instructor"
+      "seats actions";
+  }
+
+  .records-row .records-instructor {
+    grid-area: instructor;
+
+    padding-left: 50px;
+
+    color: var(--records-muted);
+
+    font-size: 13px;
+  }
+
+  .records-row .batch-seats {
+    grid-area: seats;
+
+    padding-left: 50px;
   }
 
   /* Course titles run long, so the status pill moves down beside the actions */
@@ -1279,5 +1331,10 @@ html[data-theme="dark"] .records-tab__count {
 
   .records-row--courses .records-status {
     margin-left: 0;
+  }
+
+  .records-row .records-instructor,
+  .records-row .batch-seats {
+    padding-left: 0;
   }
 }

@@ -3,7 +3,7 @@ import { ArrowUpRight, MessageCircle, Send, X } from "lucide-react";
 import { usePublicCourses } from "../hooks/usePublicCourses";
 import { answerLearnerQuestion } from "../utils/learnerAssistant";
 import "./LearnerAssistant.css";
-import { contact } from "../data/contact";
+import { useContact } from "../hooks/useContact";
 
 type Message = { id: number; role: "assistant" | "visitor"; text: string };
 const suggestions = ["Courses", "Admissions", "Fees & timings", "Location"];
@@ -12,6 +12,7 @@ type LearnerAssistantProps = {
   onOpenChange: (open: boolean) => void;
 };
 export function LearnerAssistant({ open, onOpenChange }: LearnerAssistantProps) {
+  const contact = useContact();
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([{ id: 0, role: "assistant", text: "Welcome to Learners. I’m the FAQ assistant. Ask about courses, admissions or how to reach us." }]);
   const messageId = useRef(1);

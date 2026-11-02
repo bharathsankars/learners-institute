@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import type { Request, Response } from "express";
 import { ZodError } from "zod";
 
@@ -60,6 +61,8 @@ export async function assignStudentCourseController(
       studentId,
       input.courseId,
     );
+
+    await logActivity(res, () => ({ action: "enrollment.created", entityType: "student", entityId: studentId, summary: `Assigned ${enrollment.course.title} to a student` }));
 
     res.status(201).json({
       success: true,

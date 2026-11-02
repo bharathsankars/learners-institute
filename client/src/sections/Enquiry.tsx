@@ -16,7 +16,7 @@ import { submitEnquiry, type CreateEnquiryInput } from "../api/enquiries";
 import { usePublicCourses } from "../hooks/usePublicCourses";
 
 import "./Enquiry.css";
-import { contact } from "../data/contact";
+import { useContact } from "../hooks/useContact";
 
 const phoneMessage = "Please enter a valid 10-digit mobile number.";
 
@@ -68,6 +68,7 @@ type EnquiryProps = {
 };
 
 export function Enquiry({ courseSelection = null }: EnquiryProps) {
+  const contact = useContact();
   const courseQuery = usePublicCourses();
   const courses = useMemo(() => courseQuery.data ?? [], [courseQuery.data]);
   const [submitError, setSubmitError] = useState("");

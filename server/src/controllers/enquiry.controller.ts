@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import type { Request, Response } from "express";
 import { ZodError } from "zod";
 import { StudentDuplicateError } from "../services/student-duplicate.service.js";
@@ -28,7 +29,9 @@ export async function updateEnquiryController(req: Request, res: Response) {
   try {
     const id = enquiryIdSchema.parse(req.params.id);
     const { status } = updateEnquirySchema.parse(req.body);
-    res.json({ success: true, data: { enquiry: await updateEnquiryStatus(id, status) } });
+    const enquiry = await updateEnquiryStatus(id, status);
+    await logActivity(res, () => ({ action: "enquiry.status_changed", entityType: "enquiry", entityId: id, summary: `Marked the enquiry from ${enquiry.name} as ${status.toLowerCase()}` }));
+    res.json({ success: true, data: { enquiry } });
   } catch (error) { sendError(error, res); }
 }
 
@@ -36,6 +39,8 @@ export async function admitEnquiryController(req: Request, res: Response) {
   try {
     const id = enquiryIdSchema.parse(req.params.id);
     const input = createStudentSchema.parse(req.body);
-    res.json({ success: true, data: await admitEnquiry(id, input) });
+    const result = await admitEnquiry(id, input, res.locals.userId ?? null);
+    await logActivity(res, () => ({ action: "student.admitted", entityType: "student", entityId: result.student.id, summary: `Admitted ${input.firstName} (${result.student.admissionNumber}) from an enquiry` }));
+    res.json({ success: true, data: result });
   } catch (error) { sendError(error, res); }
 }

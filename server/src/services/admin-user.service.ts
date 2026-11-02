@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { randomInt } from "node:crypto";
 
 import { prisma } from "../config/database.js";
 
@@ -23,7 +24,7 @@ const publicUserSelect = {
 } as const;
 
 export async function getAdminUsers() {
-  return prisma.user.findMany({
+  const users = await prisma.user.findMany({
     where: {
       role: {
         in: [
@@ -34,8 +35,18 @@ export async function getAdminUsers() {
       },
     },
 
-    select:
-      publicUserSelect,
+    select: {
+      ...publicUserSelect,
+      lastLoginAt: true,
+      // Devices currently signed in.
+      _count: {
+        select: {
+          sessions: {
+            where: { expiresAt: { gt: new Date() } },
+          },
+        },
+      },
+    },
 
     orderBy: [
       {
@@ -46,6 +57,11 @@ export async function getAdminUsers() {
       },
     ],
   });
+
+  return users.map(({ _count, ...user }) => ({
+    ...user,
+    activeSessions: _count.sessions,
+  }));
 }
 
 export async function createAdminUser(
@@ -340,6 +356,8 @@ export async function deleteAdminUser(
       select: {
         id: true,
         role: true,
+        firstName: true,
+        lastName: true,
       },
     });
 
@@ -371,5 +389,72 @@ export async function deleteAdminUser(
   return {
     status:
       "DELETED" as const,
+    user: existing,
   };
+}
+
+
+// Readable temporary password: no 0/O, 1/l/I look-alikes.
+const TEMPORARY_PASSWORD_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+
+export function generateTemporaryPassword(length = 12): string {
+  return Array.from(
+    { length },
+    () => TEMPORARY_PASSWORD_ALPHABET[randomInt(TEMPORARY_PASSWORD_ALPHABET.length)],
+  ).join("");
+}
+
+// Sets a new temporary password and signs the user out everywhere. The
+// password is returned once so the Super Admin can pass it on.
+export async function resetAdminUserPassword(userId: string) {
+  const existing = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+
+  if (!existing || existing.role === "RECOVERY_ADMIN") {
+    return { status: "NOT_FOUND" as const };
+  }
+
+  if (existing.role === "SUPER_ADMIN") {
+    return { status: "PROTECTED" as const };
+  }
+
+  const temporaryPassword = generateTemporaryPassword();
+
+  const user = await prisma.$transaction(async (tx) => {
+    const updated = await tx.user.update({
+      where: { id: userId },
+      data: { password: await bcrypt.hash(temporaryPassword, BCRYPT_ROUNDS) },
+      select: publicUserSelect,
+    });
+
+    await tx.session.deleteMany({ where: { userId } });
+
+    return updated;
+  });
+
+  return { status: "RESET" as const, user, temporaryPassword };
+}
+
+// Ends a user's sessions on every device. keepTokenHash spares the caller's
+// own current session when they sign out their other devices.
+export async function signOutAdminUser(userId: string, keepTokenHash: string | null = null) {
+  const existing = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { firstName: true, lastName: true, role: true },
+  });
+
+  if (!existing || existing.role === "RECOVERY_ADMIN") {
+    return { status: "NOT_FOUND" as const };
+  }
+
+  const { count } = await prisma.session.deleteMany({
+    where: {
+      userId,
+      ...(keepTokenHash && { tokenHash: { not: keepTokenHash } }),
+    },
+  });
+
+  return { status: "SIGNED_OUT" as const, user: existing, count };
 }

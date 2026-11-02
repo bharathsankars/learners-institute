@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from "react";
 
 import "./MobileContactBar.css";
-import { contact } from "../data/contact";
+import { useContact } from "../hooks/useContact";
 
 type MobileContactBarProps = {
   assistantOpen: boolean;
@@ -14,6 +14,7 @@ type MobileContactBarProps = {
 };
 
 export function MobileContactBar({ assistantOpen, onAsk }: MobileContactBarProps) {
+  const contact = useContact();
   const [enquiryVisible, setEnquiryVisible] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
 

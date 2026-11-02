@@ -19,6 +19,8 @@ const EnquiriesPage = lazy(() => import("./admin/pages/EnquiriesPage").then(modu
 const StudentsPage = lazy(() => import("./admin/pages/StudentsPage").then(module => ({ default: module.StudentsPage })));
 
 const CoursesPage = lazy(() => import("./admin/pages/CoursesPage").then(module => ({ default: module.CoursesPage })));
+const AttendancePage = lazy(() => import("./admin/pages/AttendancePage").then(module => ({ default: module.AttendancePage })));
+const BatchesPage = lazy(() => import("./admin/pages/BatchesPage").then(module => ({ default: module.BatchesPage })));
 
 const SettingsPage = lazy(() => import("./admin/pages/SettingsPage").then(module => ({ default: module.SettingsPage })));
 
@@ -67,8 +69,8 @@ function App() {
           <Route path="students" element={<Suspense fallback={<p role="status">Loading students…</p>}><StudentsPage /></Suspense>} />
           <Route path="courses" element={<Suspense fallback={<p role="status">Loading courses…</p>}><CoursesPage /></Suspense>} />
 
-          <Route path="batches" element={<UpcomingPage title="Batches" />} />
-          <Route path="attendance" element={<UpcomingPage title="Attendance" />} />
+          <Route path="batches" element={<Suspense fallback={<p role="status">Loading batches…</p>}><BatchesPage /></Suspense>} />
+          <Route path="attendance" element={<Suspense fallback={<p role="status">Loading attendance…</p>}><AttendancePage /></Suspense>} />
           <Route path="expenses" element={<UpcomingPage title="Expenses" />} />
           <Route path="staff" element={<UpcomingPage title="Staff" />} />
           <Route path="reports" element={<UpcomingPage title="Reports" />} />

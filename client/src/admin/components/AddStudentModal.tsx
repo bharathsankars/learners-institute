@@ -16,6 +16,7 @@ import {
 import {
   useEffect,
   useRef,
+  useState,
 } from "react";
 
 import {
@@ -25,6 +26,16 @@ import {
 import {
   z,
 } from "zod";
+
+import { AdmissionPlacementFields } from "./AdmissionPlacementFields";
+
+import {
+  emptyPlacement,
+  placementToInput,
+  type PlacementValue,
+} from "../utils/admissions";
+
+import type { AdmissionInput } from "../../api/admissions";
 
 import type {
   CreateStudentInput,
@@ -115,6 +126,14 @@ type AddStudentModalProps = {
     studentId: string,
     input: UpdateStudentInput,
   ) => Promise<void>;
+  // When given, a new student is admitted in one step with a course, an
+  // optional batch and (for a Super Admin) fees, instead of onCreate.
+  onAdmit?: (
+    input: Omit<AdmissionInput, "enquiryId">,
+  ) => Promise<void>;
+  canSetFees?: boolean;
+  // Course titles to pre-select, e.g. what an enquiry asked about.
+  suggestedCourseNames?: string[];
 };
 
 function getDateInputValue(
@@ -139,9 +158,34 @@ export function AddStudentModal({
   onClose,
   onCreate,
   onUpdate,
+  onAdmit,
+  canSetFees = false,
+  suggestedCourseNames,
 }: AddStudentModalProps) {
   const isEditing =
     Boolean(student);
+
+  const isAdmission =
+    !student && Boolean(onAdmit);
+
+  const [placement, setPlacement] =
+    useState<PlacementValue>(emptyPlacement);
+
+  const [placementError, setPlacementError] =
+    useState("");
+
+  // Start each opening of the form with an empty course & batch step.
+  const [placementOpen, setPlacementOpen] =
+    useState(open);
+
+  if (placementOpen !== open) {
+    setPlacementOpen(open);
+
+    if (open) {
+      setPlacement(emptyPlacement);
+      setPlacementError("");
+    }
+  }
 
   const dialog =
     useRef<HTMLDialogElement>(
@@ -179,6 +223,7 @@ export function AddStudentModal({
     if (!open) {
       return;
     }
+
 
     if (student) {
       reset({
@@ -327,6 +372,29 @@ export function AddStudentModal({
           return;
         }
 
+        if (isAdmission && onAdmit) {
+          const placed =
+            placementToInput(
+              placement,
+              canSetFees,
+            );
+
+          if ("error" in placed) {
+            setPlacementError(
+              placed.error,
+            );
+
+            return;
+          }
+
+          await onAdmit({
+            student: commonInput,
+            ...placed,
+          });
+
+          return;
+        }
+
         await onCreate(
           commonInput,
         );
@@ -341,14 +409,18 @@ export function AddStudentModal({
       ? "Edit student"
       : initialValues
         ? "Admit student"
-        : "Add student";
+        : isAdmission
+          ? "New admission"
+          : "Add student";
 
   const description =
     isEditing
       ? "Update the student's details and learning status."
       : initialValues
-        ? "Check the details below before adding this enquiry as a student."
-        : "Enter the student's basic information to add them to the register.";
+        ? "Check the details below, then choose the course and batch."
+        : isAdmission
+          ? "Enter the student's details, then choose their course and batch."
+          : "Enter the student's basic information to add them to the register.";
 
   return (
     <dialog
@@ -843,6 +915,19 @@ export function AddStudentModal({
                 </div>
               </div>
             </section>
+
+            {isAdmission && (
+              <AdmissionPlacementFields
+                value={placement}
+                onChange={(next) => {
+                  setPlacement(next);
+                  setPlacementError("");
+                }}
+                canSetFees={canSetFees}
+                suggestedCourseNames={suggestedCourseNames}
+                error={placementError}
+              />
+            )}
           </fieldset>
 
           {serverError && (
@@ -870,7 +955,9 @@ export function AddStudentModal({
 
             {isEditing
               ? "Changes will update this student record."
-              : "The student will be added to the register."}
+              : isAdmission
+                ? "Student, course and batch are saved together."
+                : "The student will be added to the register."}
           </span>
 
           <div>
@@ -943,7 +1030,7 @@ export function AddStudentModal({
                 ? "Saving…"
                 : isEditing
                   ? "Save changes"
-                  : initialValues
+                  : initialValues || isAdmission
                     ? "Admit student"
                     : "Add student"}
             </button>

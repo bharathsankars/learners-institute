@@ -1,0 +1,382 @@
+/* =========================================================
+   ATTENDANCE — marking list and monthly register.
+   Panel, tabs and toolbar come from AdminRecords.css.
+   ========================================================= */
+
+.attendance-batch select {
+  min-width: 260px;
+}
+
+.attendance-date {
+  min-height: 40px;
+
+  padding: 0 12px;
+
+  border: 1px solid #ddd5ca;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: var(--records-ink);
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.attendance-date:focus {
+  border-color: #c9604f;
+
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(180 35 24 / 0.12);
+}
+
+.attendance-batch-info {
+  margin-left: auto;
+
+  color: var(--records-muted);
+
+  font-size: 13px;
+}
+
+/* Day heading */
+
+.attendance-day {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 16px 20px 0;
+}
+
+.attendance-day strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.015em;
+}
+
+.attendance-day__warning {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 3px 10px;
+
+  border-radius: 999px;
+
+  background: var(--records-attention-soft);
+  color: var(--records-attention);
+
+  font-size: 12px;
+  font-weight: 650;
+}
+
+/* Counts */
+
+.attendance-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 10px 16px;
+
+  padding: 12px 20px 14px;
+
+  border-bottom: 1px solid var(--records-border);
+}
+
+.attendance-count {
+  color: var(--records-muted);
+
+  font-size: 14px;
+}
+
+.attendance-count strong {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.attendance-count--present strong {
+  color: #2f6b4a;
+}
+
+.attendance-count--absent strong {
+  color: var(--records-accent);
+}
+
+.attendance-summary__state {
+  color: var(--records-faint);
+
+  font-size: 12px;
+}
+
+.attendance-summary .records-clear {
+  min-height: 32px;
+
+  margin-left: auto;
+}
+
+/* Marking list */
+
+.attendance-list {
+  display: grid;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.attendance-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  min-height: 64px;
+  padding: 10px 20px;
+
+  border-bottom: 1px solid var(--records-divider);
+
+  transition: background-color 120ms ease;
+}
+
+.attendance-row:last-child {
+  border-bottom: 0;
+}
+
+.attendance-row--absent {
+  background: #fff8f6;
+}
+
+.attendance-row__name {
+  min-width: 0;
+
+  display: grid;
+
+  flex: 1;
+}
+
+.attendance-row__name strong {
+  overflow: hidden;
+
+  font-size: 14px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attendance-row__name span {
+  color: var(--records-muted);
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 12px;
+}
+
+/* Present / Absent segmented control: big tap targets for a phone. */
+.attendance-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+
+  padding: 3px;
+
+  border: 1px solid var(--records-border);
+  border-radius: 10px;
+
+  background: var(--records-soft);
+}
+
+.attendance-toggle__option {
+  min-width: 104px;
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 0 12px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: var(--records-muted);
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.attendance-toggle__option:disabled {
+  cursor: default;
+}
+
+.attendance-toggle__option--present[aria-pressed="true"] {
+  background: #2f6b4a;
+  color: #ffffff;
+}
+
+.attendance-toggle__option--absent[aria-pressed="true"] {
+  background: var(--records-accent);
+  color: #ffffff;
+}
+
+.attendance-footer .records-button--primary {
+  min-width: 170px;
+}
+
+.attendance-error {
+  color: #b91c1c;
+
+  font-weight: 600;
+}
+
+/* Monthly register */
+
+.attendance-month {
+  padding: 16px 20px 18px;
+
+  overflow-x: auto;
+}
+
+.attendance-month table {
+  border-collapse: separate;
+  border-spacing: 0;
+
+  font-size: 13px;
+}
+
+.attendance-month th,
+.attendance-month td {
+  padding: 8px 6px;
+
+  border-bottom: 1px solid var(--records-divider);
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+.attendance-month thead th {
+  color: var(--records-faint);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.attendance-month th[scope="row"],
+.attendance-month thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+
+  min-width: 180px;
+  padding-right: 16px;
+
+  background: var(--records-surface);
+
+  text-align: left;
+}
+
+.attendance-month th[scope="row"] strong {
+  display: block;
+
+  font-size: 13px;
+}
+
+.attendance-month th[scope="row"] span {
+  color: var(--records-faint);
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.attendance-mark {
+  min-width: 26px;
+
+  color: var(--records-faint);
+
+  font-weight: 700;
+}
+
+.attendance-mark--present {
+  color: #2f6b4a;
+}
+
+.attendance-mark--absent {
+  background: #fff1ee;
+  color: var(--records-accent);
+}
+
+.attendance-month__total,
+.attendance-month__percent {
+  padding-left: 14px !important;
+
+  font-weight: 650;
+}
+
+.attendance-month__percent--low {
+  color: var(--records-accent);
+}
+
+.attendance-month__note {
+  margin: 12px 0 0;
+
+  color: var(--records-faint);
+
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .attendance-batch {
+    flex: 1 1 100%;
+  }
+
+  .attendance-batch,
+  .attendance-batch select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .attendance-batch-info {
+    margin-left: 0;
+  }
+
+  .attendance-row {
+    padding: 10px 14px;
+  }
+
+  .attendance-toggle__option {
+    min-width: 0;
+    padding: 0 10px;
+  }
+
+  .attendance-day,
+  .attendance-summary {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .attendance-toggle__option {
+    font-size: 0;
+    gap: 0;
+    width: 44px;
+  }
+
+  .attendance-toggle__option svg {
+    width: 18px;
+    height: 18px;
+  }
+}

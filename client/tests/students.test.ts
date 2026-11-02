@@ -10,8 +10,13 @@ const students = [
 ];
 const criteria = { search: "", status: "ALL" as const, sort: "NEWEST" as const };
 test("summaries include all learning statuses and empty registers", () => {
-  assert.deepEqual(studentCounts(students), { ALL: 3, ACTIVE: 1, INACTIVE: 1, COMPLETED: 1 });
+  assert.deepEqual(studentCounts(students, new Date("2026-11-08T11:00:00Z")), { ALL: 3, RECENT: 2, ACTIVE: 1, INACTIVE: 1, COMPLETED: 1 });
   assert.equal(studentCounts([]).ALL, 0);
+});
+test("recently admitted means the last 30 days, whatever the status", () => {
+  const now = new Date("2026-11-08T11:00:00Z");
+  assert.deepEqual(filterStudents(students, { ...criteria, status: "RECENT" }, now).map(student => student.id), ["2", "3"]);
+  assert.deepEqual(filterStudents(students, { ...criteria, status: "RECENT", search: "carol" }, now).map(student => student.id), ["3"]);
 });
 test("search combines with status and handles missing optional fields", () => {
   assert.equal(studentName(students[0]!), "Alice");

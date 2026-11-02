@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import { prisma } from "../config/database.js";
 import multer from "multer";
 import { z } from "zod";
@@ -221,6 +222,10 @@ export async function confirmStudentImportController(
       requestId: body.data.requestId,
       importedById: typeof userId === "string" ? userId : null,
     });
+
+    if (!result.replayed) {
+      await logActivity(res, () => ({ action: "student.imported", entityType: "student", summary: `Imported ${result.studentCount} students from Excel` }));
+    }
 
     res.status(result.replayed ? 200 : 201).json({
       success: true,

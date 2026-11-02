@@ -1,0 +1,417 @@
+/* =========================================================
+   BATCHES — seat meter, day chips and the student list dialog.
+   Rows, tabs and toolbar come from AdminRecords.css; dialogs
+   use the shared student-modal shell.
+   ========================================================= */
+
+/* Seat meter (list rows and the student list dialog) */
+
+.batch-seats {
+  min-width: 0;
+
+  display: grid;
+
+  gap: 6px;
+}
+
+.batch-seats__text {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  color: var(--records-muted, #6f665f);
+
+  font-size: 13px;
+}
+
+.batch-seats__text strong {
+  color: var(--records-ink, #1f1b18);
+
+  font-size: 14px;
+}
+
+.batch-seats__text em {
+  margin-left: 6px;
+  padding: 1px 7px;
+
+  border-radius: 999px;
+
+  background: #fff8f4;
+  color: #b42318;
+
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.batch-seats__bar {
+  display: block;
+
+  width: 100%;
+  max-width: 140px;
+  height: 6px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #f1ede7;
+}
+
+.batch-seats__bar > span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #2f6b4a;
+
+  transition: width 240ms ease;
+}
+
+.batch-seats--nearly .batch-seats__bar > span,
+.batch-roster__seats--nearly .batch-seats__bar > span {
+  background: #c58a1f;
+}
+
+.batch-seats--full .batch-seats__bar > span,
+.batch-roster__seats--full .batch-seats__bar > span {
+  background: #b42318;
+}
+
+/* Batch form: day toggles and presets */
+
+.batch-form__label {
+  color: var(--modal-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.batch-form__days {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.batch-form__day {
+  min-width: 52px;
+  min-height: 40px;
+
+  padding: 0 12px;
+
+  border: 1px solid #ddd5ca;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: var(--modal-muted);
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.batch-form__day:hover {
+  border-color: #cdc2b4;
+}
+
+.batch-form__day[aria-pressed="true"] {
+  border-color: #b42318;
+
+  background: #b42318;
+  color: #ffffff;
+}
+
+.batch-form__presets {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 2px;
+}
+
+.batch-form__presets button {
+  padding: 4px 10px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #f3f0eb;
+  color: var(--modal-muted);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.batch-form__presets button:hover {
+  background: #fdf0ec;
+  color: #b42318;
+}
+
+/* Student list dialog */
+
+.batch-roster {
+  width: min(760px, calc(100% - 32px));
+}
+
+.batch-roster__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.batch-roster__seats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 16px 18px;
+
+  border: 1px solid #ebe6df;
+  border-radius: 11px;
+
+  background: #faf8f4;
+}
+
+.batch-roster__seats > div {
+  display: grid;
+
+  gap: 3px;
+}
+
+.batch-roster__seats strong {
+  color: var(--modal-ink);
+
+  font-size: 15px;
+}
+
+.batch-roster__seats > div span {
+  color: var(--modal-muted);
+
+  font-size: 13px;
+}
+
+.batch-roster__seats--full > div span {
+  color: #b42318;
+
+  font-weight: 600;
+}
+
+.batch-roster__seats .batch-seats__bar {
+  max-width: 200px;
+  height: 8px;
+}
+
+.batch-roster__notice {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 14px;
+  padding: 10px 12px;
+
+  border: 1px solid #cfe5d7;
+  border-radius: 9px;
+
+  background: #f1f8f3;
+  color: #24603f;
+
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.batch-roster__notice > span {
+  flex: 1;
+}
+
+.batch-roster__notice button {
+  display: grid;
+  place-items: center;
+
+  width: 26px;
+  height: 26px;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+}
+
+.batch-roster .student-modal__server-error {
+  margin-top: 14px;
+}
+
+.batch-roster__add {
+  position: relative;
+
+  margin-top: 16px;
+}
+
+.batch-roster__add .records-search {
+  width: 100%;
+}
+
+.batch-roster__matches {
+  display: grid;
+
+  margin: 8px 0 0;
+  padding: 6px;
+
+  list-style: none;
+
+  border: 1px solid #ebe6df;
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  box-shadow: 0 12px 28px rgb(31 27 24 / 0.08);
+}
+
+.batch-roster__matches li {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 8px;
+
+  border-radius: 8px;
+}
+
+.batch-roster__matches li:hover {
+  background: #faf8f4;
+}
+
+.batch-roster__matches li > div {
+  min-width: 0;
+
+  display: grid;
+
+  flex: 1;
+}
+
+.batch-roster__matches strong {
+  font-size: 14px;
+}
+
+.batch-roster__matches span:not(.records-avatar) {
+  color: var(--modal-muted);
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 12px;
+}
+
+.batch-roster__matches em {
+  color: #9a6a12;
+
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 600;
+}
+
+li.batch-roster__empty-match {
+  display: block;
+
+  color: var(--modal-muted);
+
+  font-size: 13px;
+  text-align: center;
+}
+
+.batch-roster__list {
+  display: grid;
+
+  margin: 18px 0 0;
+  padding: 0;
+
+  list-style: none;
+
+  border: 1px solid #ebe6df;
+  border-radius: 11px;
+}
+
+.batch-roster__student {
+  display: grid;
+  grid-template-columns: 38px minmax(140px, 1fr) minmax(0, 1.3fr) 34px;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #f2eee8;
+}
+
+.batch-roster__student:last-child {
+  border-bottom: 0;
+}
+
+.batch-roster__identity {
+  min-width: 0;
+
+  display: grid;
+}
+
+.batch-roster__identity strong {
+  overflow: hidden;
+
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.batch-roster__identity span {
+  color: var(--modal-muted);
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 12px;
+}
+
+.batch-roster__empty {
+  margin: 18px 0 0;
+  padding: 32px 16px;
+
+  border: 1px dashed #ddd5ca;
+  border-radius: 11px;
+
+  color: var(--modal-muted);
+
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .batch-roster__seats {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .batch-roster__student {
+    grid-template-columns: 38px minmax(0, 1fr) 34px;
+  }
+
+  .batch-roster__student .records-skills {
+    grid-column: 2 / 3;
+    grid-row: 2;
+  }
+}

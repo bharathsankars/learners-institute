@@ -6,7 +6,7 @@ import { createEnquiry } from "../dist/src/services/enquiry.service.js";
 import { createEnquiryController, getEnquiriesController, updateEnquiryController } from "../dist/src/controllers/enquiry.controller.js";
 import { requireAuthenticated } from "../dist/src/middleware/session.js";
 const input = { requestId: "e9a09b93-1bc2-4e99-9590-04aeb8e97981", name: "Test Visitor", phone: "+91 94461 25964", course: "English Typewriting", message: "Please share batch timings." };
-function response() { return { statusCode: 200, body: null, status(value) { this.statusCode = value; return this; }, json(value) { this.body = value; return this; } }; }
+function response() { return { locals: {}, statusCode: 200, body: null, status(value) { this.statusCode = value; return this; }, json(value) { this.body = value; return this; } }; }
 test("validates required details, trims fields, and allows an optional message", () => {
   assert.equal(createEnquirySchema.parse({ ...input, name: " Test Visitor " }).name, "Test Visitor");
   assert.equal(createEnquirySchema.safeParse({ ...input, message: undefined }).success, true);

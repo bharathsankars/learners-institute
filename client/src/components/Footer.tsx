@@ -1,6 +1,6 @@
 import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
-import { contact } from "../data/contact";
+import { useContact } from "../hooks/useContact";
 import logoFull from "../assets/learners-logo-full.webp";
 
 const quickLinks = [
@@ -10,9 +10,10 @@ const quickLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-const mapsUrl = contact.mapsUrl;
-
 export function Footer() {
+  const contact = useContact();
+  const mapsUrl = contact.mapsUrl;
+
   return (
     <footer className="site-footer">
       <div className="container">

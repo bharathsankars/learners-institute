@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuthenticated } from "../middleware/session.js";
+import { requireAuthenticated, requireManager } from "../middleware/session.js";
 
 import {
   createCourseController,
@@ -18,6 +18,7 @@ courseRouter.use(requireAuthenticated);
 courseRouter.get("/", getCoursesController);
 courseRouter.get("/:id", getCourseByIdController);
 
-courseRouter.post("/", createCourseController);
-courseRouter.patch("/:id", updateCourseController);
-courseRouter.delete("/:id", deleteCourseController);
+// Lecturers see the catalogue read-only.
+courseRouter.post("/", requireManager, createCourseController);
+courseRouter.patch("/:id", requireManager, updateCourseController);
+courseRouter.delete("/:id", requireManager, deleteCourseController);

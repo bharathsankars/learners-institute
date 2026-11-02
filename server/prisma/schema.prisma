@@ -31,6 +31,27 @@ enum FeePlanStatus {
   CANCELLED
 }
 
+enum AdmissionSource {
+  WALK_IN
+  ENQUIRY
+  IMPORT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
+enum Weekday {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
 enum PaymentMethod {
   CASH
   UPI
@@ -74,6 +95,12 @@ model User {
 
   sessions Session[]
   studentImports StudentImportBatch[]
+  instructedBatches Batch[]
+  admittedStudents  Student[]
+  activities        ActivityLog[]
+  markedAttendance  Attendance[]
+
+  lastLoginAt DateTime? @db.Timestamptz(3)
 
   role     UserRole @default(STAFF)
   isActive Boolean  @default(true)
@@ -83,6 +110,27 @@ model User {
 
   @@index([role])
   @@map("users")
+}
+
+// Who changed what in the admin, newest first on the Settings page.
+model ActivityLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  actorId String? @db.Uuid
+  actor   User?   @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  // e.g. "student.created", "batch.student_added"
+  action     String
+  entityType String
+  entityId   String?
+  summary    String
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@index([entityType])
+  @@index([actorId])
+  @@map("activity_logs")
 }
 
 model InstituteSetting {
@@ -118,8 +166,19 @@ model Student {
 
   status StudentStatus @default(ACTIVE)
 
+  // A student sits in at most one class batch; batches mix courses.
+  batchId String? @db.Uuid
+  batch   Batch?  @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  // How and by whom the student was admitted. Empty for records created
+  // before admissions were tracked.
+  admissionSource AdmissionSource?
+  admittedById    String?          @db.Uuid
+  admittedBy      User?            @relation(fields: [admittedById], references: [id], onDelete: SetNull)
+
   enrollments Enrollment[]
   enquiries Enquiry[]
+  attendance  Attendance[]
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
@@ -127,7 +186,65 @@ model Student {
   @@index([status])
   @@index([firstName, lastName])
   @@index([phone])
+  @@index([batchId])
+  @@index([createdAt])
   @@map("students")
+}
+
+// A class time slot. Students of any course can share a batch.
+model Batch {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String @unique
+
+  days Weekday[]
+
+  // Minutes after midnight, institute local time (e.g. 07:30 -> 450).
+  startMinutes Int
+  endMinutes   Int
+
+  capacity Int
+
+  instructorId String? @db.Uuid
+  instructor   User?   @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+
+  isActive Boolean @default(true)
+
+  students   Student[]
+  attendance Attendance[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([isActive])
+  @@index([instructorId])
+  @@map("batches")
+}
+
+// One mark per student, per batch, per class day. History is kept: a batch
+// or student with attendance cannot be deleted.
+model Attendance {
+  id String @id @default(uuid()) @db.Uuid
+
+  batchId   String @db.Uuid
+  studentId String @db.Uuid
+  date      DateTime @db.Date
+
+  status AttendanceStatus
+
+  markedById String? @db.Uuid
+  markedBy   User?   @relation(fields: [markedById], references: [id], onDelete: SetNull)
+
+  batch   Batch   @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([batchId, studentId, date])
+  @@index([batchId, date])
+  @@index([studentId, date])
+  @@map("attendance")
 }
 
 // One row per confirmed Excel import; makes confirmation retries idempotent.

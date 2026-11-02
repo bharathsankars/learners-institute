@@ -1,5 +1,7 @@
 import {
   CircleCheck,
+  KeySquare,
+  LogOut,
   Crown,
   Eye,
   EyeOff,
@@ -31,8 +33,43 @@ import {
   type CreateAdminUserInput,
 } from "../../api/adminUsers";
 
+import { useAdminAuth } from "../auth/useAdminAuth";
+import { ActivityLogPanel } from "../components/ActivityLogPanel";
+import { DataExportPanel } from "../components/DataExportPanel";
+import { InstituteProfilePanel } from "../components/InstituteProfilePanel";
+import { UserSecurityDialog } from "../components/UserSecurityDialog";
+
 import "../styles/AdminDirectory.css";
 import "../styles/SettingsPage.css";
+import "../styles/AdminRecords.css";
+import "../styles/SettingsTools.css";
+
+type SettingsTab = "people" | "institute" | "export" | "activity";
+
+const settingsTabs: { key: SettingsTab; label: string }[] = [
+  { key: "people", label: "People & access" },
+  { key: "institute", label: "Institute profile" },
+  { key: "export", label: "Data export" },
+  { key: "activity", label: "Activity log" },
+];
+
+const signInFormat = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Asia/Kolkata",
+  day: "numeric",
+  month: "short",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+
+function signInSummary(user: AdminUser) {
+  const lastSignIn = user.lastLoginAt
+    ? `Last signed in ${signInFormat.format(new Date(user.lastLoginAt))}`
+    : "No sign-in recorded yet";
+  const devices = user.activeSessions ?? 0;
+
+  return `${lastSignIn} · ${devices ? `signed in on ${devices} ${devices === 1 ? "device" : "devices"}` : "not signed in now"}`;
+}
 
 type AdminFormValues = {
   firstName: string;
@@ -53,7 +90,7 @@ function roleLabel(role: AdminUser["role"]) {
   }
 
   if (role === "STAFF") {
-    return "Staff";
+    return "Lecturer";
   }
 
   return "Administrator";
@@ -69,6 +106,9 @@ function initials(user: AdminUser) {
 
 export function SettingsPage() {
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAdminAuth();
+  const [tab, setTab] = useState<SettingsTab>("people");
+  const [security, setSecurity] = useState<{ user: AdminUser; action: "reset" | "signout" } | null>(null);
 
   const query = useQuery({
     queryKey: ["admin-users"],
@@ -327,16 +367,17 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="settings-admin">
+    <div className="settings-admin records-page">
       <header className="settings-header">
         <div>
           <span className="settings-eyebrow">Administration</span>
 
           <h1>Settings</h1>
 
-          <p>Manage who can sign in and use Learners Admin.</p>
+          <p>Manage access, the institute profile, exports and the activity log.</p>
         </div>
 
+        {tab === "people" && (
         <div className="settings-header__actions">
           <button
             className="settings-button"
@@ -358,7 +399,42 @@ export function SettingsPage() {
             Add user
           </button>
         </div>
+        )}
       </header>
+
+      <nav className="records-tabs settings-tabs" aria-label="Settings sections">
+        {settingsTabs.map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            className={tab === key ? "records-tab records-tab--active" : "records-tab"}
+            aria-pressed={tab === key}
+            onClick={() => {
+              setTab(key);
+              setNotice("");
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      {tab !== "people" && notice && (
+        <div className="settings-notice" role="status">
+          <CircleCheck size={19} aria-hidden="true" />
+          <span>{notice}</span>
+          <button type="button" aria-label="Dismiss message" onClick={() => setNotice("")}>
+            <X size={18} aria-hidden="true" />
+          </button>
+        </div>
+      )}
+
+      {tab === "institute" && <InstituteProfilePanel onSaved={setNotice} />}
+      {tab === "export" && <DataExportPanel />}
+      {tab === "activity" && <ActivityLogPanel />}
+
+      {tab === "people" && (
+      <>
 
       <section className="settings-overview" aria-label="Access summary">
         <div className="settings-overview__item">
@@ -477,6 +553,8 @@ export function SettingsPage() {
                           Username: <strong>{user.username}</strong>
                         </span>
                       </div>
+
+                      <span className="settings-user-signin">{signInSummary(user)}</span>
                     </div>
                   </div>
 
@@ -503,6 +581,18 @@ export function SettingsPage() {
                           <KeyRound size={17} aria-hidden="true" />
                           Change password
                         </button>
+
+                        {user.id === currentUser?.id && (
+                          <button
+                            className="settings-user-action"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => setSecurity({ user, action: "signout" })}
+                          >
+                            <LogOut size={17} aria-hidden="true" />
+                            Sign out other devices
+                          </button>
+                        )}
                       </div>
                     ) : (
                       <>
@@ -536,6 +626,28 @@ export function SettingsPage() {
                         </button>
 
                         <button
+                          className="settings-user-action"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => setSecurity({ user, action: "reset" })}
+                        >
+                          <KeySquare size={17} aria-hidden="true" />
+                          Reset password
+                        </button>
+
+                        {Boolean(user.activeSessions) && (
+                          <button
+                            className="settings-user-action"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => setSecurity({ user, action: "signout" })}
+                          >
+                            <LogOut size={17} aria-hidden="true" />
+                            Sign out everywhere
+                          </button>
+                        )}
+
+                        <button
                           className="settings-user-action settings-user-action--danger"
                           type="button"
                           disabled={busy}
@@ -557,6 +669,23 @@ export function SettingsPage() {
           </div>
         )}
       </section>
+      </>
+      )}
+
+      {security && (
+        <UserSecurityDialog
+          key={`${security.user.id}-${security.action}`}
+          user={security.user}
+          action={security.action}
+          isSelf={security.user.id === currentUser?.id}
+          onClose={() => setSecurity(null)}
+          onDone={(message) => {
+            setNotice(message);
+            void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+            void queryClient.invalidateQueries({ queryKey: ["activity"] });
+          }}
+        />
+      )}
 
       {formOpen && (
         <div className="settings-editor-backdrop" role="presentation">
@@ -670,12 +799,13 @@ export function SettingsPage() {
                     >
                       <option value="ADMIN">Administrator</option>
 
-                      <option value="STAFF">Staff</option>
+                      <option value="STAFF">Lecturer</option>
                     </select>
 
                     <small>
-                      Administrators have more management permissions than
-                      Staff.
+                      Administrators manage students, courses and batches.
+                      Lecturers can view students and enquiries, admit
+                      students and take attendance for their own batches.
                     </small>
                   </label>
 

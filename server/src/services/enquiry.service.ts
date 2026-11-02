@@ -23,7 +23,7 @@ export class EnquiryConflictError extends Error {}
 export const getEnquiries = () => prisma.enquiry.findMany({ include: { student: { select: { id: true, admissionNumber: true } } }, orderBy: { createdAt: "desc" } });
 export const updateEnquiryStatus = (id: string, status: "NEW" | "CONTACTED" | "CLOSED") => prisma.enquiry.update({ where: { id }, data: { status }, include: { student: { select: { id: true, admissionNumber: true } } } });
 
-export async function admitEnquiry(id: string, input: CreateStudentInput) {
+export async function admitEnquiry(id: string, input: CreateStudentInput, admittedById: string | null = null) {
   return prisma.$transaction(async tx => {
     // Lock this enquiry so concurrent clicks and retries create only one student.
     await tx.$queryRaw`SELECT id FROM enquiries WHERE id = ${id}::uuid FOR UPDATE`;
@@ -36,6 +36,7 @@ export async function admitEnquiry(id: string, input: CreateStudentInput) {
     if (duplicate) throw new StudentDuplicateError(duplicate);
     const student = await tx.student.create({ data: {
       firstName: input.firstName, phone: input.phone,
+      admissionSource: "ENQUIRY", admittedById,
       lastName: input.lastName ?? null, gender: input.gender ?? null, address: input.address ?? null,
       email: input.email?.toLowerCase() ?? null,
       dateOfBirth: input.dateOfBirth ? new Date(`${input.dateOfBirth}T00:00:00.000Z`) : null,

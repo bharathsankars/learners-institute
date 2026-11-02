@@ -11,6 +11,7 @@ import {
 
 type Props = {
   studentId: string;
+  canAssign?: boolean;
 };
 
 const enrollmentStatusLabels: Record<StudentEnrollment["status"], string> = {
@@ -19,7 +20,7 @@ const enrollmentStatusLabels: Record<StudentEnrollment["status"], string> = {
   CANCELLED: "Cancelled",
 };
 
-export function StudentEnrollmentsSection({ studentId }: Props) {
+export function StudentEnrollmentsSection({ studentId, canAssign = true }: Props) {
   const queryClient = useQueryClient();
   const [courseId, setCourseId] = useState("");
   const [showAssignment, setShowAssignment] = useState(false);
@@ -117,7 +118,7 @@ export function StudentEnrollmentsSection({ studentId }: Props) {
         </p>
       )}
 
-      {!showAssignment ? (
+      {!canAssign ? null : !showAssignment ? (
         <button
           type="button"
           className="student-profile__button"

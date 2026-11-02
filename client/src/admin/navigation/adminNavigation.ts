@@ -81,19 +81,19 @@ export const adminNavigation: AdminNavigationItem[] = [
     label: "Expenses",
     path: "/admin/expenses",
     icon: ReceiptText,
-    roles: ["SUPER_ADMIN", "ADMIN", "STAFF"],
+    roles: ["SUPER_ADMIN", "ADMIN"],
   },
   {
     label: "Staff",
     path: "/admin/staff",
     icon: Users,
-    roles: ["SUPER_ADMIN", "ADMIN", "STAFF"],
+    roles: ["SUPER_ADMIN", "ADMIN"],
   },
   {
     label: "Reports",
     path: "/admin/reports",
     icon: BarChart3,
-    roles: ["SUPER_ADMIN", "ADMIN", "STAFF"],
+    roles: ["SUPER_ADMIN", "ADMIN"],
   },
   {
     label: "Settings",

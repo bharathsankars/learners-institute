@@ -20,6 +20,11 @@ const protectedRoutes = [
   ["POST", `/api/students/${id}/enrollments`],
   ["GET", "/api/courses"], ["GET", `/api/courses/${id}`],
   ["POST", "/api/courses"], ["PATCH", `/api/courses/${id}`], ["DELETE", `/api/courses/${id}`],
+  ["GET", "/api/batches"], ["GET", "/api/batches/instructors"], ["POST", "/api/batches"],
+  ["PATCH", `/api/batches/${id}`], ["DELETE", `/api/batches/${id}`],
+  ["GET", `/api/batches/${id}/students`], ["POST", `/api/batches/${id}/students`],
+  ["DELETE", `/api/batches/${id}/students/${id}`],
+  ["POST", "/api/admissions"],
 ];
 
 test("every student and admin course endpoint rejects missing, invalid, expired and inactive sessions", async () => {
@@ -44,8 +49,8 @@ test("active staff, admin and super admin sessions can access student and course
     for (const role of ["STAFF", "ADMIN", "SUPER_ADMIN"]) {
       prisma.session.findUnique = async () => ({ expiresAt: new Date(Date.now() + 60000), user: { isActive: true, role } });
       for (const path of ["/api/students", "/api/courses"]) assert.equal((await request("GET", path, "valid-session")).status, 200, role);
-      // An authenticated write reaches validation instead of being denied login.
-      for (const path of ["/api/students", "/api/courses"]) assert.equal((await request("POST", path, "valid-session")).status, 400, role);
+      // An authenticated write reaches validation for admins; lecturers (STAFF) are refused.
+      for (const path of ["/api/students", "/api/courses"]) assert.equal((await request("POST", path, "valid-session")).status, role === "STAFF" ? 403 : 400, role);
     }
   } finally { [prisma.session.findUnique, prisma.student.findMany, prisma.course.findMany] = originals; }
 });
@@ -62,4 +67,42 @@ test("public courses remain accessible anonymously and query only active records
     assert.equal(response.status, 200);
     assert.equal(response.body.data.courses[0].title, "Public course");
   } finally { prisma.course.findMany = original; }
+});
+
+test("activity, exports and user tools are Super Admin only; the institute profile is public", async () => {
+  const original = prisma.session.findUnique;
+  try {
+    prisma.session.findUnique = async () => ({ expiresAt: new Date(Date.now() + 60000), user: { isActive: true, role: "ADMIN" } });
+    for (const [method, path] of [["GET", "/api/activity"], ["GET", "/api/exports/students"], ["POST", `/api/admin-users/${id}/reset-password`], ["DELETE", `/api/admin-users/${id}/sessions`]]) {
+      const response = await request(method, path, "test-session");
+      assert.equal(response.status, 403, `${method} ${path}`);
+    }
+  } finally { prisma.session.findUnique = original; }
+
+  const findFirst = prisma.instituteSetting.findFirst;
+  try {
+    prisma.instituteSetting.findFirst = async () => ({ id: "x", instituteName: "Learners", phone: "+91 94461 25964", whatsapp: null, email: null, address: "Kottayam", mapsUrl: null, createdAt: new Date(), updatedAt: new Date() });
+    const response = await request("GET", "/api/institute");
+    assert.equal(response.status, 200);
+    assert.deepEqual(Object.keys(response.body.data.institute).sort(), ["address", "email", "instituteName", "mapsUrl", "phone", "whatsapp"]);
+  } finally { prisma.instituteSetting.findFirst = findFirst; }
+});
+
+test("lecturers (STAFF) can view and admit but cannot change the register, courses or batches", async () => {
+  const original = prisma.session.findUnique;
+  try {
+    prisma.session.findUnique = async () => ({ expiresAt: new Date(Date.now() + 60000), user: { id: "lecturer", isActive: true, role: "STAFF" } });
+    for (const [method, path] of [
+      ["POST", "/api/students"], ["PATCH", `/api/students/${id}`], ["POST", `/api/students/${id}/enrollments`],
+      ["GET", "/api/students/import/template"], ["POST", "/api/students/import/preview"],
+      ["POST", "/api/courses"], ["PATCH", `/api/courses/${id}`], ["DELETE", `/api/courses/${id}`],
+      ["PATCH", `/api/enquiries/${id}`],
+      ["GET", "/api/batches/instructors"], ["POST", "/api/batches"], ["PATCH", `/api/batches/${id}`], ["DELETE", `/api/batches/${id}`],
+      ["POST", `/api/batches/${id}/students`], ["DELETE", `/api/batches/${id}/students/${id}`],
+    ]) {
+      const response = await request(method, path, "test-session");
+      assert.equal(response.status, 403, `${method} ${path}`);
+      assert.match(response.body.message, /Lecturer/);
+    }
+  } finally { prisma.session.findUnique = original; }
 });

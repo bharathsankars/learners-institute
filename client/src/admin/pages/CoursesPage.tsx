@@ -6,6 +6,7 @@ import { createCourse, deleteCourse, fetchCourses, updateCourse, type Course, ty
 import { CourseModal } from "../components/CourseModal";
 import { CourseDetailsDialog } from "../components/CourseDetailsDialog";
 import { courseCategory, courseCounts, filterCourses, paginateCourses, type CourseFilter, type CourseSort } from "../utils/courses";
+import { usePermissions } from "../auth/usePermissions";
 import "../styles/AdminDirectory.css";
 import "../styles/CourseDirectory.css";
 import "../styles/AdminRecords.css";
@@ -18,6 +19,7 @@ const statusTabs = [
 
 export function CoursesPage() {
   const queryClient = useQueryClient();
+  const { canManage } = usePermissions();
   const query = useQuery({ queryKey: ["courses"], queryFn: fetchCourses, refetchInterval: 30000 });
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<CourseFilter>("ALL");
@@ -66,7 +68,7 @@ export function CoursesPage() {
       </div>
       <div className="records-header__actions">
         <button className="records-button records-button--icon" type="button" disabled={query.isFetching} onClick={() => void query.refetch()} aria-label={query.isFetching ? "Refreshing courses" : "Refresh courses"} title="Refresh"><RefreshCw size={16} aria-hidden="true" className={query.isFetching ? "records-spin" : undefined} /></button>
-        <button className="records-button records-button--primary" type="button" disabled={busy} onClick={() => openForm()}><Plus size={17} aria-hidden="true" />Add course</button>
+        {canManage && <button className="records-button records-button--primary" type="button" disabled={busy} onClick={() => openForm()}><Plus size={17} aria-hidden="true" />Add course</button>}
       </div>
     </header>
     {query.isError && <div className="records-notice records-notice--error" role="alert"><span>{query.error.message}{loaded ? " Showing previously loaded courses. Refresh to try again." : " Use Refresh to try again."}</span></div>}
@@ -82,7 +84,7 @@ export function CoursesPage() {
       </div>
       {query.isPending ? <div className="records-list" role="status" aria-label="Loading courses">{Array.from({ length: 6 }, (_, row) => <div key={row} className="records-row records-row--skeleton"><span className="records-skeleton records-skeleton--avatar records-skeleton--square" /><span className="records-skeleton" style={{ width: "60%" }} /><span className="records-skeleton" style={{ width: "70%" }} /><span className="records-skeleton" style={{ width: "50%" }} /><span className="records-skeleton" style={{ width: "72px" }} /></div>)}</div>
         : !loaded ? <div className="records-empty"><BookOpen size={28} aria-hidden="true" /><h3>Unable to load courses</h3><p>Use Refresh to try again.</p></div>
-        : !filtered.length ? <div className="records-empty"><BookOpen size={28} aria-hidden="true" /><h3>{hasFilters ? "No matching courses" : "Build your course catalogue"}</h3><p>{hasFilters ? "Try another search or clear your filters." : "Add a course with a description, skills and availability to get started."}</p><button type="button" className={hasFilters ? "records-button" : "records-button records-button--primary"} onClick={hasFilters ? resetFilters : () => openForm()}>{hasFilters ? "Clear filters" : "Add your first course"}</button></div>
+        : !filtered.length ? <div className="records-empty"><BookOpen size={28} aria-hidden="true" /><h3>{hasFilters ? "No matching courses" : "Build your course catalogue"}</h3><p>{hasFilters ? "Try another search or clear your filters." : "Add a course with a description, skills and availability to get started."}</p>{(hasFilters || canManage) && <button type="button" className={hasFilters ? "records-button" : "records-button records-button--primary"} onClick={hasFilters ? resetFilters : () => openForm()}>{hasFilters ? "Clear filters" : "Add your first course"}</button>}</div>
         : <div className="records-list">
           <div className="records-columns records-columns--courses" aria-hidden="true"><span>Course</span><span>Category & skills</span><span>Order</span><span>Status</span><span /></div>
           {pagination.records.map(course => <article key={course.id} className="records-row records-row--courses">
@@ -100,15 +102,15 @@ export function CoursesPage() {
             <span className="records-order" title="Display order">{course.displayOrder}</span>
             <span className={`records-status records-status--${course.isActive ? "active" : "inactive"}`}>{course.isActive ? "Active" : "Inactive"}</span>
             <div className="records-actions">
-              <button type="button" className="records-action records-action--icon" disabled={busy} onClick={() => openForm(course)} aria-label={`Edit ${course.title}`} title="Edit"><Pencil size={15} aria-hidden="true" /></button>
-              <button type="button" className="records-action records-action--icon records-action--danger" disabled={busy} onClick={() => handleDelete(course)} aria-label={`Delete ${course.title}`} title="Delete"><Trash2 size={15} aria-hidden="true" /></button>
+              {canManage && <><button type="button" className="records-action records-action--icon" disabled={busy} onClick={() => openForm(course)} aria-label={`Edit ${course.title}`} title="Edit"><Pencil size={15} aria-hidden="true" /></button>
+              <button type="button" className="records-action records-action--icon records-action--danger" disabled={busy} onClick={() => handleDelete(course)} aria-label={`Delete ${course.title}`} title="Delete"><Trash2 size={15} aria-hidden="true" /></button></>}
               <button type="button" className="records-action" disabled={busy} onClick={() => setProfileId(course.id)} aria-label={`View ${course.title}`}>View<ArrowRight size={15} aria-hidden="true" /></button>
             </div>
           </article>)}
         </div>}
       {loaded && filtered.length > 0 && <footer className="records-pagination"><span>Showing {pagination.start}–{pagination.end} of {filtered.length} {filtered.length === 1 ? "course" : "courses"} · {counts.CATEGORIES} {counts.CATEGORIES === 1 ? "category" : "categories"}<span className="records-live">Updates every 30 seconds</span></span><div><button type="button" className="records-page-button" disabled={pagination.currentPage === 1} aria-label="Previous page" onClick={() => setPage(pagination.currentPage - 1)}><ChevronLeft size={17} aria-hidden="true" /></button><strong>{pagination.currentPage} / {pagination.pageCount}</strong><button type="button" className="records-page-button" disabled={pagination.currentPage === pagination.pageCount} aria-label="Next page" onClick={() => setPage(pagination.currentPage + 1)}><ChevronRight size={17} aria-hidden="true" /></button></div></footer>}
     </section>
-    {selected && <CourseDetailsDialog course={selected} onClose={() => setProfileId(null)} onEdit={() => openForm(selected)} />}
+    {selected && <CourseDetailsDialog course={selected} onClose={() => setProfileId(null)} onEdit={() => openForm(selected)} canEdit={canManage} />}
     {deleting && <DeleteConfirmationDialog entity="course" name={deleting.title} reference={deleting.slug} isDeleting={deleteMutation.isPending} error={deleteMutation.error?.message} onClose={() => { if (!deleteMutation.isPending) { setDeleting(null); deleteMutation.reset(); } }} onConfirm={() => { if (!busy) deleteMutation.mutate(deleting.id); }} />}
     <CourseModal open={formOpen} course={editing} isSubmitting={saving} serverError={formError} onClose={() => { if (!saving) { setFormOpen(false); setEditing(null); setFormError(""); } }} onCreate={handleCreate} onUpdate={handleUpdate} />
   </div>;

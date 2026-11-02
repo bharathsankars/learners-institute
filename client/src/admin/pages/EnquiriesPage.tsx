@@ -1,8 +1,7 @@
 import { AddStudentModal } from "../components/AddStudentModal";
-
-import type {
-  CreateStudentInput,
-} from "../../api/students";
+import { createAdmission, type AdmissionInput } from "../../api/admissions";
+import { useAdminAuth } from "../auth/useAdminAuth";
+import { usePermissions } from "../auth/usePermissions";
 
 import {
   useMutation,
@@ -30,7 +29,6 @@ import {
 } from "lucide-react";
 
 import {
-  admitEnquiry,
   fetchEnquiries,
   updateEnquiryStatus,
   type Enquiry,
@@ -74,6 +72,9 @@ function initials(name: string) {
 export function EnquiriesPage() {
   const queryClient =
     useQueryClient();
+
+  const { user } = useAdminAuth();
+  const { canManage } = usePermissions();
 
   const [search, setSearch] =
     useState("");
@@ -194,74 +195,27 @@ export function EnquiriesPage() {
         },
     });
 
+  // Admitting an enquiry creates the student, their course(s) and batch place
+  // in one step, and closes the enquiry.
   const admission =
     useMutation({
-      mutationFn:
-        ({
-          id,
-          input,
-        }: {
-          id: string;
-          input:
-            CreateStudentInput;
-        }) =>
-          admitEnquiry(
-            id,
-            input,
+      mutationFn: (input: AdmissionInput) => createAdmission(input),
+
+      onSuccess: async (student) => {
+        setAdmitting(null);
+
+        setSuccessMessage(
+          `${student.firstName} admitted successfully · ${student.admissionNumber}${
+            student.batch ? ` · ${student.batch.name}` : ""
+          }. The enquiry is closed.`,
+        );
+
+        await Promise.all(
+          ["enquiries", "students", "batches", "batch-students", "fee-plans", "payments"].map(
+            (key) => queryClient.invalidateQueries({ queryKey: [key] }),
           ),
-
-      onSuccess:
-        async ({
-          student,
-          enquiry,
-        }) => {
-          queryClient.setQueryData<
-            Enquiry[]
-          >(
-            [
-              "enquiries",
-            ],
-
-            (
-              records,
-            ) =>
-              records?.map(
-                (
-                  record,
-                ) =>
-                  record.id ===
-                  enquiry.id
-                    ? enquiry
-                    : record,
-              ),
-          );
-
-          setAdmitting(
-            null,
-          );
-
-          setSuccessMessage(
-            `${student.firstName} admitted successfully · ${student.admissionNumber}. The enquiry is closed.`,
-          );
-
-          await Promise.all([
-            queryClient.invalidateQueries(
-              {
-                queryKey: [
-                  "enquiries",
-                ],
-              },
-            ),
-
-            queryClient.invalidateQueries(
-              {
-                queryKey: [
-                  "students",
-                ],
-              },
-            ),
-          ]);
-        },
+        );
+      },
     });
 
   const enquiries =
@@ -749,6 +703,7 @@ export function EnquiriesPage() {
 
       {selected && (
         <EnquiryDetailsDialog
+          canChangeStatus={canManage}
           enquiry={
             selected
           }
@@ -811,17 +766,15 @@ export function EnquiriesPage() {
               );
             }
           }}
-          onCreate={async (
-            input,
-          ) => {
-            await admission.mutateAsync(
-              {
-                id:
-                  admitting.id,
-                input,
-              },
-            );
+          onCreate={async () => {}}
+          onAdmit={async (input) => {
+            await admission.mutateAsync({
+              ...input,
+              enquiryId: admitting.id,
+            });
           }}
+          canSetFees={user?.role === "SUPER_ADMIN"}
+          suggestedCourseNames={enquiryCourseNames(admitting.course)}
           onUpdate={
             async () => {}
           }

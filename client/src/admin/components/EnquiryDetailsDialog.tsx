@@ -38,6 +38,8 @@ type EnquiryDetailsDialogProps = {
     status: EnquiryStatus,
   ) => void;
   onAdmit: () => void;
+  // Lecturers can read and admit enquiries but not change their status.
+  canChangeStatus?: boolean;
 };
 
 export function EnquiryDetailsDialog({
@@ -47,6 +49,7 @@ export function EnquiryDetailsDialog({
   onClose,
   onStatusChange,
   onAdmit,
+  canChangeStatus = true,
 }: EnquiryDetailsDialogProps) {
   const dialog =
     useRef<HTMLDialogElement>(
@@ -448,7 +451,7 @@ export function EnquiryDetailsDialog({
                   enquiry.status
                 }
                 disabled={
-                  isSaving
+                  isSaving || !canChangeStatus
                 }
                 onChange={(
                   event,
@@ -567,7 +570,7 @@ export function EnquiryDetailsDialog({
               </button>
             )}
 
-            {enquiry.status ===
+            {canChangeStatus && enquiry.status ===
               "NEW" && (
               <button
                 type="button"
@@ -590,7 +593,7 @@ export function EnquiryDetailsDialog({
               </button>
             )}
 
-            {enquiry.status ===
+            {canChangeStatus && enquiry.status ===
               "CONTACTED" && (
               <button
                 type="button"

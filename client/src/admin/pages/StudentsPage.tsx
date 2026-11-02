@@ -31,7 +31,11 @@ import {
   type UpdateStudentInput,
 } from "../../api/students";
 
+import { createAdmission, type AdmissionInput } from "../../api/admissions";
+import { useAdminAuth } from "../auth/useAdminAuth";
+import { usePermissions } from "../auth/usePermissions";
 import { AddStudentModal } from "../components/AddStudentModal";
+import { admissionSourceLabels } from "../utils/admissions";
 import { StudentImportDialog } from "../components/StudentImportDialog";
 import { StudentDetailsDialog } from "../components/StudentDetailsDialog";
 
@@ -49,9 +53,11 @@ import {
 import "../styles/AdminDirectory.css";
 import "../styles/StudentsPage.css";
 import "../styles/AdminRecords.css";
+import "../styles/Admissions.css";
 
 const statusTabs = [
   { key: "ALL", label: "All" },
+  { key: "RECENT", label: "Recently admitted" },
   { key: "ACTIVE", label: "Active" },
   { key: "INACTIVE", label: "Inactive" },
   { key: "COMPLETED", label: "Completed" },
@@ -66,6 +72,8 @@ function initials(student: Student) {
 
 export function StudentsPage() {
   const queryClient = useQueryClient();
+  const { user } = useAdminAuth();
+  const { canManage } = usePermissions();
 
   const query = useQuery({
     queryKey: ["students"],
@@ -179,9 +187,34 @@ export function StudentsPage() {
       setFormError(error.message),
   });
 
+  // New students are admitted in one step with their course and batch.
+  const admissionMutation = useMutation({
+    mutationFn: (input: AdmissionInput) => createAdmission(input),
+
+    onSuccess: async (admission) => {
+      setFormOpen(false);
+      setEditing(null);
+      setFormError("");
+      setNotice(
+        `${studentName(admission)} admitted · ${admission.admissionNumber}${
+          admission.batch ? ` · ${admission.batch.name}` : ""
+        }.`,
+      );
+
+      await Promise.all(
+        ["students", "batches", "batch-students", "fee-plans", "payments", "student-enrollments"].map(
+          (key) => queryClient.invalidateQueries({ queryKey: [key] }),
+        ),
+      );
+    },
+
+    onError: (error) => setFormError(error.message),
+  });
+
   const saving =
     createMutation.isPending ||
-    updateMutation.isPending;
+    updateMutation.isPending ||
+    admissionMutation.isPending;
 
   const busy = saving;
 
@@ -263,6 +296,7 @@ export function StudentsPage() {
             />
           </button>
 
+          {canManage && (
           <button
             className="records-button"
             type="button"
@@ -272,6 +306,7 @@ export function StudentsPage() {
             <FileSpreadsheet size={16} aria-hidden="true" />
             Import
           </button>
+          )}
 
           <button
             className="records-button records-button--primary"
@@ -442,7 +477,7 @@ export function StudentsPage() {
             <div className="records-columns records-columns--students" aria-hidden="true">
               <span>Student</span>
               <span>Contact</span>
-              <span>Added</span>
+              <span>Admitted</span>
               <span>Status</span>
               <span />
             </div>
@@ -494,7 +529,19 @@ export function StudentsPage() {
                   )}
                 </div>
 
-                <div className="records-date">{studentDate(student.createdAt)}</div>
+                <div className="records-date">
+                  {studentDate(student.createdAt)}
+                  <span
+                    className={`admission-source admission-source--${(student.admissionSource ?? "unrecorded").toLowerCase()}`}
+                  >
+                    {student.admissionSource ? admissionSourceLabels[student.admissionSource] : "Not recorded"}
+                  </span>
+                  {student.admittedBy && (
+                    <span className="records-sub">
+                      by {student.admittedBy.firstName} {student.admittedBy.lastName}
+                    </span>
+                  )}
+                </div>
 
                 <span
                   className={`records-status records-status--${student.status.toLowerCase()}`}
@@ -503,7 +550,7 @@ export function StudentsPage() {
                 </span>
 
                 <div className="records-actions">
-                  <button
+                  {canManage && <button
                     type="button"
                     className="records-action records-action--icon"
                     disabled={busy}
@@ -512,7 +559,7 @@ export function StudentsPage() {
                     title="Edit"
                   >
                     <Pencil size={15} aria-hidden="true" />
-                  </button>
+                  </button>}
 
                   <button
                     type="button"
@@ -575,6 +622,7 @@ export function StudentsPage() {
           onEdit={() =>
             openForm(selected)
           }
+          canEdit={canManage}
         />
       )}
 
@@ -597,6 +645,11 @@ export function StudentsPage() {
         }}
         onCreate={handleCreate}
         onUpdate={handleUpdate}
+        onAdmit={async (input) => {
+          setFormError("");
+          await admissionMutation.mutateAsync(input);
+        }}
+        canSetFees={user?.role === "SUPER_ADMIN"}
       />
     </div>
   );

@@ -52,6 +52,13 @@ export async function endSession(
   res.clearCookie("session", cookieOptions);
 }
 
+// Hash of the caller's own session token, so "sign out other devices" can keep it.
+export function currentSessionHash(req: Request): string | null {
+  const token = req.cookies?.session;
+
+  return typeof token === "string" ? hash(token) : null;
+}
+
 export async function getSessionUser(req: Request) {
   const token = req.cookies?.session;
 
@@ -131,6 +138,7 @@ async function checkSession(
     }
 
     res.locals.userId = user.id;
+    res.locals.userRole = user.role;
     next();
   } catch (error) {
     next(error);
@@ -181,4 +189,25 @@ export async function requireRecoveryAdmin(
   } catch (error) {
     next(error);
   }
+}
+
+
+// Runs after requireAuthenticated. Lecturers (the STAFF role) can view and
+// admit, but changes to the register, courses and batches need an Admin.
+export function requireManager(
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
+  const role = res.locals.userRole;
+
+  if (role === "SUPER_ADMIN" || role === "ADMIN") {
+    next();
+    return;
+  }
+
+  res.status(403).json({
+    success: false,
+    message: "Lecturer accounts can view this but not change it. Please ask an administrator.",
+  });
 }

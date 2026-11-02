@@ -3,6 +3,8 @@ import { getAdminSessionGeneration } from "../admin/auth/sessionEvents";
 import { parseApiError } from "./errors";
 export type StudentStatus = "ACTIVE" | "INACTIVE" | "COMPLETED";
 
+export type AdmissionSource = "WALK_IN" | "ENQUIRY" | "IMPORT";
+
 export type Student = {
   id: string;
   admissionNumber: string;
@@ -14,6 +16,10 @@ export type Student = {
   gender: string | null;
   address: string | null;
   status: StudentStatus;
+  batchId: string | null;
+  // How and by whom the student was admitted; null for older records.
+  admissionSource?: AdmissionSource | null;
+  admittedBy?: { id: string; firstName: string; lastName: string } | null;
   createdAt: string;
   updatedAt: string;
 };

@@ -12,6 +12,9 @@ export type AdminUser = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  lastLoginAt?: string | null;
+  // Devices currently signed in.
+  activeSessions?: number;
 };
 
 export type CreateAdminUserInput = {
@@ -177,4 +180,38 @@ export async function changeOwnPassword(
   if (!response.ok) {
     throw await parseApiError(response, true, requestGeneration);
   }
+}
+
+
+export async function resetAdminUserPassword(userId: string): Promise<string> {
+  const requestGeneration = getAdminSessionGeneration();
+  const response = await fetch(`${API_URL}/api/admin-users/${encodeURIComponent(userId)}/reset-password`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response, true, requestGeneration);
+  }
+
+  const result = (await response.json()) as { data: { temporaryPassword: string } };
+
+  return result.data.temporaryPassword;
+}
+
+// For yourself this signs out your other devices and keeps this one.
+export async function signOutAdminUser(userId: string): Promise<string> {
+  const requestGeneration = getAdminSessionGeneration();
+  const response = await fetch(`${API_URL}/api/admin-users/${encodeURIComponent(userId)}/sessions`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response, true, requestGeneration);
+  }
+
+  const result = (await response.json()) as { message: string };
+
+  return result.message;
 }

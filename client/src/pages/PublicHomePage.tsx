@@ -23,7 +23,7 @@ import "./LandingMotion.css";
 import "./BrandTheme.css";
 import "./PublicMobile.css";
 import "./BatchSectionFix.css";
-import { contact } from "../data/contact";
+import { useContact } from "../hooks/useContact";
 
 type CourseSelectionIntent = {
   courseId: string;
@@ -36,6 +36,7 @@ type CategorySelectionIntent = {
 };
 
 export function PublicHomePage() {
+  const contact = useContact();
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [courseSelection, setCourseSelection] =
     useState<CourseSelectionIntent | null>(null);

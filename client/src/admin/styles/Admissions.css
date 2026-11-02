@@ -1,0 +1,170 @@
+/* =========================================================
+   ADMISSIONS — the course & batch step of the admission form
+   and the source chips on the Admissions page.
+   ========================================================= */
+
+.admission-placement__label {
+  color: var(--modal-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admission-placement__courses {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.admission-placement__course {
+  min-height: 38px;
+
+  padding: 0 14px;
+
+  border: 1px solid #ddd5ca;
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: var(--modal-ink);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.admission-placement__course:hover {
+  border-color: #cdc2b4;
+}
+
+.admission-placement__course[aria-pressed="true"] {
+  border-color: #b42318;
+
+  background: #fdf0ec;
+  color: #b42318;
+}
+
+.admission-placement__course[aria-pressed="true"]::before {
+  content: "✓ ";
+}
+
+.admission-placement__fees {
+  display: grid;
+
+  gap: 10px;
+}
+
+.admission-placement__fee {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin: 0;
+  padding: 12px 14px 14px;
+
+  border: 1px solid #ebe6df;
+  border-radius: 10px;
+
+  background: #faf8f4;
+}
+
+.admission-placement__fee legend {
+  padding: 0 4px;
+
+  color: var(--modal-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admission-placement__fee label {
+  display: grid;
+
+  gap: 6px;
+}
+
+.admission-placement__fee label span {
+  color: var(--modal-muted);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admission-placement__fee input {
+  width: 100%;
+  min-height: 40px;
+
+  padding: 0 10px;
+
+  border: 1px solid #ddd5ca;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: var(--modal-ink);
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.admission-placement__fee input:focus {
+  border-color: #c9604f;
+
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(180 35 24 / 0.12);
+}
+
+.admission-placement__error {
+  margin: 12px 0 0;
+
+  color: #b91c1c;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Source chip in the Students list */
+
+.admission-source {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 2px 8px;
+
+  border-radius: 6px;
+
+  background: #f3f0eb;
+  color: #5c544e;
+
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.admission-source--enquiry {
+  background: #fdf0ec;
+  color: #b42318;
+}
+
+.admission-source--import {
+  background: #eef2f7;
+  color: #3d5576;
+}
+
+@media (max-width: 600px) {
+  .admission-placement__fee {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admission-placement__fee label:last-child {
+    grid-column: 1 / -1;
+  }
+}

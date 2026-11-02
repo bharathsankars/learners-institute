@@ -1,9 +1,9 @@
 .settings-admin {
-  --settings-ink: #263843;
-  --settings-muted: #687780;
-  --settings-border: #dce3e5;
-  --settings-soft: #f6f8f7;
-  --settings-green: #285448;
+  --settings-ink: #1f1b18;
+  --settings-muted: #6f665f;
+  --settings-border: #ebe6df;
+  --settings-soft: #faf8f4;
+  --settings-green: #b42318;
 
   width: 100%;
   max-width: 1250px;
@@ -95,7 +95,7 @@
 }
 
 .settings-button:hover {
-  background: #f7f9f8;
+  background: #faf8f4;
   border-color: #a4b8b1;
 }
 
@@ -107,8 +107,8 @@
 }
 
 .settings-button--primary:hover {
-  background: #203f36;
-  border-color: #203f36;
+  background: #7f1d1d;
+  border-color: #7f1d1d;
 }
 
 .settings-button:disabled {
@@ -152,13 +152,13 @@
 
   border-radius: 11px;
 
-  background: #edf3fb;
+  background: #fdf0ec;
   color: #3565a1;
 }
 
 .settings-overview__icon--green {
-  background: #eaf5ed;
-  color: #287a60;
+  background: #eef5f0;
+  color: #2f6b4a;
 }
 
 .settings-overview__item strong {
@@ -203,8 +203,8 @@
   border: 1px solid #c9e4d3;
   border-radius: 9px;
 
-  background: #ecf6ef;
-  color: #285448;
+  background: #eef5f0;
+  color: #b42318;
 
   font-size: 14px;
 }
@@ -325,7 +325,7 @@
 
   border-radius: 50%;
 
-  background: #eaf2ee;
+  background: #fdf0ec;
   color: #315f50;
 
   font-size: 16px;
@@ -333,8 +333,8 @@
 }
 
 .settings-user-avatar--super {
-  background: #f1ecfb;
-  color: #6941a5;
+  background: #fdf0ec;
+  color: #b42318;
 }
 
 .settings-user-info {
@@ -462,7 +462,7 @@
 .settings-user-action:hover {
   border-color: #a5b7b1;
 
-  background: #f5f8f7;
+  background: #faf8f4;
 
   transform: translateY(-1px);
 }
@@ -519,25 +519,25 @@
 
   border-radius: 8px;
 
-  background: #f1ecfb;
-  color: #6941a5;
+  background: #fdf0ec;
+  color: #b42318;
 
   font-size: 12px;
   font-weight: 700;
 }
 
 .settings-user-action--password {
-  border-color: #d8cbed;
+  border-color: #f0c9c0;
 
   background: #ffffff;
-  color: #6941a5;
+  color: #b42318;
 }
 
 .settings-user-action--password:hover {
-  border-color: #bca7df;
+  border-color: #e0a99b;
 
-  background: #f7f3fc;
-  color: #59358f;
+  background: #fff8f4;
+  color: #7f1d1d;
 }
 
 
@@ -726,7 +726,7 @@
 
   padding: 10px 13px;
 
-  border: 1px solid #ccd6da;
+  border: 1px solid #ddd5ca;
   border-radius: 8px;
 
   background: #ffffff;
@@ -739,11 +739,11 @@
 
 .settings-form input:focus,
 .settings-form select:focus {
-  border-color: #6c9489;
+  border-color: #c9604f;
 
   box-shadow:
     0 0 0 3px
-    rgb(71 127 113 / 0.15);
+    rgb(180 35 24 / 0.15);
 }
 
 .settings-form label small {
@@ -867,8 +867,8 @@
 }
 
 .settings-password-dialog__icon {
-  background: #eef3f7;
-  color: #315f91;
+  background: #fdf0ec;
+  color: #b42318;
 }
 
 .settings-password-dialog h2 {
@@ -901,7 +901,7 @@
 
   padding: 10px 13px;
 
-  border: 1px solid #cbd5da;
+  border: 1px solid #ddd5ca;
   border-radius: 8px;
 
   background: #ffffff;
@@ -913,15 +913,15 @@
 }
 
 .settings-password-form input:hover {
-  border-color: #aebdc3;
+  border-color: #cdc2b4;
 }
 
 .settings-password-form input:focus {
-  border-color: #6c9489;
+  border-color: #c9604f;
 
   box-shadow:
     0 0 0 3px
-    rgb(71 127 113 / 0.15);
+    rgb(180 35 24 / 0.15);
 }
 
 .settings-password-form small {
@@ -947,7 +947,7 @@
 .settings-delete-button:focus-visible,
 .settings-password-form input:focus-visible {
   outline: 3px solid
-    rgb(40 84 72 / 0.25);
+    rgb(180 35 24 / 0.25);
 
   outline-offset: 3px;
 }
@@ -1179,7 +1179,7 @@ html[data-theme="dark"]
   border-radius: 7px;
 
   background: transparent;
-  color: #687780;
+  color: #6f665f;
 
   cursor: pointer;
 
@@ -1190,7 +1190,7 @@ html[data-theme="dark"]
 
 .settings-password-toggle:hover {
   background: #eef3f1;
-  color: #285448;
+  color: #b42318;
 }
 
 .settings-password-toggle:focus-visible {
@@ -1219,8 +1219,8 @@ html[data-theme="dark"]
 }
 
 .settings-password-confirm__icon {
-  background: #eef3f7;
-  color: #315f91;
+  background: #fdf0ec;
+  color: #b42318;
 }
 
 .settings-password-preview {
@@ -1234,7 +1234,7 @@ html[data-theme="dark"]
   border: 1px solid #ccd8dc;
   border-radius: 10px;
 
-  background: #f7f9f8;
+  background: #faf8f4;
 }
 
 .settings-password-preview > span {

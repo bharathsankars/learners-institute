@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import type { Request, Response } from "express";
 import { ZodError } from "zod";
 
@@ -44,6 +45,8 @@ export async function createCourseController(
     const input = createCourseSchema.parse(req.body);
 
     const course = await createCourse(input);
+
+    await logActivity(res, () => ({ action: "course.created", entityType: "course", entityId: course.id, summary: `Added course ${course.title}` }));
 
     res.status(201).json({
       success: true,
@@ -177,6 +180,8 @@ export async function updateCourseController(
 
     const course = await updateCourse(courseId, input);
 
+    await logActivity(res, () => ({ action: "course.updated", entityType: "course", entityId: course.id, summary: `Updated course ${course.title}${course.isActive ? "" : " (inactive)"}` }));
+
     res.status(200).json({
       success: true,
       message: "Course updated successfully.",
@@ -225,7 +230,9 @@ export async function deleteCourseController(
   try {
     const courseId = courseIdSchema.parse(req.params.id);
 
-    await deleteCourse(courseId);
+    const deleted = await deleteCourse(courseId);
+
+    await logActivity(res, () => ({ action: "course.deleted", entityType: "course", entityId: courseId, summary: `Deleted course ${deleted.title}` }));
 
     res.status(200).json({
       success: true,

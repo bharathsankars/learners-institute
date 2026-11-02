@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import type { Request, Response } from "express";
 
 import { ZodError } from "zod";
@@ -53,7 +54,14 @@ export async function createStudentController(
   try {
     const input = createStudentSchema.parse(req.body);
 
-    const student = await createStudent(input);
+    const student = await createStudent(input, res.locals.userId ?? null);
+
+    await logActivity(res, () => ({
+      action: "student.created",
+      entityType: "student",
+      entityId: student.id,
+      summary: `Added ${[student.firstName, student.lastName].filter(Boolean).join(" ")} (${student.admissionNumber})`,
+    }));
 
     res.status(201).json({
       success: true,
@@ -140,6 +148,13 @@ export async function updateStudentController(
     const input = updateStudentSchema.parse(req.body);
 
     const student = await updateStudent(studentId, input);
+
+    await logActivity(res, () => ({
+      action: "student.updated",
+      entityType: "student",
+      entityId: student.id,
+      summary: `Updated ${[student.firstName, student.lastName].filter(Boolean).join(" ")} (${student.admissionNumber})`,
+    }));
 
     res.status(200).json({
       success: true,

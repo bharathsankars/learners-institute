@@ -10,8 +10,11 @@ import {
   createAdminUser,
   deleteAdminUser,
   getAdminUsers,
+  resetAdminUserPassword,
+  signOutAdminUser,
   updateAdminUser,
 } from "../services/admin-user.service.js";
+import { logActivity } from "../services/activity.service.js";
 
 import {
   adminUserIdSchema,
@@ -21,6 +24,7 @@ import {
 } from "../validators/admin-user.validator.js";
 
 import {
+  currentSessionHash,
   getSessionUser,
 } from "../middleware/session.js";
 
@@ -100,6 +104,13 @@ export async function createAdminUserController(
 
     const user =
       await createAdminUser(input);
+
+    await logActivity(res, () => ({
+      action: "user.created",
+      entityType: "user",
+      entityId: user.id,
+      summary: `Added ${user.firstName} ${user.lastName} as ${user.role === "ADMIN" ? "Administrator" : "Lecturer"}`,
+    }));
 
     res.status(201).json({
       success: true,
@@ -198,6 +209,13 @@ export async function updateAdminUserController(
 
       return;
     }
+
+    await logActivity(res, () => ({
+      action: input.isActive === false ? "user.deactivated" : input.isActive === true ? "user.reactivated" : "user.updated",
+      entityType: "user",
+      entityId: userId,
+      summary: `${input.isActive === false ? "Deactivated" : input.isActive === true ? "Reactivated" : "Updated"} ${result.user.firstName} ${result.user.lastName}${input.password ? " (password changed)" : ""}`,
+    }));
 
     res.status(200).json({
       success: true,
@@ -330,6 +348,13 @@ export async function changeOwnPasswordController(
       return;
     }
 
+    await logActivity(res, () => ({
+      action: "user.password_changed",
+      entityType: "user",
+      entityId: res.locals.userId ?? null,
+      summary: "Changed their own password",
+    }));
+
     res.status(200).json({
       success: true,
       message:
@@ -402,6 +427,13 @@ export async function deleteAdminUserController(
       return;
     }
 
+    await logActivity(res, () => ({
+      action: "user.deleted",
+      entityType: "user",
+      entityId: userId,
+      summary: `Removed ${result.user.firstName} ${result.user.lastName}`,
+    }));
+
     res.status(200).json({
       success: true,
 
@@ -431,5 +463,92 @@ export async function deleteAdminUserController(
       message:
         "Unable to delete administrator.",
     });
+  }
+}
+
+
+export async function resetAdminUserPasswordController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const userId = adminUserIdSchema.parse(req.params.id);
+    const result = await resetAdminUserPassword(userId);
+
+    if (result.status === "NOT_FOUND") {
+      res.status(404).json({ success: false, message: "Administrator not found." });
+      return;
+    }
+
+    if (result.status === "PROTECTED") {
+      res.status(403).json({
+        success: false,
+        message: "The Super Admin changes their own password from Change password.",
+      });
+      return;
+    }
+
+    await logActivity(res, () => ({
+      action: "user.password_reset",
+      entityType: "user",
+      entityId: userId,
+      summary: `Reset the password for ${result.user.firstName} ${result.user.lastName}`,
+    }));
+
+    res.status(200).json({
+      success: true,
+      message: "Temporary password created. They have been signed out everywhere.",
+      data: { user: result.user, temporaryPassword: result.temporaryPassword },
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationError(error, res);
+      return;
+    }
+
+    console.error("Failed to reset administrator password:", error);
+    res.status(500).json({ success: false, message: "Unable to reset the password." });
+  }
+}
+
+export async function signOutAdminUserController(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const userId = adminUserIdSchema.parse(req.params.id);
+    const isSelf = userId === res.locals.userId;
+    // Signing yourself out keeps the session you are using right now.
+    const result = await signOutAdminUser(userId, isSelf ? currentSessionHash(req) : null);
+
+    if (result.status === "NOT_FOUND") {
+      res.status(404).json({ success: false, message: "Administrator not found." });
+      return;
+    }
+
+    await logActivity(res, () => ({
+      action: "user.signed_out",
+      entityType: "user",
+      entityId: userId,
+      summary: isSelf
+        ? "Signed out their other devices"
+        : `Signed ${result.user.firstName} ${result.user.lastName} out everywhere`,
+    }));
+
+    res.status(200).json({
+      success: true,
+      message: isSelf
+        ? `Signed out ${result.count} other ${result.count === 1 ? "device" : "devices"}.`
+        : `${result.user.firstName} has been signed out everywhere.`,
+      data: { count: result.count },
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationError(error, res);
+      return;
+    }
+
+    console.error("Failed to sign out administrator:", error);
+    res.status(500).json({ success: false, message: "Unable to sign out." });
   }
 }

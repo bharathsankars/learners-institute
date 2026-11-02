@@ -7,11 +7,12 @@ import {
 } from "lucide-react";
 
 import "./Contact.css";
-import { contact } from "../data/contact";
-
-const mapsUrl = contact.mapsUrl;
+import { useContact } from "../hooks/useContact";
 
 export function Contact() {
+  const contact = useContact();
+  const mapsUrl = contact.mapsUrl;
+
   return (
     <section id="contact" className="contact-section">
       <div className="container">

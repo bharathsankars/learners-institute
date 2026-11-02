@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import type {
   Request,
   Response,
@@ -70,6 +71,12 @@ export async function updateInstituteSettingsController(
       await saveInstituteSettings(
         input,
       );
+
+    await logActivity(res, () => ({
+      action: "settings.updated",
+      entityType: "settings",
+      summary: "Updated the institute profile",
+    }));
 
     res.status(200).json({
       success: true,

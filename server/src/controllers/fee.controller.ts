@@ -1,3 +1,4 @@
+import { logActivity } from "../services/activity.service.js";
 import type { Request, Response } from "express";
 import { PaymentError } from "../services/payment.service.js";
 import { ZodError } from "zod";
@@ -44,6 +45,8 @@ export async function createFeePlanController(
     const input = createFeePlanSchema.parse(req.body);
 
     const feePlan = await createFeePlan(input);
+
+    await logActivity(res, () => ({ action: "fee.created", entityType: "fee", entityId: feePlan.id, summary: `Created a fee plan for ${feePlan.enrollment.student.firstName} · ${feePlan.enrollment.course.title}` }));
 
     res.status(201).json({
       success: true,
@@ -172,6 +175,8 @@ export async function updateFeePlanController(
 
     const feePlan = await updateFeePlan(feePlanId, input);
 
+    await logActivity(res, () => ({ action: "fee.updated", entityType: "fee", entityId: feePlanId, summary: "Updated a fee plan" }));
+
     res.status(200).json({
       success: true,
       message: "Fee plan updated successfully.",
@@ -215,6 +220,8 @@ export async function cancelFeePlanController(
     const feePlanId = feePlanIdSchema.parse(req.params.id);
 
     const feePlan = await cancelFeePlan(feePlanId);
+
+    await logActivity(res, () => ({ action: "fee.cancelled", entityType: "fee", entityId: feePlanId, summary: "Cancelled a fee plan" }));
 
     res.status(200).json({
       success: true,

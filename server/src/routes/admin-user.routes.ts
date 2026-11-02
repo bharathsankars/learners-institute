@@ -5,6 +5,8 @@ import {
   createAdminUserController,
   deleteAdminUserController,
   getAdminUsersController,
+  resetAdminUserPasswordController,
+  signOutAdminUserController,
   updateAdminUserController,
 } from "../controllers/admin-user.controller.js";
 
@@ -34,6 +36,16 @@ adminUserRouter.post(
 adminUserRouter.patch(
   "/me/password",
   changeOwnPasswordController,
+);
+
+adminUserRouter.post(
+  "/:id/reset-password",
+  resetAdminUserPasswordController,
+);
+
+adminUserRouter.delete(
+  "/:id/sessions",
+  signOutAdminUserController,
 );
 
 adminUserRouter.patch(

@@ -32,12 +32,15 @@ type StudentDetailsDialogProps = {
   student: Student;
   onClose: () => void;
   onEdit: () => void;
+  // Lecturers view students but cannot edit them or assign courses.
+  canEdit?: boolean;
 };
 
 export function StudentDetailsDialog({
   student,
   onClose,
   onEdit,
+  canEdit = true,
 }: StudentDetailsDialogProps) {
   const dialog =
     useRef<HTMLDialogElement>(null);
@@ -376,7 +379,7 @@ export function StudentDetailsDialog({
 
           {/* Enrolled courses */}
 
-          <StudentEnrollmentsSection studentId={student.id} />
+          <StudentEnrollmentsSection studentId={student.id} canAssign={canEdit} />
 
           {/* Last updated */}
 
@@ -432,6 +435,7 @@ export function StudentDetailsDialog({
             )}
           </div>
 
+          {canEdit && (
           <button
             className="student-profile__button student-profile__button--primary"
             type="button"
@@ -444,6 +448,7 @@ export function StudentDetailsDialog({
 
             Edit student
           </button>
+          )}
 
         </footer>
       </div>

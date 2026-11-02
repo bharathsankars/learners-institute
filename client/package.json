@@ -11,7 +11,10 @@
     "test:dashboard": "node --experimental-strip-types --test tests/dashboard.test.ts",
     "test:enquiries": "node --experimental-strip-types --test tests/enquiries.test.ts",
     "test:students": "node --experimental-strip-types --test tests/students.test.ts",
-    "test:courses": "node --experimental-strip-types --test tests/courses.test.ts"
+    "test:courses": "node --experimental-strip-types --test tests/courses.test.ts",
+    "test:batches": "node --experimental-strip-types --test tests/batches.test.ts",
+    "test:admissions": "node --experimental-strip-types --test tests/admissions.test.ts",
+    "test:contact": "node --experimental-strip-types --test tests/contact.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

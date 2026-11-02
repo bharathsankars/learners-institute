@@ -1,0 +1,437 @@
+/* =========================================================
+   SETTINGS TOOLS — tabs, institute profile, exports,
+   activity log and the staff sign-in line.
+   Panels reuse records-* classes from AdminRecords.css.
+   ========================================================= */
+
+.settings-admin .settings-eyebrow {
+  color: var(--color-blue-700);
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+/* The tab bar sits on the page, not inside a panel. */
+.settings-tabs {
+  padding: 0;
+
+  border-bottom: 1px solid var(--records-border);
+}
+
+.settings-tabs .records-tab:first-child {
+  padding-left: 0;
+}
+
+.settings-tabs .records-tab:first-child.records-tab--active::after {
+  left: 0;
+}
+
+.settings-user-signin {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--records-faint);
+
+  font-size: 12px;
+}
+
+/* Cards */
+
+.settings-tools__card {
+  padding: 22px 24px;
+}
+
+.settings-tools__card-head h2 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.settings-tools__card-head p {
+  margin: 4px 0 0;
+
+  color: var(--records-muted);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.settings-tools__loading {
+  color: var(--records-muted);
+
+  font-size: 14px;
+}
+
+.settings-tools__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+  align-items: start;
+
+  gap: 20px;
+}
+
+/* Institute profile form */
+
+.settings-tools__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin: 20px 0 0;
+  padding: 0;
+
+  border: 0;
+}
+
+.settings-tools__field {
+  min-width: 0;
+
+  display: grid;
+
+  gap: 6px;
+}
+
+.settings-tools__field--wide {
+  grid-column: 1 / -1;
+}
+
+.settings-tools__field > span {
+  color: var(--records-ink);
+
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.settings-tools__field input,
+.settings-tools__field textarea {
+  width: 100%;
+
+  padding: 10px 12px;
+}
+
+.settings-tools__field textarea {
+  min-height: 72px;
+
+  resize: vertical;
+}
+
+.settings-tools__field small {
+  color: var(--records-muted);
+
+  font-size: 12px;
+}
+
+.settings-tools__error {
+  margin: 14px 0 0;
+
+  color: #b91c1c;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settings-tools__actions {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.settings-tools__hint {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin: 0;
+
+  color: var(--records-faint);
+
+  font-size: 12px;
+}
+
+/* Website preview */
+
+.settings-tools__preview h3 {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0 0 14px;
+
+  font-size: 16px;
+}
+
+.settings-tools__preview ul {
+  display: grid;
+
+  gap: 12px;
+
+  margin: 0 0 16px;
+  padding: 0;
+
+  list-style: none;
+}
+
+.settings-tools__preview li {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  font-size: 14px;
+}
+
+.settings-tools__preview li > svg {
+  flex: 0 0 auto;
+
+  margin-top: 2px;
+
+  color: var(--records-accent);
+}
+
+.settings-tools__preview li span {
+  display: grid;
+
+  gap: 4px;
+}
+
+.settings-tools__preview a {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  color: var(--records-ink);
+
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.settings-tools__preview a:hover {
+  color: var(--records-accent);
+}
+
+/* Data export */
+
+.settings-exports {
+  display: grid;
+
+  margin-top: 18px;
+
+  border: 1px solid var(--records-border);
+  border-radius: 11px;
+}
+
+.settings-export {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 14px 16px;
+
+  border-bottom: 1px solid var(--records-divider);
+}
+
+.settings-export:last-child {
+  border-bottom: 0;
+}
+
+.settings-export__icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  background: var(--records-accent-soft);
+  color: var(--records-accent);
+}
+
+.settings-export h3 {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.settings-export p {
+  margin: 2px 0 0;
+
+  color: var(--records-muted);
+
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* Activity log */
+
+.settings-activity__toolbar {
+  flex-wrap: nowrap;
+}
+
+.settings-activity__toolbar .settings-tools__card-head {
+  flex: 1;
+}
+
+.settings-activity {
+  padding: 4px 20px 12px;
+}
+
+.settings-activity__day {
+  margin: 16px 0 6px;
+
+  color: var(--records-faint);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-activity ul {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.settings-activity__row {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid var(--records-divider);
+}
+
+.records-list .settings-activity__row {
+  padding: 14px 20px;
+}
+
+.settings-activity li:last-child {
+  border-bottom: 0;
+}
+
+.settings-activity__icon {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border-radius: 9px;
+
+  background: #f3f0eb;
+  color: var(--records-muted);
+}
+
+.settings-activity__icon--student,
+.settings-activity__icon--enquiry {
+  background: var(--records-accent-soft);
+  color: var(--records-accent);
+}
+
+.settings-activity__icon--fee,
+.settings-activity__icon--payment {
+  background: #eef5f0;
+  color: #2f6b4a;
+}
+
+.settings-activity__icon--user {
+  background: #eef2f7;
+  color: #3d5576;
+}
+
+.settings-activity__row p {
+  margin: 4px 0 0;
+
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.settings-activity__row span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--records-faint);
+
+  font-size: 12px;
+}
+
+/* Temporary password */
+
+.settings-temp-password {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 14px 16px;
+
+  border: 1px dashed #ddd5ca;
+  border-radius: 10px;
+
+  background: #faf8f4;
+}
+
+.settings-temp-password code {
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 900px) {
+  .settings-tools__split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-tools__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-export {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .settings-export .records-button {
+    grid-column: 1 / -1;
+  }
+
+  .settings-activity__toolbar {
+    flex-wrap: wrap;
+  }
+}
+
+/* Staff cards: actions wrap into two tidy rows so the name and
+   sign-in details keep their space. */
+.settings-user-card__actions {
+  max-width: 470px;
+}
+
+.settings-user-card__main {
+  min-width: 0;
+  flex: 1;
+}
