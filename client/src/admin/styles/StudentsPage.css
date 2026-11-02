@@ -1,8 +1,8 @@
 .students-page {
-  --students-ink: #263843;
-  --students-muted: #687780;
-  --students-border: #dce3e5;
-  --students-soft: #f5f8f7;
+  --students-ink: #1f1b18;
+  --students-muted: #6f665f;
+  --students-border: #ebe6df;
+  --students-soft: #faf8f4;
   --students-green: #285448;
 
   width: 100%;
@@ -89,7 +89,7 @@
 
   padding: 0 17px;
 
-  border: 1px solid #ccd6da;
+  border: 1px solid var(--students-border);
   border-radius: 9px;
 
   background: #ffffff;
@@ -102,9 +102,9 @@
 }
 
 .students-button:hover:not(:disabled) {
-  border-color: #9fb5ad;
+  border-color: #ddd5ca;
 
-  background: #f7f9f8;
+  background: var(--students-soft);
 }
 
 .students-button--primary {

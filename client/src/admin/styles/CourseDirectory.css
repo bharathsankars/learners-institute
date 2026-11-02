@@ -16,3 +16,16 @@
 .course-profile__note { align-self: center; color: var(--directory-muted); font-size: 10px; }
 @media(max-width:1200px) { .course-directory-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); } .course-directory-toolbar .admin-directory-search { grid-column: 1/-1; } }
 @media(max-width:650px) { .course-directory-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); } .course-directory-table td:nth-child(4)::before { content: "Display order "; } .course-directory-description { max-width: none; } .course-profile__note { display: none; } }
+
+
+/* Course details dialog — brand palette, scoped so Settings (also on AdminDirectory.css) is unaffected */
+.directory-profile.course-profile { --directory-ink: #1f1b18; --directory-muted: #6f665f; --directory-border: #ebe6df; --directory-surface: #fff; --directory-soft: #faf8f4; }
+.directory-profile.course-profile .admin-directory-eyebrow { color: #b42318; font-family: "Courier Prime", "Courier New", var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: none; }
+.directory-profile.course-profile .admin-directory-avatar { background: #fdf0ec; color: #b42318; }
+.directory-profile.course-profile .admin-directory-badge--active { background: #eef5f0; color: #2f6b4a; }
+.directory-profile.course-profile .admin-directory-badge--inactive { background: #fdf6e7; color: #9a6a12; }
+.directory-profile.course-profile .admin-directory-button--primary { background: #b42318; border-color: #b42318; color: #fff; }
+.directory-profile.course-profile .admin-directory-button--primary:hover { background: #7f1d1d; border-color: #7f1d1d; }
+.directory-profile.course-profile .directory-profile__header p { font-family: "Courier Prime", "Courier New", var(--font-mono); }
+.directory-profile.course-profile::backdrop { background: rgb(31 27 24 / 0.64); }
+html[data-theme="dark"] .directory-profile.course-profile { --directory-ink: #ece7e1; --directory-muted: #b1a79e; --directory-border: #33302c; --directory-surface: #1c1a18; --directory-soft: #24211e; }

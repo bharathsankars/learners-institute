@@ -2,7 +2,10 @@
    ADMIN RECORD LISTS — shared by Enquiries and Students
    ========================================================= */
 
-.records-page {
+/* Scoped under the layout so it outranks each page's legacy wrapper rules
+   (gap, max-width) regardless of which stylesheet chunk loads first. */
+
+.admin-layout .records-page {
   --records-ink: #1f1b18;
   --records-muted: #6f665f;
   --records-faint: #a39a92;
@@ -485,6 +488,16 @@
     116px;
 }
 
+.records-columns--courses,
+.records-row--courses {
+  grid-template-columns:
+    minmax(240px, 1.8fr)
+    minmax(200px, 1.2fr)
+    56px
+    100px
+    156px;
+}
+
 .records-columns {
   min-height: 40px;
 
@@ -551,6 +564,13 @@
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.02em;
+}
+
+.records-avatar--square {
+  border-radius: 10px;
+
+  background: var(--records-accent-soft);
+  color: var(--records-accent);
 }
 
 .records-name {
@@ -686,6 +706,59 @@ a.records-sub:hover {
 }
 
 
+.records-skills {
+  min-width: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 5px;
+}
+
+.records-skills span {
+  max-width: 100%;
+
+  padding: 2px 8px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--records-border);
+  border-radius: 6px;
+
+  background: var(--records-soft);
+  color: var(--records-muted);
+
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.records-skills small {
+  color: var(--records-faint);
+
+  font-size: 12px;
+  font-style: italic;
+}
+
+.records-order {
+  justify-self: start;
+
+  min-width: 30px;
+
+  padding: 3px 8px;
+
+  border-radius: 6px;
+
+  background: var(--records-soft);
+  color: var(--records-muted);
+
+  font-family: var(--records-typeface);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+
 /* =========================================================
    STATUS PILLS
    ========================================================= */
@@ -788,6 +861,13 @@ a.records-sub:hover {
   color: var(--records-accent);
 }
 
+.records-action--danger:hover:not(:disabled) {
+  border-color: #dc2626;
+
+  background: #fef2f2;
+  color: #dc2626;
+}
+
 .records-action--icon {
   width: 34px;
 
@@ -869,6 +949,10 @@ a.records-sub:hover {
   height: 38px;
 
   border-radius: 50%;
+}
+
+.records-skeleton--square {
+  border-radius: 10px;
 }
 
 @keyframes records-shimmer {
@@ -1056,7 +1140,8 @@ html[data-theme="dark"] .records-tab__count {
   }
 
   .records-row--enquiries,
-  .records-row--students {
+  .records-row--students,
+  .records-row--courses {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "person status"
@@ -1099,6 +1184,31 @@ html[data-theme="dark"] .records-tab__count {
 
   .records-row .records-actions {
     grid-area: actions;
+  }
+
+  .records-row .records-order {
+    display: none;
+  }
+
+  /* Course titles run long, so the status pill moves down beside the actions */
+  .records-row--courses {
+    grid-template-areas:
+      "person person"
+      "detail detail"
+      "status actions";
+  }
+
+  .records-row--courses .records-status {
+    justify-self: start;
+
+    margin-left: 50px;
+  }
+
+  /* Room is tight beside the status pill, so names wrap instead of truncating */
+  .records-row .records-name {
+    white-space: normal;
+
+    overflow-wrap: anywhere;
   }
 
   .records-row--skeleton {
@@ -1165,5 +1275,9 @@ html[data-theme="dark"] .records-tab__count {
   .records-row .records-detail,
   .records-row .records-date {
     padding-left: 0;
+  }
+
+  .records-row--courses .records-status {
+    margin-left: 0;
   }
 }

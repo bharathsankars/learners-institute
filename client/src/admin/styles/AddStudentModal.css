@@ -1,10 +1,10 @@
 .student-modal {
-  --modal-ink: #263843;
-  --modal-muted: #687780;
-  --modal-border: #dce3e5;
+  --modal-ink: #1f1b18;
+  --modal-muted: #6f665f;
+  --modal-border: #ebe6df;
   --modal-surface: #ffffff;
-  --modal-soft: #f5f8f7;
-  --modal-green: #285448;
+  --modal-soft: #faf8f4;
+  --modal-green: #b42318;
 
   width:
     min(
@@ -33,7 +33,7 @@
 
   box-shadow:
     0 30px 90px
-    rgb(15 23 42 / 0.26);
+    rgb(31 27 24 / 0.26);
 }
 
 .student-modal[open] {
@@ -44,7 +44,7 @@
 
 .student-modal::backdrop {
   background:
-    rgb(15 23 42 / 0.64);
+    rgb(31 27 24 / 0.64);
 
   backdrop-filter:
     blur(4px);
@@ -92,7 +92,7 @@
 
   border-radius: 12px;
 
-  background: #eaf2ee;
+  background: #fdf0ec;
   color: var(--modal-green);
 }
 
@@ -101,14 +101,12 @@
 
   margin-bottom: 5px;
 
-  color:
-    var(--modal-green);
+  color: var(--modal-green);
 
-  font-size: 11px;
-  font-weight: 800;
-
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .student-modal__header h2 {
@@ -289,10 +287,10 @@
   border-radius: 999px;
 
   background:
-    #eaf5ed;
+    #eef5f0;
 
   color:
-    #287a60;
+    #2f6b4a;
 
   font-size: 11px;
   font-weight: 800;
@@ -375,7 +373,7 @@
   border-radius: 9px;
 
   background:
-    #eaf2ee;
+    #fdf0ec;
 
   color:
     var(--modal-green);
@@ -471,7 +469,7 @@
 
   border:
     1px solid
-    #c8d3d7;
+    #ddd5ca;
 
   border-radius: 9px;
 
@@ -505,7 +503,7 @@
 
 .student-modal__field input::placeholder,
 .student-modal__field textarea::placeholder {
-  color: #87959c;
+  color: #a39a92;
 }
 
 .student-modal__field input:focus,
@@ -513,12 +511,12 @@
 .student-modal__field textarea:focus {
   outline:
     3px solid
-    rgb(40 84 72 / 0.14);
+    rgb(180 35 24 / 0.14);
 
   outline-offset: 1px;
 
   border-color:
-    #6c9489;
+    #e0a99b;
 }
 
 .student-modal__field
@@ -746,18 +744,18 @@
 
 .student-modal__cancel:hover:not(:disabled) {
   border-color:
-    #9fb5ad;
+    #ddd5ca;
 
   background:
-    #f7f9f8;
+    #faf8f4;
 }
 
 .student-modal__submit:hover:not(:disabled) {
   background:
-    #203f36;
+    #7f1d1d;
 
   border-color:
-    #203f36;
+    #7f1d1d;
 }
 
 .student-modal__deactivate:disabled,

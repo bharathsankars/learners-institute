@@ -13,6 +13,7 @@ import { AdminSidebar } from "../components/AdminSidebar";
 import "../styles/AdminLayout.css";
 import "../styles/AdminRouteLoader.css";
 import "../styles/AdminFocus.css";
+import "../styles/AdminForms.css";
 
 export function AdminLayout() {
   const mobileMenu = useRef<HTMLDetailsElement>(null);

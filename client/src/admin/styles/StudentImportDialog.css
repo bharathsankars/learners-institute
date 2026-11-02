@@ -3,14 +3,14 @@
   max-height: min(90vh, 1000px);
   padding: 0;
   overflow: auto;
-  border: 1px solid #dce3e5;
+  border: 1px solid #ebe6df;
   border-radius: 16px;
   background: #fff;
-  color: #263843;
+  color: #1f1b18;
   box-shadow: 0 24px 80px rgb(5 22 31 / 0.22);
 }
 .student-import-dialog::backdrop {
-  background: rgb(8 20 30 / 0.6);
+  background: rgb(31 27 24 / 0.64);
 }
 .student-import-dialog__header,
 .student-import-dialog__footer {
@@ -21,7 +21,7 @@
   padding: 22px 28px;
 }
 .student-import-dialog__header {
-  border-bottom: 1px solid #dce3e5;
+  border-bottom: 1px solid #ebe6df;
 }
 .student-import-dialog__heading {
   display: flex;
@@ -35,17 +35,20 @@
   place-items: center;
   flex: 0 0 auto;
   border-radius: 12px;
-  background: #e9f3ed;
-  color: #285448;
+  background: #fdf0ec;
+  color: #b42318;
 }
 .student-import-dialog__eyebrow {
   display: block;
+
   margin-bottom: 5px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: #39705d;
+
+  color: #b42318;
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 .student-import-dialog h2,
 .student-import-dialog h3,
@@ -56,7 +59,7 @@
 .student-import-dialog__results-heading p {
   margin-top: 5px;
   font-size: 13px;
-  color: #687780;
+  color: #6f665f;
 }
 .student-import-dialog__close {
   display: grid;
@@ -66,8 +69,8 @@
   flex: 0 0 auto;
   border: 0;
   border-radius: 9px;
-  background: #f1f4f3;
-  color: #263843;
+  background: #f3f0eb;
+  color: #1f1b18;
   cursor: pointer;
 }
 .student-import-dialog__body {
@@ -86,18 +89,18 @@
   align-items: flex-start;
   gap: 12px;
   padding: 22px;
-  border: 1px solid #dce3e5;
+  border: 1px solid #ebe6df;
   border-radius: 12px;
   background: #fff;
 }
 .student-import-dialog__step-number {
   font-size: 12px;
   font-weight: 800;
-  color: #39705d;
+  color: #b42318;
 }
 .student-import-dialog__step > p {
   min-height: 42px;
-  color: #687780;
+  color: #6f665f;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -110,11 +113,11 @@
   gap: 12px;
   width: 100%;
   padding: 11px;
-  border: 1px dashed #9fb5ad;
+  border: 1px dashed #ddd5ca;
   border-radius: 9px;
-  background: #f8faf9;
+  background: #faf8f4;
 }
-.student-import-dialog__upload > svg { flex: 0 0 auto; color: #39705d; }
+.student-import-dialog__upload > svg { flex: 0 0 auto; color: #b42318; }
 .student-import-dialog__upload > div { min-width: 0; flex: 1; }
 .student-import-dialog__upload strong,
 .student-import-dialog__upload small {
@@ -124,7 +127,7 @@
   white-space: nowrap;
 }
 .student-import-dialog__upload strong { font-size: 12px; }
-.student-import-dialog__upload small { margin-top: 3px; font-size: 11px; color: #687780; }
+.student-import-dialog__upload small { margin-top: 3px; font-size: 11px; color: #6f665f; }
 .student-import-dialog__upload > input { display: none; }
 .student-import-dialog__upload .students-button { min-height: 34px; padding: 0 10px; }
 .student-import-dialog__alert {
@@ -160,7 +163,7 @@
   white-space: nowrap;
 }
 .student-import-dialog__result-badge.is-ready,
-.student-import-dialog__status.is-valid { background: #e7f5eb; color: #287a60; }
+.student-import-dialog__status.is-valid { background: #eef5f0; color: #2f6b4a; }
 .student-import-dialog__result-badge.is-review { background: #fff4de; color: #946118; }
 .student-import-dialog__status.is-invalid { background: #fff0f0; color: #a21d33; }
 .student-import-dialog__metrics {
@@ -174,17 +177,17 @@
   gap: 6px 8px;
   align-items: center;
   padding: 15px;
-  border: 1px solid #dce3e5;
+  border: 1px solid #ebe6df;
   border-radius: 10px;
 }
-.student-import-dialog__metrics svg { color: #58707a; }
-.student-import-dialog__metrics span { font-size: 12px; color: #687780; }
+.student-import-dialog__metrics svg { color: #6f665f; }
+.student-import-dialog__metrics span { font-size: 12px; color: #6f665f; }
 .student-import-dialog__metrics strong {
   grid-column: 2;
   font-size: 28px;
   line-height: 1.1;
 }
-.student-import-dialog__metrics .is-valid strong { color: #287a60; }
+.student-import-dialog__metrics .is-valid strong { color: #2f6b4a; }
 .student-import-dialog__metrics .is-invalid strong { color: #b33a44; }
 .student-import-dialog__metrics .is-warning strong { color: #946118; }
 .student-import-dialog__filters {
@@ -195,24 +198,24 @@
 .student-import-dialog__filters button {
   min-height: 36px;
   padding: 0 14px;
-  border: 1px solid #dce3e5;
+  border: 1px solid #ebe6df;
   border-radius: 8px;
   background: #fff;
-  color: #52646d;
+  color: #6f665f;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
 .student-import-dialog__filters button.is-active {
-  background: #285448;
-  border-color: #285448;
+  background: #b42318;
+  border-color: #b42318;
   color: #fff;
 }
 .student-import-dialog__table-wrap {
   width: 100%;
   max-height: 460px;
   overflow: auto;
-  border: 1px solid #dce3e5;
+  border: 1px solid #ebe6df;
   border-radius: 10px;
 }
 .student-import-dialog__table {
@@ -226,33 +229,33 @@
   top: 0;
   z-index: 1;
   padding: 14px;
-  background: #f4f7f6;
-  color: #536770;
+  background: #faf8f4;
+  color: #6f665f;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: .04em;
 }
 .student-import-dialog__table td {
   padding: 15px 14px;
-  border-top: 1px solid #e6ebec;
+  border-top: 1px solid #ebe6df;
   vertical-align: top;
   line-height: 1.55;
 }
-.student-import-dialog__table tbody tr:hover { background: #fafcfb; }
+.student-import-dialog__table tbody tr:hover { background: #faf8f4; }
 .student-import-dialog__table td strong { display: block; font-size: 13px; }
 .student-import-dialog__table td small {
   display: block;
   margin-top: 4px;
-  color: #798891;
+  color: #6f665f;
   font-size: 11px;
 }
-.student-import-dialog__row-number { font-weight: 800; color: #687780; }
+.student-import-dialog__row-number { font-weight: 800; color: #6f665f; }
 .student-import-dialog__courses { display: flex; flex-wrap: wrap; gap: 5px; max-width: 240px; }
 .student-import-dialog__courses span {
   border-radius: 5px;
   padding: 4px 7px;
-  background: #edf3fb;
-  color: #3565a1;
+  background: #f3f0eb;
+  color: #5c544e;
   font-size: 11px;
 }
 .student-import-dialog__row-error,
@@ -264,28 +267,28 @@
 }
 .student-import-dialog__row-error { color: #b33a44; }
 .student-import-dialog__row-warning { color: #946118; }
-.student-import-dialog__no-results { text-align: center; color: #687780; }
+.student-import-dialog__no-results { text-align: center; color: #6f665f; }
 .student-import-dialog__info {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   padding: 13px;
-  border: 1px solid #dce5ef;
+  border: 1px solid #ebe6df;
   border-radius: 9px;
-  background: #f3f7fb;
-  color: #41607b;
+  background: #faf8f4;
+  color: #6f665f;
   font-size: 12px;
   line-height: 1.6;
 }
 .student-import-dialog__info svg { flex: 0 0 auto; }
 .student-import-dialog__footer {
-  border-top: 1px solid #dce3e5;
+  border-top: 1px solid #ebe6df;
 }
 .student-import-dialog__footer > span {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #687780;
+  color: #6f665f;
   font-size: 12px;
 }
 .student-import-dialog__footer-actions {
@@ -316,7 +319,7 @@
 .student-import-dialog__admission {
   font-variant-numeric: tabular-nums;
   letter-spacing: .02em;
-  color: #287a60;
+  color: #2f6b4a;
 }
 html[data-theme="dark"] .student-import-dialog,
 html[data-theme="dark"] .student-import-dialog__step {

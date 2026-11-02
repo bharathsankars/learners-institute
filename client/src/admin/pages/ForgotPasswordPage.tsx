@@ -10,6 +10,7 @@ import {
 } from "../../api/recovery";
 
 import "../styles/RecoveryPage.css";
+import "../styles/AdminForms.css";
 
 export function ForgotPasswordPage() {
   const [step, setStep] = useState<"temporary" | "new-password" | "success">(

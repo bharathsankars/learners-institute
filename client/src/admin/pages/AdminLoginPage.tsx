@@ -16,6 +16,7 @@ import { useAdminAuth } from "../auth/useAdminAuth.ts";
 import { LoginWelcomeTransition } from "../components/LoginWelcomeTransition";
 
 import "../styles/AdminLogin.css";
+import "../styles/AdminForms.css";
 
 export function AdminLoginPage() {
   const navigate = useNavigate();

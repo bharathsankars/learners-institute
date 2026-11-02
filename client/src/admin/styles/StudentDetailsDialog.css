@@ -1,9 +1,9 @@
 .student-profile-dialog {
-  --profile-ink: #263843;
-  --profile-muted: #687780;
-  --profile-border: #dce3e5;
-  --profile-soft: #f5f8f7;
-  --profile-green: #285448;
+  --profile-ink: #1f1b18;
+  --profile-muted: #6f665f;
+  --profile-border: #ebe6df;
+  --profile-soft: #faf8f4;
+  --profile-green: #b42318;
 
   width:
     min(
@@ -31,12 +31,12 @@
 
   box-shadow:
     0 24px 70px
-    rgb(15 23 42 / 0.24);
+    rgb(31 27 24 / 0.24);
 }
 
 .student-profile-dialog::backdrop {
   background:
-    rgb(15 23 42 / 0.64);
+    rgb(31 27 24 / 0.64);
 
   backdrop-filter:
     blur(3px);
@@ -85,7 +85,7 @@
 
   border-radius: 50%;
 
-  background: #eaf2ee;
+  background: #fdf0ec;
 
   color:
     var(--profile-green);
@@ -103,15 +103,12 @@
 
   margin-bottom: 5px;
 
-  color:
-    var(--profile-green);
+  color: var(--profile-green);
 
-  font-size: 11px;
-  font-weight: 800;
-
-  letter-spacing: 0.08em;
-
-  text-transform: uppercase;
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .student-profile__heading h2 {
@@ -209,7 +206,7 @@
     var(--profile-border);
 
   background:
-    #fafcfb;
+    #faf8f4;
 }
 
 .student-profile__status-row > div {
@@ -252,26 +249,26 @@
 
 .student-profile__status--active {
   background:
-    #eaf5ed;
+    #eef5f0;
 
   color:
-    #287a60;
+    #2f6b4a;
 }
 
 .student-profile__status--inactive {
   background:
-    #fff4de;
+    #fdf6e7;
 
   color:
-    #946118;
+    #9a6a12;
 }
 
 .student-profile__status--completed {
   background:
-    #edf3fb;
+    #eef2f7;
 
   color:
-    #3565a1;
+    #3d5576;
 }
 
 
@@ -323,7 +320,7 @@
   border-radius: 9px;
 
   background:
-    #eaf2ee;
+    #fdf0ec;
 
   color:
     var(--profile-green);
@@ -451,10 +448,10 @@
 
 a.student-profile__contact-card:hover {
   border-color:
-    #9fb8af;
+    #ddd5ca;
 
   background:
-    #f0f6f3;
+    #fdf0ec;
 }
 
 .student-profile__contact-icon {
@@ -626,7 +623,7 @@ a.student-profile__contact-card:hover {
 
   border:
     1px solid
-    #cbd6d9;
+    #ddd5ca;
 
   border-radius: 9px;
 
@@ -646,10 +643,10 @@ a.student-profile__contact-card:hover {
 
 .student-profile__button:hover {
   border-color:
-    #9fb5ad;
+    #ddd5ca;
 
   background:
-    #f7f9f8;
+    #faf8f4;
 }
 
 .student-profile__button--primary {
@@ -665,10 +662,10 @@ a.student-profile__contact-card:hover {
 
 .student-profile__button--primary:hover {
   border-color:
-    #203f36;
+    #7f1d1d;
 
   background:
-    #203f36;
+    #7f1d1d;
 }
 
 
@@ -681,7 +678,7 @@ a.student-profile__contact-card:hover {
 .student-profile__contact-card:focus-visible {
   outline:
     3px solid
-    rgb(40 84 72 / 0.22);
+    rgb(180 35 24 / 0.22);
 
   outline-offset:
     3px;
@@ -892,10 +889,23 @@ html[data-theme="dark"]
   overflow-wrap: anywhere;
 }
 
-.student-profile__enrollment-item span {
-  color: var(--profile-green);
-  font-size: 11px;
-  font-weight: 750;
+.student-profile__enrollment-status {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f3f1ee;
+  color: #5c544e;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.student-profile__enrollment-status--active {
+  background: #eef5f0;
+  color: #2f6b4a;
+}
+
+.student-profile__enrollment-status--completed {
+  background: #eef2f7;
+  color: #3d5576;
 }
 
 .student-profile__enrollment-form {
@@ -921,7 +931,7 @@ html[data-theme="dark"]
 }
 
 .student-profile__enrollment-form select:focus-visible {
-  outline: 3px solid rgb(40 84 72 / 0.22);
+  outline: 3px solid rgb(180 35 24 / 0.22);
   outline-offset: 2px;
 }
 
@@ -932,7 +942,7 @@ html[data-theme="dark"]
 }
 
 .student-profile__enrollment-success {
-  color: var(--profile-green);
+  color: #2f6b4a;
   font-size: 13px;
   font-weight: 700;
 }

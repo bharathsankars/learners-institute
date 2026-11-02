@@ -1,0 +1,269 @@
+/* =========================================================
+   ADMIN FORM CONTROLS — one look for every input, select,
+   textarea and checkbox in the admin area and its sign-in pages.
+
+   Each rule is scoped under a page root (.admin-layout,
+   .admin-login, .recovery-page) so it outranks the per-component
+   field rules regardless of which stylesheet chunk loads first.
+   ========================================================= */
+
+:is(.admin-layout, .admin-login, .recovery-page) {
+  --field-ink: #1f1b18;
+  --field-muted: #6f665f;
+  --field-placeholder: #a39a92;
+  --field-border: #ddd5ca;
+  --field-border-hover: #cdc2b4;
+  --field-focus: #c9604f;
+  --field-ring: rgb(180 35 24 / 0.12);
+  --field-error: #b91c1c;
+  --field-disabled: #faf8f4;
+  --field-radius: 9px;
+  --field-height: 44px;
+  --field-height-compact: 40px;
+  --field-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236f665f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+
+/* =========================================================
+   BORDERED FIELDS
+   ========================================================= */
+
+.admin-layout :is(
+  .student-modal__field,
+  .fee-modal__field,
+  .settings-form,
+  .settings-password-form,
+  .payment-form,
+  .payment-search
+) :is(input:not([type="checkbox"], [type="radio"], [type="file"]), select, textarea),
+.admin-layout :is(
+  .enquiry-profile__followup select,
+  .student-profile__enrollment-form select,
+  .records-select select,
+  .fees-page__search input
+),
+.recovery-page .recovery-form input {
+  min-height: var(--field-height);
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--field-border);
+  border-radius: var(--field-radius);
+
+  background-color: #ffffff;
+  color: var(--field-ink);
+
+  /* Many fields sit inside bold <label>s, so the weight is set explicitly
+     rather than inherited. */
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  outline: none;
+  box-shadow: none;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* Toolbar filters stay compact beside the search box */
+
+.admin-layout :is(.records-select select, .fees-page__search input) {
+  min-height: var(--field-height-compact);
+}
+
+.admin-layout :is(
+  .student-modal__field,
+  .fee-modal__field,
+  .payment-form
+) textarea {
+  min-height: 96px;
+
+  resize: vertical;
+}
+
+
+/* =========================================================
+   WRAPPED FIELDS — the border sits on a wrapper around an
+   icon and a borderless input
+   ========================================================= */
+
+.admin-layout .records-search,
+.admin-login .admin-login__input-wrapper {
+  min-height: var(--field-height-compact);
+
+  border: 1px solid var(--field-border);
+  border-radius: var(--field-radius);
+
+  background: #ffffff;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-login .admin-login__input-wrapper {
+  min-height: var(--field-height);
+}
+
+.admin-layout .records-search input,
+.admin-login .admin-login__input-wrapper input {
+  color: var(--field-ink);
+
+  font-size: 14px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+   ========================================================= */
+
+:is(.admin-layout, .admin-login, .recovery-page) :is(input, textarea)::placeholder {
+  color: var(--field-placeholder);
+
+  opacity: 1;
+}
+
+
+/* =========================================================
+   HOVER AND FOCUS
+   ========================================================= */
+
+.admin-layout :is(
+  .student-modal__field,
+  .fee-modal__field,
+  .settings-form,
+  .settings-password-form,
+  .payment-form,
+  .payment-search
+) :is(input:not([type="checkbox"], [type="radio"], [type="file"]), select, textarea):hover:not(:disabled, :focus),
+.admin-layout :is(
+  .enquiry-profile__followup select,
+  .student-profile__enrollment-form select,
+  .records-select select,
+  .fees-page__search input
+):hover:not(:disabled, :focus),
+.recovery-page .recovery-form input:hover:not(:disabled, :focus),
+.admin-layout .records-search:hover:not(:focus-within),
+.admin-login .admin-login__input-wrapper:hover:not(:focus-within) {
+  border-color: var(--field-border-hover);
+}
+
+/* The border and soft ring are the focus indicator, so the
+   generic admin focus outline is switched off for fields. */
+
+.admin-layout :is(
+  .student-modal__field,
+  .fee-modal__field,
+  .settings-form,
+  .settings-password-form,
+  .payment-form,
+  .payment-search
+) :is(input:not([type="checkbox"], [type="radio"], [type="file"]), select, textarea):focus,
+.admin-layout :is(
+  .enquiry-profile__followup select,
+  .student-profile__enrollment-form select,
+  .records-select select,
+  .fees-page__search input
+):focus,
+.recovery-page .recovery-form input:focus,
+.admin-layout .records-search:focus-within,
+.admin-login .admin-login__input-wrapper:focus-within {
+  border-color: var(--field-focus);
+
+  outline: none;
+  box-shadow: 0 0 0 3px var(--field-ring);
+}
+
+.admin-layout .records-search:focus-within,
+.admin-layout .records-search input:focus-visible {
+  outline: none;
+}
+
+.admin-login .admin-login__input-wrapper:focus-within svg {
+  color: var(--field-focus);
+}
+
+
+/* =========================================================
+   INVALID AND DISABLED
+   ========================================================= */
+
+:is(.admin-layout, .admin-login, .recovery-page) :is(input, select, textarea)[aria-invalid="true"] {
+  border-color: var(--field-error);
+}
+
+:is(.admin-layout, .admin-login, .recovery-page) :is(input, select, textarea)[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgb(185 28 28 / 0.12);
+}
+
+.admin-layout :is(input, select, textarea):disabled {
+  background-color: var(--field-disabled);
+  color: var(--field-muted);
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   DROPDOWNS — one chevron for every select
+   ========================================================= */
+
+.admin-layout select:not([multiple]) {
+  padding-right: 36px;
+
+  background-image: var(--field-chevron);
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  background-size: 12px 12px;
+
+  cursor: pointer;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.admin-layout select:not([multiple]):disabled {
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   DATES, CHECKBOXES AND RADIOS
+   ========================================================= */
+
+.admin-layout input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+
+  cursor: pointer;
+}
+
+.admin-layout input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.9;
+}
+
+.admin-layout :is(input[type="checkbox"], input[type="radio"]) {
+  width: 17px;
+  height: 17px;
+
+  accent-color: var(--color-blue-700);
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   DARK MODE (dormant theme) — keep fields readable
+   ========================================================= */
+
+html[data-theme="dark"] :is(.admin-layout, .admin-login, .recovery-page) {
+  --field-ink: #ece7e1;
+  --field-muted: #b1a79e;
+  --field-placeholder: #857b72;
+  --field-border: #3a3632;
+  --field-border-hover: #4a4540;
+  --field-disabled: #24211e;
+}

@@ -11,6 +11,7 @@ import {
 } from "../../api/recovery";
 
 import "../styles/RecoveryPage.css";
+import "../styles/AdminForms.css";
 
 export function RecoveryPage() {
   const [user, setUser] = useState<RecoverySuperAdmin | null>(null);

@@ -1386,3 +1386,41 @@ html[data-theme="dark"]
 .settings-form__grid select:disabled {
   cursor: not-allowed;
 }
+
+
+/* =========================================================
+   SETTINGS DIALOGS — brand palette, matching the other admin
+   dialogs. Scoped to the dialogs so the Settings page itself
+   is unchanged until it gets its own redesign.
+   ========================================================= */
+
+.settings-editor-backdrop {
+  background: rgb(31 27 24 / 0.64);
+}
+
+.settings-editor-backdrop .settings-eyebrow {
+  color: #b42318;
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.settings-editor-backdrop .settings-button--primary {
+  border-color: #b42318;
+
+  background: #b42318;
+}
+
+.settings-editor-backdrop .settings-button--primary:hover:not(:disabled) {
+  border-color: #7f1d1d;
+
+  background: #7f1d1d;
+}
+
+.settings-editor-backdrop .settings-password-dialog__icon {
+  background: #fdf0ec;
+  color: #b42318;
+}

@@ -1,9 +1,9 @@
 .enquiry-profile-dialog {
-  --profile-ink: #263843;
-  --profile-muted: #687780;
-  --profile-border: #dce3e5;
-  --profile-soft: #f5f8f7;
-  --profile-green: #285448;
+  --profile-ink: #1f1b18;
+  --profile-muted: #6f665f;
+  --profile-border: #ebe6df;
+  --profile-soft: #faf8f4;
+  --profile-green: #b42318;
 
   width:
     min(
@@ -31,12 +31,12 @@
 
   box-shadow:
     0 24px 70px
-    rgb(15 23 42 / 0.24);
+    rgb(31 27 24 / 0.24);
 }
 
 .enquiry-profile-dialog::backdrop {
   background:
-    rgb(15 23 42 / 0.64);
+    rgb(31 27 24 / 0.64);
 
   backdrop-filter:
     blur(3px);
@@ -83,7 +83,7 @@
   border-radius: 50%;
 
   background:
-    #eaf2ee;
+    #fdf0ec;
 
   color:
     var(--profile-green);
@@ -97,15 +97,12 @@
 
   margin-bottom: 5px;
 
-  color:
-    var(--profile-green);
+  color: var(--profile-green);
 
-  font-size: 11px;
-  font-weight: 800;
-
-  letter-spacing: 0.08em;
-
-  text-transform: uppercase;
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .enquiry-profile__header h2 {
@@ -193,7 +190,7 @@
     var(--profile-border);
 
   background:
-    #fafcfb;
+    #faf8f4;
 }
 
 .enquiry-profile__status-row > div {
@@ -235,26 +232,26 @@
 
 .enquiry-profile__status--new {
   background:
-    #fff4de;
+    #fff8f4;
 
   color:
-    #946118;
+    #b42318;
 }
 
 .enquiry-profile__status--contacted {
   background:
-    #edf3fb;
+    #fdf6e7;
 
   color:
-    #3565a1;
+    #9a6a12;
 }
 
 .enquiry-profile__status--closed {
   background:
-    #eaf5ed;
+    #eef5f0;
 
   color:
-    #287a60;
+    #2f6b4a;
 }
 
 
@@ -304,7 +301,7 @@
   border-radius: 9px;
 
   background:
-    #eaf2ee;
+    #fdf0ec;
 
   color:
     var(--profile-green);
@@ -376,10 +373,10 @@
 
 a.enquiry-profile__contact-card:hover {
   border-color:
-    #9fb8af;
+    #ddd5ca;
 
   background:
-    #f0f6f3;
+    #fdf0ec;
 }
 
 .enquiry-profile__contact-icon {
@@ -518,15 +515,15 @@ a.enquiry-profile__contact-card:hover {
 
   border:
     1px solid
-    #c9e4d3;
+    #ddd5ca;
 
   border-radius: 11px;
 
   background:
-    #ecf6ef;
+    #eef5f0;
 
   color:
-    #285448;
+    #b42318;
 }
 
 .enquiry-profile__admitted > svg {
@@ -551,7 +548,7 @@ a.enquiry-profile__contact-card:hover {
 
 .enquiry-profile__admitted a {
   color:
-    #285448;
+    #b42318;
 
   font-size: 12px;
   font-weight: 750;
@@ -587,7 +584,7 @@ a.enquiry-profile__contact-card:hover {
 
   border:
     1px solid
-    #c8d3d7;
+    #ddd5ca;
 
   border-radius: 9px;
 
@@ -602,10 +599,10 @@ a.enquiry-profile__contact-card:hover {
 .enquiry-profile__followup select:focus {
   outline:
     3px solid
-    rgb(40 84 72 / 0.14);
+    rgb(180 35 24 / 0.14);
 
   border-color:
-    #6c9489;
+    #e0a99b;
 }
 
 .enquiry-profile__followup p {
@@ -701,7 +698,7 @@ a.enquiry-profile__contact-card:hover {
 
   border:
     1px solid
-    #cbd6d9;
+    #ddd5ca;
 
   border-radius: 9px;
 
@@ -720,10 +717,10 @@ a.enquiry-profile__contact-card:hover {
 
 .enquiry-profile__button:hover:not(:disabled) {
   border-color:
-    #9fb5ad;
+    #ddd5ca;
 
   background:
-    #f7f9f8;
+    #faf8f4;
 }
 
 .enquiry-profile__button--primary {
@@ -738,23 +735,23 @@ a.enquiry-profile__contact-card:hover {
 
 .enquiry-profile__button--primary:hover:not(:disabled) {
   background:
-    #203f36;
+    #7f1d1d;
 
   border-color:
-    #203f36;
+    #7f1d1d;
 }
 
 .enquiry-profile__button--admit {
   border-color:
-    #bfd1ca;
+    #ddd5ca;
 
   color:
-    #285448;
+    #b42318;
 }
 
 .enquiry-profile__button--admit:hover:not(:disabled) {
   background:
-    #f0f6f3;
+    #fdf0ec;
 }
 
 .enquiry-profile__button:disabled,

@@ -6,10 +6,17 @@ import { fetchCourses } from "../../api/courses";
 import {
   assignStudentCourse,
   fetchStudentEnrollments,
+  type StudentEnrollment,
 } from "../../api/enrollments";
 
 type Props = {
   studentId: string;
+};
+
+const enrollmentStatusLabels: Record<StudentEnrollment["status"], string> = {
+  ACTIVE: "Active",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
 };
 
 export function StudentEnrollmentsSection({ studentId }: Props) {
@@ -94,7 +101,11 @@ export function StudentEnrollmentsSection({ studentId }: Props) {
               key={enrollment.id}
             >
               <strong>{enrollment.course.title}</strong>
-              <span>{enrollment.status}</span>
+              <span
+                className={`student-profile__enrollment-status student-profile__enrollment-status--${enrollment.status.toLowerCase()}`}
+              >
+                {enrollmentStatusLabels[enrollment.status]}
+              </span>
             </li>
           ))}
         </ul>
