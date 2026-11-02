@@ -14,7 +14,8 @@
     "test:courses": "node --experimental-strip-types --test tests/courses.test.ts",
     "test:batches": "node --experimental-strip-types --test tests/batches.test.ts",
     "test:admissions": "node --experimental-strip-types --test tests/admissions.test.ts",
-    "test:contact": "node --experimental-strip-types --test tests/contact.test.ts"
+    "test:contact": "node --experimental-strip-types --test tests/contact.test.ts",
+    "test:fees": "node --experimental-strip-types --test tests/fees.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

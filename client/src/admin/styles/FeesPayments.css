@@ -1,0 +1,995 @@
+/* =========================================================
+   FEES & PAYMENTS — totals, fee rows, payment rows, the
+   record-payment and fee-plan dialogs, and the receipt.
+   Lists reuse AdminRecords.css; dialogs the student-modal shell.
+   ========================================================= */
+
+/* Some rules below refine AdminRecords.css classes; they use compound
+   selectors because dialogs can load this file before that one. */
+
+/* Totals */
+
+.money-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.money-stats--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.money-stat {
+  position: relative;
+
+  min-width: 0;
+
+  display: grid;
+  align-content: start;
+
+  gap: 6px;
+
+  padding: 18px 20px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--records-border);
+  border-radius: 14px;
+
+  background: var(--records-surface);
+  color: inherit;
+
+  font: inherit;
+  text-align: left;
+
+  box-shadow: 0 1px 2px rgb(31 27 24 / 0.04);
+}
+
+button.money-stat {
+  cursor: pointer;
+}
+
+button.money-stat:hover {
+  border-color: #ddd5ca;
+}
+
+.money-stat > span {
+  color: var(--records-muted);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.money-stat strong {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+
+  overflow-wrap: anywhere;
+}
+
+.money-stat small {
+  color: var(--records-faint);
+
+  font-size: 12px;
+}
+
+.money-stat--good strong {
+  color: #2f6b4a;
+}
+
+.money-stat--alert::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+
+  height: 3px;
+
+  background: var(--records-accent);
+}
+
+.money-stat--alert strong,
+.money-stat--alert small {
+  color: var(--records-accent);
+}
+
+.records-tab__count.records-tab__count--alert {
+  background: var(--records-accent-soft);
+  color: var(--records-accent);
+}
+
+/* Fee rows */
+
+.records-columns--fees,
+.records-row--fees {
+  grid-template-columns:
+    minmax(190px, 1.2fr)
+    minmax(190px, 1.3fr)
+    minmax(120px, 0.8fr)
+    minmax(130px, 0.8fr)
+    96px
+    124px;
+}
+
+.fee-paid {
+  min-width: 0;
+
+  display: grid;
+
+  gap: 6px;
+
+  font-size: 14px;
+}
+
+.fee-progress {
+  display: block;
+
+  width: 100%;
+  max-width: 140px;
+  height: 6px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #f1ede7;
+}
+
+.fee-progress > span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #2f6b4a;
+}
+
+.fee-balance {
+  gap: 2px;
+}
+
+.fee-balance__amount {
+  color: var(--records-ink);
+
+  font-size: 14px;
+}
+
+.fee-balance__amount--overdue {
+  color: var(--records-accent);
+}
+
+.records-status.records-status--fee-due {
+  background: var(--records-attention-soft);
+  color: var(--records-attention);
+}
+
+.records-status.records-status--fee-overdue {
+  background: var(--records-accent-soft);
+  color: var(--records-accent);
+}
+
+.records-status.records-status--fee-paid {
+  background: #eef5f0;
+  color: #2f6b4a;
+}
+
+.records-status.records-status--fee-cancelled {
+  background: #f3f1ee;
+  color: #6f665f;
+}
+
+/* Payment rows */
+
+.records-columns--payments,
+.records-row--payments {
+  grid-template-columns:
+    minmax(170px, 0.9fr)
+    minmax(220px, 1.6fr)
+    minmax(140px, 0.9fr)
+    120px
+    120px;
+}
+
+.records-columns .records-columns__right {
+  text-align: right;
+}
+
+.records-name.records-name--mono {
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.payment-method {
+  display: inline-flex;
+
+  padding: 2px 9px;
+
+  border-radius: 6px;
+
+  background: #f3f0eb;
+  color: #5c544e;
+
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.payment-method--upi {
+  background: #eef2f7;
+  color: #3d5576;
+}
+
+.payment-method--cash {
+  background: #eef5f0;
+  color: #2f6b4a;
+}
+
+.payment-amount {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 750;
+  text-align: right;
+}
+
+.payment-sum {
+  color: var(--records-ink);
+}
+
+/* Record payment dialog */
+
+.pay-dialog {
+  width: min(680px, calc(100% - 32px));
+}
+
+.pay-dialog__fields {
+  display: grid;
+
+  gap: 18px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+}
+
+.pay-dialog__label,
+.pay-dialog__field > span:first-child {
+  color: var(--modal-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pay-dialog__picker {
+  display: grid;
+
+  gap: 10px;
+}
+
+.pay-dialog__options {
+  display: grid;
+
+  margin: 0;
+  padding: 6px;
+
+  list-style: none;
+
+  border: 1px solid #ebe6df;
+  border-radius: 11px;
+}
+
+.pay-dialog__options button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 10px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: inherit;
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.pay-dialog__options button:hover {
+  background: #faf8f4;
+}
+
+.pay-dialog__options strong {
+  display: block;
+
+  font-size: 14px;
+}
+
+.pay-dialog__options small {
+  color: var(--modal-muted);
+
+  font-size: 12px;
+}
+
+.pay-dialog__due {
+  flex: 0 0 auto;
+
+  color: var(--modal-ink);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pay-dialog__due--overdue {
+  color: #b42318;
+}
+
+.pay-dialog__empty {
+  margin: 0;
+  padding: 20px;
+
+  border: 1px dashed #ddd5ca;
+  border-radius: 11px;
+
+  color: var(--modal-muted);
+
+  font-size: 14px;
+  text-align: center;
+}
+
+.pay-dialog__plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+
+  gap: 12px 16px;
+
+  padding: 16px 18px;
+
+  border: 1px solid #ebe6df;
+  border-radius: 12px;
+
+  background: #faf8f4;
+}
+
+.pay-dialog__plan > div strong {
+  display: block;
+
+  font-size: 16px;
+}
+
+.pay-dialog__plan > div span {
+  color: var(--modal-muted);
+
+  font-size: 13px;
+}
+
+.pay-dialog__plan dl {
+  grid-column: 1 / -1;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px 28px;
+
+  margin: 0;
+}
+
+.pay-dialog__plan dt {
+  color: var(--modal-muted);
+
+  font-size: 12px;
+}
+
+.pay-dialog__plan dd {
+  margin: 2px 0 0;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pay-dialog__balance,
+.pay-dialog__overdue {
+  color: #b42318;
+}
+
+.pay-dialog__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.pay-dialog__field {
+  min-width: 0;
+
+  display: grid;
+  align-content: start;
+
+  gap: 6px;
+}
+
+.pay-dialog__field--wide {
+  grid-column: 1 / -1;
+}
+
+.pay-dialog__field input {
+  width: 100%;
+  min-height: 44px;
+
+  padding: 0 12px;
+
+  border: 1px solid #ddd5ca;
+  border-radius: 9px;
+
+  font: inherit;
+  font-size: 14px;
+}
+
+.pay-dialog__field input:focus {
+  border-color: #c9604f;
+
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(180 35 24 / 0.12);
+}
+
+.pay-dialog__chips button,
+.pay-dialog__methods button {
+  min-height: 34px;
+
+  padding: 0 12px;
+
+  border: 1px solid #ddd5ca;
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: var(--modal-ink);
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.pay-dialog__chips button:hover {
+  border-color: #b42318;
+
+  color: #b42318;
+}
+
+.pay-dialog__methods {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.pay-dialog__methods button {
+  min-height: 40px;
+  min-width: 96px;
+
+  border-radius: 9px;
+}
+
+.pay-dialog__methods button[aria-pressed="true"] {
+  border-color: #b42318;
+
+  background: #b42318;
+  color: #ffffff;
+}
+
+/* Fee plan details */
+
+.fee-details {
+  width: min(640px, calc(100% - 32px));
+}
+
+.fee-details__summary {
+  display: grid;
+  justify-items: start;
+
+  gap: 12px;
+
+  padding: 16px 18px;
+
+  border: 1px solid #ebe6df;
+  border-radius: 12px;
+
+  background: #faf8f4;
+}
+
+.fee-details__summary dl {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin: 0;
+}
+
+.fee-details__summary dt {
+  color: var(--modal-muted);
+
+  font-size: 12px;
+}
+
+.fee-details__summary dd {
+  margin: 2px 0 0;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fee-details__balance {
+  color: #b42318;
+}
+
+.fee-details__summary .fee-progress {
+  max-width: none;
+}
+
+.fee-details__meta {
+  margin: 0;
+
+  color: var(--modal-muted);
+
+  font-size: 13px;
+}
+
+.fee-details__history h3 {
+  margin: 20px 0 8px;
+
+  font-size: 14px;
+}
+
+.fee-details__history ul {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  border: 1px solid #ebe6df;
+  border-radius: 11px;
+}
+
+.fee-details__history li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  border-bottom: 1px solid #f2eee8;
+}
+
+.fee-details__history li:last-child {
+  border-bottom: 0;
+}
+
+.fee-details__history strong {
+  display: block;
+
+  font-size: 14px;
+}
+
+.fee-details__history li span {
+  color: var(--modal-muted);
+
+  font-size: 12px;
+}
+
+.fee-details__history .records-action {
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+}
+
+.fee-details__empty {
+  margin: 0;
+  padding: 18px;
+
+  border: 1px dashed #ddd5ca;
+  border-radius: 11px;
+
+  color: var(--modal-muted);
+
+  font-size: 13px;
+  text-align: center;
+}
+
+.fee-details__confirm {
+  margin-top: 16px;
+  padding: 14px 16px;
+
+  border: 1px solid #f5c9c2;
+  border-radius: 11px;
+
+  background: #fdf1ee;
+}
+
+.fee-details__confirm p {
+  margin: 0 0 12px;
+
+  color: #7f1d1d;
+
+  font-size: 14px;
+}
+
+.fee-details__confirm div {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 8px;
+}
+
+.records-button.fee-details__danger {
+  border-color: #b42318;
+
+  background: #b42318;
+  color: #ffffff;
+}
+
+.fee-details__secondary {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+/* Receipt */
+
+.receipt-dialog {
+  width: min(720px, calc(100% - 32px));
+
+  background: #ece6dc;
+}
+
+.receipt-dialog__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 14px 18px;
+}
+
+.receipt-dialog__bar > div {
+  display: flex;
+
+  gap: 8px;
+}
+
+.receipt-dialog__saved {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #24603f;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.receipt-sheet {
+  margin: 0 18px 18px;
+  padding: 32px 36px;
+
+  border-radius: 6px;
+
+  background: #fffdf8;
+  color: #1f1b18;
+
+  box-shadow: 0 10px 30px rgb(31 27 24 / 0.12);
+}
+
+.receipt-sheet__letterhead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 14px;
+
+  padding-bottom: 16px;
+
+  border-bottom: 3px double rgb(92 16 16 / 0.25);
+}
+
+.receipt-sheet__letterhead img {
+  width: 48px;
+  height: 48px;
+
+  object-fit: contain;
+}
+
+.receipt-sheet__letterhead div {
+  display: grid;
+
+  gap: 2px;
+}
+
+.receipt-sheet__letterhead strong {
+  color: #5c1010;
+
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+.receipt-sheet__letterhead span {
+  color: #6f665f;
+
+  font-size: 12px;
+}
+
+.receipt-sheet__number {
+  text-align: right;
+}
+
+.receipt-sheet__number span {
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.receipt-sheet__number strong {
+  color: #b42318;
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 18px;
+}
+
+.receipt-sheet__title {
+  margin: 22px 0 18px;
+
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.receipt-sheet__details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px 24px;
+
+  margin: 0;
+}
+
+.receipt-sheet__details dt,
+.receipt-sheet__summary dt {
+  color: #6f665f;
+
+  font-size: 12px;
+}
+
+.receipt-sheet__details dd,
+.receipt-sheet__summary dd {
+  margin: 2px 0 0;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.receipt-sheet__mono {
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+}
+
+.receipt-sheet__amount {
+  display: grid;
+  justify-items: center;
+
+  gap: 4px;
+
+  margin: 24px 0;
+  padding: 18px;
+
+  border: 1px dashed #d8cfc2;
+  border-radius: 8px;
+}
+
+.receipt-sheet__amount span {
+  color: #6f665f;
+
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.receipt-sheet__amount strong {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.receipt-sheet__amount em {
+  font-family: "Courier Prime", "Courier New", var(--font-mono);
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+}
+
+.receipt-sheet__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin: 0;
+  padding: 12px 0;
+
+  border-top: 1px solid #ebe6df;
+  border-bottom: 1px solid #ebe6df;
+}
+
+.receipt-sheet__notes {
+  margin: 14px 0 0;
+
+  color: #6f665f;
+
+  font-size: 13px;
+}
+
+.receipt-sheet__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-top: 40px;
+
+  color: #6f665f;
+
+  font-size: 11px;
+}
+
+.receipt-sheet__sign {
+  min-width: 160px;
+
+  padding-top: 6px;
+
+  border-top: 1px solid #1f1b18;
+
+  color: #1f1b18;
+
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Print only the receipt, on one plain page. */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  /* The hidden admin page would otherwise still take up (and print) space. */
+  html:has(.receipt-dialog[open]),
+  html:has(.receipt-dialog[open]) body {
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #ffffff !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .receipt-sheet,
+  .receipt-sheet * {
+    visibility: visible !important;
+  }
+
+  .receipt-dialog {
+    position: static;
+
+    background: none;
+
+    box-shadow: none;
+  }
+
+  .receipt-dialog::backdrop {
+    background: none;
+  }
+
+  .receipt-sheet {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    margin: 0;
+
+    box-shadow: none;
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+  .money-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .records-row--fees,
+  .records-row--payments {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "person status"
+      "detail detail"
+      "date actions";
+
+    gap: 10px 16px;
+  }
+
+  .records-row--fees .fee-paid {
+    display: none;
+  }
+
+  .records-row--payments {
+    grid-template-areas:
+      "person amount"
+      "detail detail"
+      "date actions";
+  }
+
+  .records-row--payments .payment-amount {
+    grid-area: amount;
+  }
+}
+
+@media (max-width: 600px) {
+  .money-stats,
+  .money-stats--three {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .money-stats--three .money-stat:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .pay-dialog__grid,
+  .receipt-sheet__details {
+    grid-template-columns: 1fr;
+  }
+
+  .fee-details__summary dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .receipt-sheet {
+    margin: 0 10px 10px;
+    padding: 22px 18px;
+  }
+
+  .receipt-sheet__letterhead {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .receipt-sheet__number {
+    grid-column: 1 / -1;
+
+    text-align: left;
+  }
+}

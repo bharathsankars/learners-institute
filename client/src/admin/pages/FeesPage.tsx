@@ -1,538 +1,451 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  BadgeIndianRupee,
-  CircleDollarSign,
-  MoreHorizontal,
-  Pencil,
-  Plus,
-  ReceiptIndianRupee,
-  Search,
-  XCircle,
-} from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight, CircleCheck, IndianRupee, Plus, RefreshCw, Search, Wallet, X } from "lucide-react";
 
+import { fetchCourses } from "../../api/courses";
 import {
-  paidAmount,
-  outstandingBalance,
-  cancelFeePlan,
   createFeePlan,
   fetchFeePlans,
   formatIndianRupees,
+  updateFeePlan,
   type CreateFeePlanInput,
   type FeePlan,
   type UpdateFeePlanInput,
-  updateFeePlan,
 } from "../../api/fees";
-
-import { fetchCourses } from "../../api/courses";
-
+import type { Payment } from "../../api/payments";
 import { fetchStudents } from "../../api/students";
-
+import { FeePlanDetailsDialog } from "../components/FeePlanDetailsDialog";
 import { FeePlanModal } from "../components/FeePlanModal";
+import { ReceiptDialog } from "../components/ReceiptDialog";
+import { RecordPaymentDialog } from "../components/RecordPaymentDialog";
+import { paginateCourses as paginate } from "../utils/courses";
+import {
+  effectiveFee,
+  feeCounts,
+  feeState,
+  feeTotals,
+  filterFeePlans,
+  instituteToday,
+  outstandingBalance,
+  paidAmount,
+  studentFullName,
+  type FeeFilter,
+  type FeeSort,
+} from "../utils/fees";
 
-import "../styles/Fees.css";
+import "../styles/AdminRecords.css";
+import "../styles/FeesPayments.css";
+
+const tabs: { key: FeeFilter; label: string }[] = [
+  { key: "ALL", label: "All" },
+  { key: "OUTSTANDING", label: "Outstanding" },
+  { key: "OVERDUE", label: "Overdue" },
+  { key: "PAID", label: "Paid" },
+  { key: "CANCELLED", label: "Cancelled" },
+];
+
+const stateLabels = { OVERDUE: "Overdue", DUE: "Due", PAID: "Paid", CANCELLED: "Cancelled" } as const;
+const due = new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
+
+function initials(student: { firstName: string; lastName: string | null }) {
+  return [student.firstName, student.lastName]
+    .filter(Boolean)
+    .map((part) => part!.trim()[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 export function FeesPage() {
   const queryClient = useQueryClient();
+  const today = instituteToday();
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const query = useQuery({ queryKey: ["fee-plans"], queryFn: fetchFeePlans, refetchInterval: 30000 });
+  const students = useQuery({ queryKey: ["students"], queryFn: fetchStudents });
+  const courses = useQuery({ queryKey: ["courses"], queryFn: fetchCourses });
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<FeeFilter>("ALL");
+  const [sort, setSort] = useState<FeeSort>("DUE");
+  const [page, setPage] = useState(1);
+  const [notice, setNotice] = useState("");
 
-  const [selectedFeePlan, setSelectedFeePlan] = useState<FeePlan | null>(null);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
+  const [paying, setPaying] = useState<{ planId: string | null } | null>(null);
+  const [receipt, setReceipt] = useState<{ payment: Payment; justRecorded: boolean } | null>(null);
+  const [form, setForm] = useState<{ plan: FeePlan | null } | null>(null);
+  const [formError, setFormError] = useState("");
 
-  const [openMenuFeePlanId, setOpenMenuFeePlanId] = useState<string | null>(
-    null,
-  );
+  const plans = query.data ?? [];
+  const loaded = query.data !== undefined;
+  const counts = feeCounts(plans, today);
+  const totals = feeTotals(plans, today);
+  const filtered = filterFeePlans(plans, { search, filter, sort }, today);
+  const pagination = paginate(filtered, page);
+  const details = plans.find((plan) => plan.id === detailsId);
+  const hasFilters = Boolean(search.trim()) || filter !== "ALL";
 
-  const [mutationError, setMutationError] = useState("");
-
-  const {
-    data: feePlans = [],
-    isLoading: isFeePlansLoading,
-    isError: isFeePlansError,
-    error: feePlansError,
-  } = useQuery({
-    queryKey: ["fee-plans"],
-    queryFn: fetchFeePlans,
-  });
-
-  const { data: students = [], isLoading: isStudentsLoading } = useQuery({
-    queryKey: ["students"],
-    queryFn: fetchStudents,
-  });
-
-  const { data: courses = [], isLoading: isCoursesLoading } = useQuery({
-    queryKey: ["courses"],
-    queryFn: fetchCourses,
-  });
-
-  const createMutation = useMutation({
-    mutationFn: createFeePlan,
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["fee-plans"],
-      });
-
-      setModalOpen(false);
-      setSelectedFeePlan(null);
-      setMutationError("");
+  const save = useMutation({
+    mutationFn: ({ planId, create, update }: { planId?: string; create?: CreateFeePlanInput; update?: UpdateFeePlanInput }) =>
+      planId && update ? updateFeePlan(planId, update) : createFeePlan(create!),
+    onSuccess: async (plan, { planId }) => {
+      setForm(null);
+      setFormError("");
+      setNotice(`Fee plan ${planId ? "updated" : "created"} for ${studentFullName(plan.enrollment.student)}.`);
+      await queryClient.invalidateQueries({ queryKey: ["fee-plans"] });
     },
-
-    onError: (error) => {
-      setMutationError(
-        error instanceof Error ? error.message : "Unable to create fee plan.",
-      );
-    },
+    onError: (error) => setFormError(error.message),
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({
-      feePlanId,
-      input,
-    }: {
-      feePlanId: string;
-      input: UpdateFeePlanInput;
-    }) => updateFeePlan(feePlanId, input),
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["fee-plans"],
-      });
-
-      setModalOpen(false);
-      setSelectedFeePlan(null);
-      setMutationError("");
-    },
-
-    onError: (error) => {
-      setMutationError(
-        error instanceof Error ? error.message : "Unable to update fee plan.",
-      );
-    },
-  });
-
-  const cancelMutation = useMutation({
-    mutationFn: cancelFeePlan,
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["fee-plans"],
-      });
-
-      setOpenMenuFeePlanId(null);
-    },
-  });
-
-  const isSubmitting = createMutation.isPending || updateMutation.isPending;
-
-  const handleCreate = async (input: CreateFeePlanInput) => {
-    setMutationError("");
-
-    await createMutation.mutateAsync(input);
+  const resetFilters = () => {
+    setSearch("");
+    setFilter("ALL");
+    setPage(1);
   };
-
-  const handleUpdate = async (feePlanId: string, input: UpdateFeePlanInput) => {
-    setMutationError("");
-
-    await updateMutation.mutateAsync({
-      feePlanId,
-      input,
-    });
-  };
-
-  const handleAddFeePlan = () => {
-    setSelectedFeePlan(null);
-    setMutationError("");
-    setModalOpen(true);
-  };
-
-  const handleEditFeePlan = (feePlan: FeePlan) => {
-    setSelectedFeePlan(feePlan);
-
-    setMutationError("");
-    setOpenMenuFeePlanId(null);
-    setModalOpen(true);
-  };
-
-  const handleCancelFeePlan = async (feePlan: FeePlan) => {
-    setOpenMenuFeePlanId(null);
-
-    if (feePlan.status === "CANCELLED") {
-      return;
-    }
-
-    const confirmed = window.confirm(
-      `Cancel the fee plan for ${feePlan.enrollment.student.firstName} ${feePlan.enrollment.student.lastName ?? ""}?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await cancelMutation.mutateAsync(feePlan.id);
-    } catch {
-      // Mutation state handles failure.
-    }
-  };
-
-  const filteredFeePlans = useMemo(() => {
-    const query = searchTerm.trim().toLowerCase();
-
-    if (!query) {
-      return feePlans;
-    }
-
-    return feePlans.filter((feePlan) => {
-      const student = feePlan.enrollment.student;
-
-      const course = feePlan.enrollment.course;
-
-      const fullName = [student.firstName, student.lastName]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      return (
-        fullName.includes(query) ||
-        student.admissionNumber.toLowerCase().includes(query) ||
-        student.phone.toLowerCase().includes(query) ||
-        course.title.toLowerCase().includes(query)
-      );
-    });
-  }, [feePlans, searchTerm]);
-
-  const activeFeePlans = feePlans.filter(
-    (feePlan) => feePlan.status === "ACTIVE",
-  );
-
-  const totalEffectiveFeePaise = activeFeePlans.reduce(
-    (total, feePlan) =>
-      total + Math.max(feePlan.totalFeePaise - feePlan.discountPaise, 0),
-    0,
-  );
-
-  const totalDiscountPaise = activeFeePlans.reduce(
-    (total, feePlan) => total + feePlan.discountPaise,
-    0,
-  );
-
-  const formatDate = (value: string | null) => {
-    if (!value) {
-      return "—";
-    }
-
-    return new Intl.DateTimeFormat("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(new Date(value));
-  };
-
-  const pageIsLoading =
-    isFeePlansLoading || isStudentsLoading || isCoursesLoading;
 
   return (
-    <div className="fees-page">
-      <div className="fees-page__heading">
-        <div className="fees-page__heading-content">
-          <span className="fees-page__eyebrow">Finance</span>
-
+    <div className="fees-admin records-page">
+      <header className="records-header">
+        <div>
+          <span className="records-eyebrow">Fees &amp; payments</span>
           <h1>Fees</h1>
-
-          <p>
-            Manage student course enrollments and fee plans. Payment tracking
-            will be connected separately.
-          </p>
+          <p>Each student’s course fee, what they have paid and what is still due.</p>
         </div>
+        <div className="records-header__actions">
+          <button
+            className="records-button records-button--icon"
+            type="button"
+            disabled={query.isFetching}
+            onClick={() => void query.refetch()}
+            aria-label="Refresh fees"
+            title="Refresh"
+          >
+            <RefreshCw size={16} aria-hidden="true" className={query.isFetching ? "records-spin" : undefined} />
+          </button>
+          <button className="records-button" type="button" onClick={() => setPaying({ planId: null })} disabled={!loaded}>
+            <IndianRupee size={16} aria-hidden="true" />
+            Record payment
+          </button>
+          <button
+            className="records-button records-button--primary"
+            type="button"
+            onClick={() => {
+              setFormError("");
+              setForm({ plan: null });
+            }}
+          >
+            <Plus size={17} aria-hidden="true" />
+            New fee plan
+          </button>
+        </div>
+      </header>
 
+      <section className="money-stats" aria-label="Fee totals">
+        <div className="money-stat">
+          <span>Billed</span>
+          <strong>{loaded ? formatIndianRupees(totals.billed) : "—"}</strong>
+          <small>Active fee plans after discounts</small>
+        </div>
+        <div className="money-stat money-stat--good">
+          <span>Collected</span>
+          <strong>{loaded ? formatIndianRupees(totals.collected) : "—"}</strong>
+          <small>All payments recorded</small>
+        </div>
+        <div className="money-stat">
+          <span>Outstanding</span>
+          <strong>{loaded ? formatIndianRupees(totals.outstanding) : "—"}</strong>
+          <small>{counts.OUTSTANDING} {counts.OUTSTANDING === 1 ? "plan" : "plans"} with a balance</small>
+        </div>
         <button
-          className="fees-page__add-button"
           type="button"
-          onClick={handleAddFeePlan}
-          disabled={pageIsLoading}
+          className={totals.overdueCount ? "money-stat money-stat--alert" : "money-stat"}
+          onClick={() => {
+            setFilter("OVERDUE");
+            setPage(1);
+          }}
         >
-          <Plus size={17} strokeWidth={2} aria-hidden="true" />
-          Create Fee Plan
+          <span>Overdue</span>
+          <strong>{loaded ? formatIndianRupees(totals.overdue) : "—"}</strong>
+          <small>
+            {totals.overdueCount} past the due date{totals.overdueCount ? " · show" : ""}
+          </small>
         </button>
-      </div>
-
-      <section className="fees-page__summary" aria-label="Fee overview">
-        <article className="fee-summary-card">
-          <div className="fee-summary-card__icon">
-            <ReceiptIndianRupee
-              size={20}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-          </div>
-
-          <div className="fee-summary-card__content">
-            <span>Fee Plans</span>
-
-            <strong>{feePlans.length}</strong>
-          </div>
-        </article>
-
-        <article className="fee-summary-card">
-          <div className="fee-summary-card__icon">
-            <CircleDollarSign size={20} strokeWidth={1.8} aria-hidden="true" />
-          </div>
-
-          <div className="fee-summary-card__content">
-            <span>Active Plans</span>
-
-            <strong>{activeFeePlans.length}</strong>
-          </div>
-        </article>
-
-        <article className="fee-summary-card">
-          <div className="fee-summary-card__icon">
-            <BadgeIndianRupee size={20} strokeWidth={1.8} aria-hidden="true" />
-          </div>
-
-          <div className="fee-summary-card__content">
-            <span>Effective Fees</span>
-
-            <strong>{formatIndianRupees(totalEffectiveFeePaise)}</strong>
-          </div>
-        </article>
-
-        <article className="fee-summary-card">
-          <div className="fee-summary-card__icon">
-            <BadgeIndianRupee size={20} strokeWidth={1.8} aria-hidden="true" />
-          </div>
-
-          <div className="fee-summary-card__content">
-            <span>Discounts</span>
-
-            <strong>{formatIndianRupees(totalDiscountPaise)}</strong>
-          </div>
-        </article>
       </section>
 
-      <section className="fees-page__panel">
-        <div className="fees-page__toolbar">
-          <div className="fees-page__search">
-            <Search size={17} strokeWidth={1.8} aria-hidden="true" />
+      {query.isError && (
+        <div className="records-notice records-notice--error" role="alert">
+          <span>{query.error.message}</span>
+        </div>
+      )}
 
+      {notice && (
+        <div className="records-notice records-notice--success" role="status">
+          <CircleCheck size={18} aria-hidden="true" />
+          <span>{notice}</span>
+          <button type="button" aria-label="Dismiss message" onClick={() => setNotice("")}>
+            <X size={16} aria-hidden="true" />
+          </button>
+        </div>
+      )}
+
+      <section className="records-panel" aria-label="Fee plans">
+        <div className="records-tabs" role="group" aria-label="Filter fee plans">
+          {tabs.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className={filter === key ? "records-tab records-tab--active" : "records-tab"}
+              aria-pressed={filter === key}
+              onClick={() => {
+                setFilter(key);
+                setPage(1);
+              }}
+            >
+              {label}
+              <span className={key === "OVERDUE" && counts.OVERDUE ? "records-tab__count records-tab__count--alert" : "records-tab__count"}>
+                {loaded ? counts[key] : "·"}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="records-toolbar">
+          <label className="records-search">
+            <Search size={17} aria-hidden="true" />
+            <span className="records-sr-only">Search fee plans</span>
             <input
               type="search"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search student, admission no., phone or course"
-              aria-label="Search fee plans"
+              value={search}
+              placeholder="Search by student, admission number, phone or course"
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
+              }}
             />
-          </div>
-
-          <span className="fees-page__count">
-            {filteredFeePlans.length}{" "}
-            {filteredFeePlans.length === 1 ? "record" : "records"}
-          </span>
+            {search && (
+              <button type="button" aria-label="Clear search" onClick={() => setSearch("")}>
+                <X size={16} aria-hidden="true" />
+              </button>
+            )}
+          </label>
+          <label className="records-select">
+            <span className="records-sr-only">Sort by</span>
+            <select value={sort} onChange={(event) => setSort(event.target.value as FeeSort)}>
+              <option value="DUE">Due date</option>
+              <option value="BALANCE">Highest balance</option>
+              <option value="NEWEST">Newest first</option>
+              <option value="NAME">Student name A–Z</option>
+            </select>
+          </label>
+          {hasFilters && (
+            <button type="button" className="records-clear" onClick={resetFilters}>
+              <X size={14} aria-hidden="true" />
+              Clear
+            </button>
+          )}
         </div>
 
-        {isFeePlansError && (
-          <div className="fees-page__error">
-            {feePlansError instanceof Error
-              ? feePlansError.message
-              : "Unable to load fee plans."}
+        {query.isPending ? (
+          <div className="records-list" role="status" aria-label="Loading fee plans">
+            {Array.from({ length: 6 }, (_, row) => (
+              <div key={row} className="records-row records-row--skeleton">
+                <span className="records-skeleton records-skeleton--avatar" />
+                <span className="records-skeleton" style={{ width: "60%" }} />
+                <span className="records-skeleton" style={{ width: "70%" }} />
+                <span className="records-skeleton" style={{ width: "50%" }} />
+                <span className="records-skeleton" style={{ width: "72px" }} />
+              </div>
+            ))}
+          </div>
+        ) : !filtered.length ? (
+          <div className="records-empty">
+            <Wallet size={28} aria-hidden="true" />
+            <h3>{plans.length ? "No matching fee plans" : "No fee plans yet"}</h3>
+            <p>
+              {plans.length
+                ? "Try another search or tab."
+                : "Set a fee when admitting a student, or create a fee plan here."}
+            </p>
+            {plans.length ? (
+              <button type="button" className="records-button" onClick={resetFilters}>
+                Clear filters
+              </button>
+            ) : (
+              <button type="button" className="records-button records-button--primary" onClick={() => setForm({ plan: null })}>
+                New fee plan
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="records-list">
+            <div className="records-columns records-columns--fees" aria-hidden="true">
+              <span>Student</span>
+              <span>Course &amp; fee</span>
+              <span>Paid</span>
+              <span>Balance</span>
+              <span>Status</span>
+              <span />
+            </div>
+
+            {pagination.records.map((plan) => {
+              const state = feeState(plan, today);
+              const fee = effectiveFee(plan);
+              const paid = paidAmount(plan);
+              const balance = outstandingBalance(plan);
+
+              return (
+                <article key={plan.id} className="records-row records-row--fees">
+                  <div className="records-person">
+                    <span className="records-avatar" aria-hidden="true">
+                      {initials(plan.enrollment.student)}
+                    </span>
+                    <div>
+                      <button type="button" className="records-name" onClick={() => setDetailsId(plan.id)}>
+                        {studentFullName(plan.enrollment.student)}
+                      </button>
+                      <span className="records-sub records-sub--mono">{plan.enrollment.student.admissionNumber}</span>
+                    </div>
+                  </div>
+
+                  <div className="records-detail">
+                    <strong>{plan.enrollment.course.title}</strong>
+                    <span className="records-sub">
+                      {formatIndianRupees(fee)}
+                      {plan.discountPaise > 0 && ` · ${formatIndianRupees(plan.discountPaise)} off`}
+                    </span>
+                  </div>
+
+                  <div className="fee-paid">
+                    <span>
+                      <strong>{formatIndianRupees(paid)}</strong>
+                    </span>
+                    <span className="fee-progress" aria-hidden="true">
+                      <span style={{ width: `${fee ? Math.min(100, (paid / fee) * 100) : 100}%` }} />
+                    </span>
+                  </div>
+
+                  <div className="records-date fee-balance">
+                    <strong className={state === "OVERDUE" ? "fee-balance__amount fee-balance__amount--overdue" : "fee-balance__amount"}>
+                      {formatIndianRupees(balance)}
+                    </strong>
+                    {state !== "PAID" && state !== "CANCELLED" && (
+                      <span>{plan.dueDate ? `due ${due.format(new Date(plan.dueDate))}` : "no due date"}</span>
+                    )}
+                  </div>
+
+                  <span className={`records-status records-status--fee-${state.toLowerCase()}`}>{stateLabels[state]}</span>
+
+                  <div className="records-actions">
+                    {plan.status === "ACTIVE" && balance > 0 && (
+                      <button
+                        type="button"
+                        className="records-action records-action--icon"
+                        onClick={() => setPaying({ planId: plan.id })}
+                        aria-label={`Record payment for ${studentFullName(plan.enrollment.student)}`}
+                        title="Record payment"
+                      >
+                        <IndianRupee size={15} aria-hidden="true" />
+                      </button>
+                    )}
+                    <button type="button" className="records-action" onClick={() => setDetailsId(plan.id)}>
+                      View
+                      <ArrowRight size={15} aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
 
-        {pageIsLoading ? (
-          <div className="fees-page__state">
-            <ReceiptIndianRupee
-              size={26}
-              strokeWidth={1.6}
-              aria-hidden="true"
-            />
-
-            <strong>Loading fee plans...</strong>
-          </div>
-        ) : filteredFeePlans.length === 0 ? (
-          <div className="fees-page__state">
-            <ReceiptIndianRupee
-              size={26}
-              strokeWidth={1.6}
-              aria-hidden="true"
-            />
-
-            <strong>
-              {searchTerm ? "No matching fee plans" : "No fee plans yet"}
-            </strong>
-
-            <p>
-              {searchTerm
-                ? "Try a different student name, admission number, phone number, or course."
-                : "Create a fee plan by selecting a student and course."}
-            </p>
-          </div>
-        ) : (
-          <div className="fees-table-wrapper">
-            <table className="fees-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-
-                  <th>Course</th>
-
-                  <th>Total Fee</th>
-
-                  <th>Discount</th>
-
-                  <th>Effective Fee</th>
-
-                  <th>Paid</th>
-                  <th>Balance</th>
-                  <th>Due Date</th>
-
-                  <th>Status</th>
-
-                  <th aria-label="Actions" />
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredFeePlans.map((feePlan) => {
-                  const student = feePlan.enrollment.student;
-
-                  const course = feePlan.enrollment.course;
-
-                  const studentName = [student.firstName, student.lastName]
-                    .filter(Boolean)
-                    .join(" ");
-
-                  const effectiveFee = Math.max(
-                    feePlan.totalFeePaise - feePlan.discountPaise,
-                    0,
-                  );
-
-                  const menuOpen = openMenuFeePlanId === feePlan.id;
-
-                  return (
-                    <tr key={feePlan.id}>
-                      <td>
-                        <div className="fees-table__student">
-                          <strong>{studentName}</strong>
-
-                          <span>{student.admissionNumber}</span>
-                        </div>
-                      </td>
-
-                      <td>
-                        <span className="fees-table__course">
-                          {course.title}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span className="fees-table__money">
-                          {formatIndianRupees(feePlan.totalFeePaise)}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span className="fees-table__discount">
-                          {formatIndianRupees(feePlan.discountPaise)}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span className="fees-table__money">
-                          {formatIndianRupees(effectiveFee)}
-                        </span>
-                      </td>
-
-                      <td>{formatIndianRupees(paidAmount(feePlan))}</td>
-                      <td>{formatIndianRupees(outstandingBalance(feePlan))}</td>
-                      <td>
-                        <span className="fees-table__date">
-                          {formatDate(feePlan.dueDate)}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span
-                          className={`fees-table__status ${
-                            feePlan.status === "ACTIVE"
-                              ? "fees-table__status--active"
-                              : "fees-table__status--cancelled"
-                          }`}
-                        >
-                          {feePlan.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <div className="fee-actions">
-                          <button
-                            className="fee-actions__trigger"
-                            type="button"
-                            onClick={() =>
-                              setOpenMenuFeePlanId(menuOpen ? null : feePlan.id)
-                            }
-                            aria-label={`Actions for ${studentName}`}
-                          >
-                            <MoreHorizontal size={18} aria-hidden="true" />
-                          </button>
-
-                          {menuOpen && (
-                            <div className="fee-actions__menu">
-                              <button
-                                type="button"
-                                onClick={() => handleEditFeePlan(feePlan)}
-                              >
-                                <Pencil size={15} aria-hidden="true" />
-                                Edit
-                              </button>
-
-                              {feePlan.status === "ACTIVE" && (
-                                <button
-                                  className="fee-actions__cancel"
-                                  type="button"
-                                  onClick={() =>
-                                    void handleCancelFeePlan(feePlan)
-                                  }
-                                >
-                                  <XCircle size={15} aria-hidden="true" />
-                                  Cancel
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+        {loaded && filtered.length > 0 && (
+          <footer className="records-pagination">
+            <span>
+              Showing {pagination.start}–{pagination.end} of {filtered.length} fee {filtered.length === 1 ? "plan" : "plans"}
+              <span className="records-live">Updates every 30 seconds</span>
+            </span>
+            <div>
+              <button
+                type="button"
+                className="records-page-button"
+                disabled={pagination.currentPage === 1}
+                aria-label="Previous page"
+                onClick={() => setPage(pagination.currentPage - 1)}
+              >
+                <ChevronLeft size={17} aria-hidden="true" />
+              </button>
+              <strong>
+                {pagination.currentPage} / {pagination.pageCount}
+              </strong>
+              <button
+                type="button"
+                className="records-page-button"
+                disabled={pagination.currentPage === pagination.pageCount}
+                aria-label="Next page"
+                onClick={() => setPage(pagination.currentPage + 1)}
+              >
+                <ChevronRight size={17} aria-hidden="true" />
+              </button>
+            </div>
+          </footer>
         )}
       </section>
 
+      {details && !paying && !receipt && !form && (
+        <FeePlanDetailsDialog
+          plan={details}
+          onClose={() => setDetailsId(null)}
+          onEdit={() => {
+            setFormError("");
+            setForm({ plan: details });
+          }}
+          onRecordPayment={() => setPaying({ planId: details.id })}
+          onViewReceipt={(payment) => setReceipt({ payment, justRecorded: false })}
+          onCancelled={(message) => {
+            setDetailsId(null);
+            setNotice(message);
+          }}
+        />
+      )}
+
+      {paying && (
+        <RecordPaymentDialog
+          plans={plans}
+          initialPlanId={paying.planId}
+          onClose={() => setPaying(null)}
+          onRecorded={(payment) => {
+            setPaying(null);
+            setReceipt({ payment, justRecorded: true });
+          }}
+        />
+      )}
+
+      {receipt && (
+        <ReceiptDialog
+          payment={receipt.payment}
+          plan={plans.find((plan) => plan.id === receipt.payment.feePlanId)}
+          justRecorded={receipt.justRecorded}
+          onClose={() => setReceipt(null)}
+        />
+      )}
+
       <FeePlanModal
-        open={modalOpen}
-        feePlan={selectedFeePlan}
-        students={students}
-        courses={courses}
-        isSubmitting={isSubmitting}
-        serverError={mutationError}
+        open={Boolean(form)}
+        feePlan={form?.plan ?? null}
+        students={students.data ?? []}
+        courses={courses.data ?? []}
+        isSubmitting={save.isPending}
+        serverError={formError}
         onClose={() => {
-          if (isSubmitting) {
-            return;
+          if (!save.isPending) {
+            setForm(null);
+            setFormError("");
           }
-
-          setModalOpen(false);
-
-          setSelectedFeePlan(null);
-
-          setMutationError("");
         }}
-        onCreate={handleCreate}
-        onUpdate={handleUpdate}
+        onCreate={async (input) => {
+          await save.mutateAsync({ create: input });
+        }}
+        onUpdate={async (planId, input) => {
+          await save.mutateAsync({ planId, update: input });
+        }}
       />
     </div>
   );

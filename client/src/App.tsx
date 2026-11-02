@@ -20,6 +20,8 @@ const StudentsPage = lazy(() => import("./admin/pages/StudentsPage").then(module
 
 const CoursesPage = lazy(() => import("./admin/pages/CoursesPage").then(module => ({ default: module.CoursesPage })));
 const AttendancePage = lazy(() => import("./admin/pages/AttendancePage").then(module => ({ default: module.AttendancePage })));
+const FeesPage = lazy(() => import("./admin/pages/FeesPage").then(module => ({ default: module.FeesPage })));
+const PaymentsPage = lazy(() => import("./admin/pages/PaymentsPage").then(module => ({ default: module.PaymentsPage })));
 const BatchesPage = lazy(() => import("./admin/pages/BatchesPage").then(module => ({ default: module.BatchesPage })));
 
 const SettingsPage = lazy(() => import("./admin/pages/SettingsPage").then(module => ({ default: module.SettingsPage })));
@@ -76,9 +78,9 @@ function App() {
           <Route path="reports" element={<UpcomingPage title="Reports" />} />
 
           <Route element={<RequireRole allowedRoles={["SUPER_ADMIN"]} />}>
-            <Route path="fees/*" element={<UpcomingPage title="Fees" />} />
+            <Route path="fees" element={<Suspense fallback={<p role="status">Loading fees…</p>}><FeesPage /></Suspense>} />
 
-            <Route path="payments/*" element={<UpcomingPage title="Payments" />} />
+            <Route path="payments" element={<Suspense fallback={<p role="status">Loading payments…</p>}><PaymentsPage /></Suspense>} />
 
             <Route
               path="settings"
