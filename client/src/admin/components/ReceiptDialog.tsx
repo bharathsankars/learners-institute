@@ -71,6 +71,7 @@ export function ReceiptDialog({ payment, plan, justRecorded = false, onClose }: 
             <strong>{institute.data?.instituteName || "Learners Commercial Institute"}</strong>
             <span>{contact.address}</span>
             <span>{contact.phoneDisplay}</span>
+            <span>{contact.supportEmail}</span>
           </div>
           <div className="receipt-sheet__number">
             <span>Receipt</span>

@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { buildContact, contact } from "../src/data/contact.ts";
 
 const base = { instituteName: "Learners", phone: null, whatsapp: null, email: null, address: null, mapsUrl: null };
@@ -30,4 +31,18 @@ test("address and Maps link come from the profile when set", () => {
   const result = buildContact({ ...base, address: " Thirunakkara, Kottayam ", mapsUrl: "https://maps.example/x" });
   assert.equal(result.address, "Thirunakkara, Kottayam");
   assert.equal(result.mapsUrl, "https://maps.example/x");
+});
+
+test("the official support email is built in and the profile email does not replace it", () => {
+  assert.equal(contact.supportEmail, "learnersit.info@gmail.com");
+  assert.equal(contact.supportEmailHref, "mailto:learnersit.info@gmail.com");
+
+  const result = buildContact({ ...base, email: "someone@example.invalid" });
+  assert.equal(result.supportEmail, contact.supportEmail);
+  assert.equal(result.supportEmailHref, contact.supportEmailHref);
+});
+
+test("the search engine details in index.html match the official support email", () => {
+  const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.ok(html.includes(`"email": "${contact.supportEmail}"`));
 });
