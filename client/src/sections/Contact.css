@@ -195,6 +195,13 @@
   color: var(--color-blue-600);
 }
 
+.contact-card__link--secondary {
+  margin-top: 0;
+  padding-top: 12px;
+
+  overflow-wrap: anywhere;
+}
+
 .contact-card__location-note {
   display: inline-flex;
   align-items: center;

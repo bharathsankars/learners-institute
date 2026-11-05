@@ -1,7 +1,9 @@
 // The institute's public contact details. The admin's institute profile
 // (Settings → Institute) overrides these; they remain the fallback when it
-// is empty or cannot be loaded.
+// is empty or cannot be loaded. The support email is the exception: it is the
+// official address, so the profile's email field does not replace it.
 const WHATSAPP_GREETING = "Hi Learners, I would like to know more about your courses.";
+const SUPPORT_EMAIL = "learnersit.info@gmail.com";
 
 export type Contact = {
   phoneDisplay: string;
@@ -10,6 +12,8 @@ export type Contact = {
   whatsappHref: string;
   mapsUrl: string;
   address: string;
+  supportEmail: string;
+  supportEmailHref: string;
 };
 
 export const contact: Contact = {
@@ -19,6 +23,8 @@ export const contact: Contact = {
   whatsappHref: `https://wa.me/919446125964?text=${encodeURIComponent(WHATSAPP_GREETING)}`,
   mapsUrl: "https://www.google.com/maps?cid=9424450921971281392",
   address: "Thirunakkara, Kottayam, Kerala",
+  supportEmail: SUPPORT_EMAIL,
+  supportEmailHref: `mailto:${SUPPORT_EMAIL}`,
 };
 
 export type PublicInstitute = {
@@ -69,5 +75,7 @@ export function buildContact(institute: PublicInstitute | null | undefined): Con
       : contact.whatsappHref,
     mapsUrl: institute.mapsUrl?.trim() || contact.mapsUrl,
     address: institute.address?.trim() || contact.address,
+    supportEmail: contact.supportEmail,
+    supportEmailHref: contact.supportEmailHref,
   };
 }

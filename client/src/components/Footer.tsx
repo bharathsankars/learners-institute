@@ -1,4 +1,4 @@
-import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useContact } from "../hooks/useContact";
 import logoFull from "../assets/learners-logo-full.webp";
@@ -13,6 +13,7 @@ const quickLinks = [
 export function Footer() {
   const contact = useContact();
   const mapsUrl = contact.mapsUrl;
+  const [mailbox, domain] = contact.supportEmail.split("@");
 
   return (
     <footer className="site-footer">
@@ -68,6 +69,15 @@ export function Footer() {
                 <MessageCircle size={15} strokeWidth={1.8} aria-hidden="true" />
 
                 <span>WhatsApp</span>
+              </a>
+
+              <a href={contact.supportEmailHref}>
+                <Mail size={15} strokeWidth={1.8} aria-hidden="true" />
+
+                <span>
+                  {mailbox}@<wbr />
+                  {domain}
+                </span>
               </a>
 
               <a href="#enquiry">

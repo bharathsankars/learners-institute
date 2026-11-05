@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  Mail,
   MapPin,
   MessageSquareText,
   Phone,
@@ -101,6 +102,14 @@ export function Contact() {
             <a href="#enquiry" className="contact-card__link">
               Send an Enquiry
               <ArrowRight size={15} strokeWidth={2} aria-hidden="true" />
+            </a>
+
+            <a
+              href={contact.supportEmailHref}
+              className="contact-card__link contact-card__link--secondary"
+            >
+              <Mail size={15} strokeWidth={2} aria-hidden="true" />
+              {contact.supportEmail}
             </a>
           </article>
         </div>
